@@ -3,33 +3,42 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:checked="true"
+            android:id="@+id/nav_history"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Import"/>
+            android:title="@string/history"/>
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_statistics"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery"/>
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow"/>
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools"/>
+            android:title="@string/statistics"/>
     </group>
 
-    <item android:title="Communicate">
+    <group android:id="@+id/nav_group2"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_oil"
+            android:icon="@drawable/oil"
+            android:title="@string/oil"/>
+        <item
+            android:id="@+id/nav_maintenance"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/maintenance"/>
+        <item
+            android:id="@+id/nav_expenses"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="@string/expenses"/>
+    </group>
+
+    <item android:title="@string/about">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_setting"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share"/>
+                android:title="@string/setting"/>
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_about"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send"/>
+                android:title="@string/about"/>
         </menu>
     </item>
 

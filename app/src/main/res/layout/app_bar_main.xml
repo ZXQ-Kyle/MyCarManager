@@ -21,17 +21,50 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_main"/>
+    <FrameLayout
+        android:id="@+id/fl_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/fab_menu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/colorPrimary"
-        android:src="@drawable/add_white"
-
-        />
+        app:menu_icon="@drawable/ic_add_24dp"
+        app:menu_colorNormal="@color/colorPrimary"
+        app:menu_colorPressed="@color/colorPrimaryDark"
+        app:menu_fab_size="normal"
+        >
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/oil"
+            app:fab_label="@string/oil"
+            app:fab_colorNormal="@color/colorCyan"
+            app:fab_colorPressed="@color/colorCyanDark"
+            />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/oilcan"
+            app:fab_label="@string/maintenance"
+            app:fab_colorNormal="@color/colorPurple"
+            app:fab_colorPressed="@color/colorPurpleDark"
+            />
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/odometer"
+            app:fab_label="@string/expenses"
+            app:fab_colorNormal="@color/colorAmber"
+            app:fab_colorPressed="@color/colorAmberDark"
+            />
+    </com.github.clans.fab.FloatingActionMenu>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -1,24 +1,23 @@
 package com.kyle.mycar;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
-
+import android.view.Window;
 import com.github.clans.fab.FloatingActionMenu;
-import com.kyle.mycar.fragment.BaseFragment;
-import com.kyle.mycar.fragment.MainFragment;
-import com.kyle.mycar.fragment.OilFragment;
-
+import com.kyle.mycar.Fragment.BaseFragment;
+import com.kyle.mycar.Fragment.MainFragment;
+import com.kyle.mycar.Fragment.OilFragment;
 import java.util.HashMap;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -30,9 +29,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @BindView(R.id.fab_menu)
     FloatingActionMenu fabMenu;
 
-    private Toolbar toolbar;
+    private Toolbar mToolbar;
     private DrawerLayout drawer;
     private HashMap<String, BaseFragment> mFragment;
+    private BaseFragment mCurrentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,11 +46,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void initData() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string
                 .navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
         toggle.syncState();
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         MainFragment fragment = new MainFragment();
         mFragment.put(MAINFRAGMENT, fragment);
+        mCurrentFragment=fragment;
         getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment, MAINFRAGMENT).commit();
         getSupportActionBar().setTitle(R.string.history);
     }
@@ -103,13 +104,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-
+        BaseFragment fragment =null;
         if (id == R.id.nav_history) {
-            getSupportFragmentManager().beginTransaction().show(mFragment.get(MAINFRAGMENT)).commit();
-            toolbar.setTitle(R.string.history);
+            if ((fragment =mFragment.get(MAINFRAGMENT))!=null){
+                getSupportFragmentManager().beginTransaction()
+                        .show(fragment)
+                        .hide(mCurrentFragment)
+                        .commit();
+                mCurrentFragment=fragment;
+                mToolbar.setTitle(R.string.history);
+            }
 
         } else if (id == R.id.nav_statistics) {
-            toolbar.setTitle(R.string.statistics);
+            mToolbar.setTitle(R.string.statistics);
         } else if (id == R.id.nav_oil) {
 
         } else if (id == R.id.nav_maintenance) {
@@ -134,8 +141,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 OilFragment fragment = new OilFragment();
                 mFragment.put(OILFRAGMENT, fragment);
                 getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment, OILFRAGMENT).hide
-                        (mFragment.get(MAINFRAGMENT)).commit();
-                toolbar.setTitle(R.string.oil);
+                        (mCurrentFragment).commit();
+                mCurrentFragment=fragment;
+                mToolbar.setTitle(R.string.oil);
+                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorCyan));
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Window window = getWindow();
+                    window.setStatusBarColor(getResources().getColor(R.color.colorCyanDark));
+                    window.setNavigationBarColor(getResources().getColor(R.color.colorCyanDark));
+                }
+
                 break;
             case R.id.fab_2:
 
@@ -145,11 +161,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
         }
 //        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
 //                getSupportFragmentManager().beginTransaction().show(mFragment.get(MAINFRAGMENT)).commit();
-//                toolbar.setTitle(R.string.history);
+//                mToolbar.setTitle(R.string.history);
 //            }
 //        });
 

@@ -44,14 +44,26 @@ public class ImgAndEtView extends LinearLayoutCompat {
         et.setHint(hint);
     }
 
+    /**设置imageview的图标颜色
+     * @param drawable 设置图标
+     * @param color 设置颜色
+     */
     public void setDrawableColor(Drawable drawable, ColorStateList color) {
-//        iv.setBackground();
         iv.setImageDrawable(Tint.tintDrawable(drawable, color).mutate());
 
     }
-
+    public void setText(String s){
+        et.setText(s);
+    }
     public String getText() {
         return et.getText().toString().trim();
     }
+//  设置editText不可编辑
+    public void setUnEditable(){
+        et.setKeyListener(null);
+    }
+
+
+
 
 }

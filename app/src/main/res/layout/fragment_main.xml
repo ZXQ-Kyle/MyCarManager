@@ -5,7 +5,7 @@
              android:background="#23255444"
              tools:context="com.kyle.mycar.Fragment.MainFragment">
 <ImageView
-    android:src="@drawable/oil"
+    android:src="@drawable/oilcan"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"/>
 

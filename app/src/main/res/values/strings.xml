@@ -15,4 +15,8 @@
     <string name="expenses">开支</string>
     <string name="setting">设置</string>
     <string name="about">关于</string>
+    <string name="oil_money">总花费</string>
+    <string name="oil_price">单价(L)</string>
+    <string name="oil_quantity">升</string>
+    <string name="confirm">确认</string>
 </resources>

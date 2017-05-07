@@ -1,8 +1,8 @@
 package com.kyle.mycar.Fragment;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.AppCompatSpinner;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,8 +10,16 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.kyle.mycar.Bean.MessageEvent;
+import com.kyle.mycar.MyUtils.GlobalConstant;
 import com.kyle.mycar.R;
 import com.kyle.mycar.View.ImgAndEtView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import butterknife.BindView;
@@ -23,6 +31,7 @@ import butterknife.Unbinder;
  */
 public class OilFragment extends BaseFragment {
 
+    public static final String TAG="OilFragment";
     Unbinder unbinder;
     @BindView(R.id.spinner_oil)
     AppCompatSpinner spinnerOil;
@@ -48,11 +57,13 @@ public class OilFragment extends BaseFragment {
     ImgAndEtView iaeNote;
     @BindView(R.id.btn_oil)
     Button btnOil;
+    private String strDate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = initView();
         unbinder = ButterKnife.bind(this, rootView);
+        EventBus.getDefault().register(this);
         return rootView;
     }
 
@@ -60,6 +71,7 @@ public class OilFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -82,9 +94,9 @@ public class OilFragment extends BaseFragment {
         iaeDate.setUnEditable();
 
         //设置日期默认为当前时间
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
         Date date = new Date(System.currentTimeMillis());
-        String strDate = sdf.format(date);
+        strDate = sdf.format(date);
         iaeDate.setText(strDate);
         //初始化默认值
         iaeOdometer.setInputTypeOfNumber();
@@ -99,15 +111,30 @@ public class OilFragment extends BaseFragment {
                 showDatePicker();
                 break;
             case R.id.btn_oil:
+
                 break;
         }
     }
 
     private void showDatePicker() {
         DatePickerDialogFragment dialogFragment = new DatePickerDialogFragment();
-
         dialogFragment.show(getFragmentManager(),"date");
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getDateMessage(MessageEvent msg){
+
+        switch (msg.getFlag()) {
+            case GlobalConstant.OILFRAGMENT_RETURN_DATE:
+                strDate= msg.getMsg()+strDate.substring(11);
+                break;
+            case GlobalConstant.OILFRAGMENT_RETURN_TIME:
+                strDate=strDate.substring(0,13)+msg.getMsg();
+                break;
+        }
+        iaeDate.setText(strDate);
+
+    }
+
 
 
 }

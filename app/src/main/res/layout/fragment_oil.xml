@@ -39,6 +39,9 @@
                 android:id="@+id/iv_oil_oilcan"
                 style="@style/OilFragmentImageView"
                 android:layout_centerVertical="true"
+                android:src="@drawable/oilcan"
+                android:tint="@color/colorCyan"
+                android:tintMode="multiply"
                 />
 
             <android.support.v7.widget.AppCompatSpinner
@@ -60,6 +63,8 @@
             <ImageView
                 android:id="@+id/iv_oil_money"
                 style="@style/OilFragmentImageView"
+                android:tint="@color/colorCyan"
+                android:tintMode="multiply"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/money"/>
 
@@ -69,6 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/oil_money"
+                android:inputType="numberDecimal"
                 android:textAlignment="center"/>
 
             <EditText
@@ -77,6 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/oil_price"
+                android:inputType="numberDecimal"
                 android:textAlignment="center"/>
 
             <EditText
@@ -143,9 +150,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="end"
             android:text="@string/confirm"/>
-
-
-
 
     </LinearLayout>
 </ScrollView>

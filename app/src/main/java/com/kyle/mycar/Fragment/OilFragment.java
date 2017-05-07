@@ -1,21 +1,22 @@
 package com.kyle.mycar.Fragment;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.AppCompatSpinner;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-
-import com.kyle.mycar.MyUtils.Tint;
 import com.kyle.mycar.R;
 import com.kyle.mycar.View.ImgAndEtView;
-
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -41,6 +42,12 @@ public class OilFragment extends BaseFragment {
     EditText etOilMoney;
     @BindView(R.id.te_oil_price)
     EditText teOilPrice;
+    @BindView(R.id.et_oil_quantity)
+    EditText etOilQuantity;
+    @BindView(R.id.iae_note)
+    ImgAndEtView iaeNote;
+    @BindView(R.id.btn_oil)
+    Button btnOil;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,17 +75,39 @@ public class OilFragment extends BaseFragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerOil.setAdapter(adapter);
 
-        ivOilMoney.setImageDrawable(Tint.tintDrawable(ivOilMoney.getDrawable().mutate(),getResources().
-                getColorStateList(R.color.colorCyan)));
-
-        ivOilOilcan.setImageDrawable(Tint.tintDrawable(getResources().getDrawable(R.drawable.oilcan).mutate(), getResources()
-                .getColorStateList(R.color.colorCyan)));
-
-
         iaeFullOil.setUnEditable();
         iaeFullOil.setText("本次邮箱是否加满？");
         iaeWarning.setUnEditable();
         iaeWarning.setText("忘记记录上次加油？");
+        iaeDate.setUnEditable();
+
+        //设置日期默认为当前时间
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日 HH:mm");
+        Date date = new Date(System.currentTimeMillis());
+        String strDate = sdf.format(date);
+        iaeDate.setText(strDate);
+        //初始化默认值
+        iaeOdometer.setInputTypeOfNumber();
+
 
     }
+    //视图点击事件
+    @OnClick({R.id.iae_date, R.id.btn_oil})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.iae_date:
+                showDatePicker();
+                break;
+            case R.id.btn_oil:
+                break;
+        }
+    }
+
+    private void showDatePicker() {
+        DatePickerDialogFragment dialogFragment = new DatePickerDialogFragment();
+
+        dialogFragment.show(getFragmentManager(),"date");
+    }
+
+
 }

@@ -1,0 +1,45 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context="com.kyle.mycar.Fragment.DatePickerDialogFragment">
+
+    <DatePicker
+        android:id="@+id/date_picker"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </DatePicker>
+
+    <Button
+        android:id="@+id/date_picker_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:background="@android:color/transparent"
+        android:text="shijian"
+        android:textColor="@color/colorPrimary"/>
+
+    <Button
+        android:id="@+id/date_picker_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/date_picker_confirm"
+        android:background="@android:color/transparent"
+        android:gravity="end|center_vertical"
+        android:text="cancel"
+        android:textColor="@color/colorPrimary"/>
+
+    <Button
+        android:id="@+id/date_picker_confirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="bottom|right"
+        android:background="@android:color/transparent"
+        android:text="@string/confirm"
+        android:textColor="@color/colorPrimary"/>
+
+</RelativeLayout>

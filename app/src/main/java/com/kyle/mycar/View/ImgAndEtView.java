@@ -4,9 +4,13 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutCompat;
+import android.text.InputType;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -22,6 +26,7 @@ public class ImgAndEtView extends LinearLayoutCompat {
 
     private ImageView iv;
     private EditText et;
+    private boolean interceptTouchEvent = false;
 
     public ImgAndEtView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -61,9 +66,31 @@ public class ImgAndEtView extends LinearLayoutCompat {
 //  设置editText不可编辑
     public void setUnEditable(){
         et.setKeyListener(null);
+        interceptTouchEvent=true;
+    }
+
+    public void setInputTypeOfNumber(){
+        et.setInputType(InputType.TYPE_CLASS_NUMBER);
     }
 
 
 
+
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+       if (!interceptTouchEvent){
+           return super.onInterceptTouchEvent(ev);
+       }else {
+           return true;
+       }
+    }
+
+
+//    @Override
+//    public void setOnClickListener(@Nullable OnClickListener l) {
+//        et.setOnClickListener(l);
+////        super.setOnClickListener(l);
+//    }
 
 }

@@ -1,11 +1,13 @@
 package com.kyle.mycar.Fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -97,6 +99,8 @@ public class OilFragment extends BaseFragment {
         iaeWarning.setUnEditable();
         iaeWarning.setText("忘记记录上次加油？");
         iaeDate.setUnEditable();
+        iaeNote.setSingleLine();
+        iaeNote.setTextAlg(View.TEXT_ALIGNMENT_TEXT_START);
 
         //设置日期默认为当前时间
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
@@ -142,9 +146,6 @@ public class OilFragment extends BaseFragment {
         }
     }
 
-    private void calcQuantity() {
-
-    }
 
     private void showDatePicker() {
         DatePickerDialogFragment dialogFragment = new DatePickerDialogFragment();

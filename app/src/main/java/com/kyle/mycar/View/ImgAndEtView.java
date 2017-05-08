@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutCompat;
 import android.text.InputType;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -47,7 +49,7 @@ public class ImgAndEtView extends LinearLayoutCompat {
         et.setBackground(Tint.tintDrawable(et.getBackground(), colorStateList));
         et.setMaxLines(1);
         et.setHint(hint);
-        et.setTextColor(getResources().getColor(R.color.colorPurple));
+
     }
 
     /**设置imageview的图标颜色
@@ -60,6 +62,18 @@ public class ImgAndEtView extends LinearLayoutCompat {
     }
     public void setText(String s){
         et.setText(s);
+    }
+    public void setTextAlg(int textAlg){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            et.setTextAlignment(textAlg);
+        }
+    }
+
+    /**
+     * 过时的方法，MaxLines设置无效时可用
+     */
+    public void setSingleLine(){
+        et.setSingleLine(true);
     }
     public String getText() {
         return et.getText().toString().trim();
@@ -74,7 +88,6 @@ public class ImgAndEtView extends LinearLayoutCompat {
         et.setInputType(InputType.TYPE_CLASS_NUMBER);
     }
 
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
        if (!interceptTouchEvent){
@@ -85,11 +98,5 @@ public class ImgAndEtView extends LinearLayoutCompat {
     }
 
 
-
-//    @Override
-//    public void setOnClickListener(@Nullable OnClickListener l) {
-//        et.setOnClickListener(l);
-////        super.setOnClickListener(l);
-//    }
 
 }

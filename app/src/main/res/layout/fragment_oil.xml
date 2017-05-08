@@ -140,6 +140,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/oil_fragment_item_height"
             android:layout_marginTop="8dp"
+
             app:drawableColor="@color/colorCyan"
             app:iconLeft="@drawable/note"/>
 

@@ -2,7 +2,9 @@ package com.kyle.mycar.Fragment;
 
 
 import android.app.TimePickerDialog;
+import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.support.v4.util.TimeUtils;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -58,6 +60,10 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment {
         switch (view.getId()) {
 
             case R.id.date_picker_time:
+                java.util.Calendar calendar = java.util.Calendar.getInstance();
+                int hour = calendar.get(java.util.Calendar.HOUR_OF_DAY);
+                int minute = calendar.get(java.util.Calendar.MINUTE);
+
                 TimePickerDialog timePickerDialog = new TimePickerDialog(getActivity(),
                         new TimePickerDialog.OnTimeSetListener() {
                     @Override
@@ -77,7 +83,7 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment {
                         postMessage(sb.toString(),GlobalConstant.OILFRAGMENT_RETURN_TIME);
                     }
                 }
-                ,0,0,true);
+                ,hour,minute,true);
                 timePickerDialog.show();
                 datePick();
                 dismiss();

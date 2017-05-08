@@ -78,7 +78,7 @@
                 android:textAlignment="center"/>
 
             <EditText
-                android:id="@+id/te_oil_price"
+                android:id="@+id/et_oil_price"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -145,6 +145,9 @@
 
         <Button
             android:id="@+id/btn_oil"
+            android:background="@android:color/transparent"
+            android:elevation="10dp"
+            android:textColor="@color/colorCyan"
             android:layout_marginRight="24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

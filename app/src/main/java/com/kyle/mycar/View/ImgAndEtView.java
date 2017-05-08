@@ -47,6 +47,7 @@ public class ImgAndEtView extends LinearLayoutCompat {
         et.setBackground(Tint.tintDrawable(et.getBackground(), colorStateList));
         et.setMaxLines(1);
         et.setHint(hint);
+        et.setTextColor(getResources().getColor(R.color.colorPurple));
     }
 
     /**设置imageview的图标颜色
@@ -74,9 +75,6 @@ public class ImgAndEtView extends LinearLayoutCompat {
     }
 
 
-
-
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
        if (!interceptTouchEvent){
@@ -85,6 +83,7 @@ public class ImgAndEtView extends LinearLayoutCompat {
            return true;
        }
     }
+
 
 
 //    @Override

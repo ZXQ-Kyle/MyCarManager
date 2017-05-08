@@ -2,6 +2,9 @@ package com.kyle.mycar.Fragment;
 
 import android.os.Bundle;
 import android.support.v7.widget.AppCompatSpinner;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,8 +23,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -31,7 +36,7 @@ import butterknife.Unbinder;
  */
 public class OilFragment extends BaseFragment {
 
-    public static final String TAG="OilFragment";
+    public static final String TAG = "OilFragment";
     Unbinder unbinder;
     @BindView(R.id.spinner_oil)
     AppCompatSpinner spinnerOil;
@@ -49,8 +54,8 @@ public class OilFragment extends BaseFragment {
     ImageView ivOilMoney;
     @BindView(R.id.et_oil_money)
     EditText etOilMoney;
-    @BindView(R.id.te_oil_price)
-    EditText teOilPrice;
+    @BindView(R.id.et_oil_price)
+    EditText etOilPrice;
     @BindView(R.id.et_oil_quantity)
     EditText etOilQuantity;
     @BindView(R.id.iae_note)
@@ -83,7 +88,7 @@ public class OilFragment extends BaseFragment {
     public void initData() {
         //spinner初始化
         String[] stringArray = getResources().getStringArray(R.array.spinner_oil);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, stringArray);
+        final ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, stringArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerOil.setAdapter(adapter);
 
@@ -100,9 +105,30 @@ public class OilFragment extends BaseFragment {
         iaeDate.setText(strDate);
         //初始化默认值
         iaeOdometer.setInputTypeOfNumber();
-
+        TextWatcher textWatcher = new TextWatcher(){
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+            @Override
+            public void afterTextChanged(Editable s) {
+                String s1 = etOilMoney.getText().toString();
+                String s2 = etOilPrice.getText().toString();
+                if (!TextUtils.isEmpty(s1) && !TextUtils.isEmpty(s2)){
+                    BigDecimal money=new BigDecimal(s1);
+                    BigDecimal price=new BigDecimal(s2);
+                    BigDecimal quantity = money.divide(price,2,BigDecimal.ROUND_HALF_UP);
+                    etOilQuantity.setText(String.valueOf(quantity));
+                }
+            }
+        };
+        etOilMoney.addTextChangedListener(textWatcher);
+        etOilPrice.addTextChangedListener(textWatcher);
 
     }
+
     //视图点击事件
     @OnClick({R.id.iae_date, R.id.btn_oil})
     public void onViewClicked(View view) {
@@ -116,25 +142,28 @@ public class OilFragment extends BaseFragment {
         }
     }
 
+    private void calcQuantity() {
+
+    }
+
     private void showDatePicker() {
         DatePickerDialogFragment dialogFragment = new DatePickerDialogFragment();
-        dialogFragment.show(getFragmentManager(),"date");
+        dialogFragment.show(getFragmentManager(), "date");
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getDateMessage(MessageEvent msg){
+    public void getDateMessage(MessageEvent msg) {
 
         switch (msg.getFlag()) {
             case GlobalConstant.OILFRAGMENT_RETURN_DATE:
-                strDate= msg.getMsg()+strDate.substring(11);
+                strDate = msg.getMsg() + strDate.substring(11);
                 break;
             case GlobalConstant.OILFRAGMENT_RETURN_TIME:
-                strDate=strDate.substring(0,13)+msg.getMsg();
+                strDate = strDate.substring(0, 13) + msg.getMsg();
                 break;
         }
         iaeDate.setText(strDate);
 
     }
-
-
 
 }

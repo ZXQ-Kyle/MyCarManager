@@ -3,6 +3,7 @@ package com.kyle.mycar.View;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.ImageFormat;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -37,6 +38,8 @@ public class ImgAndEtView extends LinearLayoutCompat {
         ColorStateList colorStateList = typedArray.getColorStateList(R.styleable.ImgAndEtView_drawableColor);
         Drawable drawable = typedArray.getDrawable(R.styleable.ImgAndEtView_iconLeft);
         String hint = typedArray.getString(R.styleable.ImgAndEtView_hint);
+        String text = typedArray.getString(R.styleable.ImgAndEtView_text);
+        boolean unEditable = typedArray.getBoolean(R.styleable.ImgAndEtView_unEditable, false);
         //关闭资源
         typedArray.recycle();
         View view = View.inflate(context, R.layout.img_and_et_view, this);
@@ -49,6 +52,10 @@ public class ImgAndEtView extends LinearLayoutCompat {
         et.setBackground(Tint.tintDrawable(et.getBackground(), colorStateList));
         et.setMaxLines(1);
         et.setHint(hint);
+        et.setText(text);
+        if (unEditable){
+            setUnEditable();
+        }
 
     }
 

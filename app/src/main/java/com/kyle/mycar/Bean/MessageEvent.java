@@ -11,6 +11,14 @@ public class MessageEvent {
 
     private int flag;
 
+    public MessageEvent() {
+    }
+
+    public MessageEvent(String msg, int flag) {
+        this.msg = msg;
+        this.flag = flag;
+    }
+
     public String getMsg() {
         return msg;
     }

@@ -1,0 +1,50 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            tools:context="com.kyle.mycar.Fragment.MaintenanceFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <com.kyle.mycar.View.ImgAndEtView
+            android:id="@+id/iae_mt_date"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/oil_fragment_item_height"
+            android:layout_marginTop="8dp"
+            app:drawableColor="@color/colorPurple"
+            app:iconLeft="@drawable/date"/>
+
+        <com.kyle.mycar.View.ImgAndEtView
+            android:id="@+id/iae_mt_odometer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/oil_fragment_item_height"
+            app:drawableColor="@color/colorPurple"
+            app:hint="里程表(KM)"
+            app:iconLeft="@drawable/odometer"/>
+        <com.kyle.mycar.View.ImgAndEtView
+            android:id="@+id/iae_mt_money"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/oil_fragment_item_height"
+            app:drawableColor="@color/colorPurple"
+            app:hint="总费用"
+            app:iconLeft="@drawable/money"/>
+
+        <me.gujun.android.taggroup.TagGroup
+            android:id="@+id/tg_mt"
+            style="@style/TagGroup"
+            app:atg_checkedBorderColor="@color/colorRedDark"
+            app:atg_checkedMarkerColor="@color/colorRedDark"
+            app:atg_checkedTextColor="@color/colorRedDark"
+            app:atg_checkedBackgroundColor="@color/colorRedDark"
+            />
+
+
+
+
+
+    </LinearLayout>
+</ScrollView>

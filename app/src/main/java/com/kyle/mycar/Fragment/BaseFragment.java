@@ -26,10 +26,6 @@ public abstract class BaseFragment extends Fragment {
         mActivity = getActivity();
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return initView();
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -37,8 +33,6 @@ public abstract class BaseFragment extends Fragment {
         initData();
     }
 
-    // 初始化布局, 必须由子类实现
-    public abstract View initView();
 
     // 初始化数据, 必须由子类实现
     public abstract void initData();

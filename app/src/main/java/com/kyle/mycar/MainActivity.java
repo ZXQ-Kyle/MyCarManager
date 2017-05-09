@@ -16,6 +16,7 @@ import android.view.Window;
 import com.github.clans.fab.FloatingActionMenu;
 import com.kyle.mycar.Fragment.BaseFragment;
 import com.kyle.mycar.Fragment.MainFragment;
+import com.kyle.mycar.Fragment.MaintenanceFragment;
 import com.kyle.mycar.Fragment.OilFragment;
 import java.util.HashMap;
 import butterknife.BindView;
@@ -154,20 +155,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 break;
             case R.id.fab_2:
+                MaintenanceFragment mtFragment = new MaintenanceFragment();
+                getSupportFragmentManager().beginTransaction().add(R.id.fl_content, mtFragment)
+                            .hide(mCurrentFragment).commit();
+                mCurrentFragment=mtFragment;
+                mToolbar.setTitle(R.string.maintenance);
+                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPurple));
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    Window window = getWindow();
+                    window.setStatusBarColor(getResources().getColor(R.color.colorPurpleDark));
+                    window.setNavigationBarColor(getResources().getColor(R.color.colorPurpleDark));
+                }
                 break;
             case R.id.fab_3:
 
                 break;
         }
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-//        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                getSupportFragmentManager().beginTransaction().show(mFragment.get(MAINFRAGMENT)).commit();
-//                mToolbar.setTitle(R.string.history);
-//            }
-//        });
 
         fabMenu.close(true);
         fabMenu.setVisibility(View.GONE);

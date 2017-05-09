@@ -4,6 +4,8 @@
         <attr name="drawableColor" format="color|reference"/>
         <attr name="iconLeft" format="reference"/>
         <attr name="hint" format="string"/>
+        <attr name="text" format="string"/>
+        <attr name="unEditable" format="boolean"/>
 
     </declare-styleable>
 </resources>

@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <com.kyle.mycar.View.ImgAndEtView
             android:id="@+id/iae_mt_date"
             android:layout_width="match_parent"
@@ -25,6 +26,7 @@
             app:drawableColor="@color/colorPurple"
             app:hint="里程表(KM)"
             app:iconLeft="@drawable/odometer"/>
+
         <com.kyle.mycar.View.ImgAndEtView
             android:id="@+id/iae_mt_money"
             android:layout_width="match_parent"
@@ -33,9 +35,27 @@
             app:hint="总费用"
             app:iconLeft="@drawable/money"/>
 
+        <TextView
+            android:paddingLeft="24dp"
+            android:text="@string/tag_mt_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+        <com.jackuhan.flowlayouttags.FlowlayoutTags
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:id="@+id/tags_mt"
+            style="@style/FlowlayoutTags.Beauty_Red2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:tag_horizontalPadding="15dp"
+            app:tag_radius="30dp">
+        </com.jackuhan.flowlayouttags.FlowlayoutTags>
 
-
-
+        <Button
+            android:shadowColor="@color/colorCyanDark"
+            android:textColor="@color/colorPurple"
+            style="@style/btn_confirm"
+            android:id="@+id/btn_confirm"/>
 
 
     </LinearLayout>

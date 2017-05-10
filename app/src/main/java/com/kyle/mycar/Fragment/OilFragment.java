@@ -56,8 +56,8 @@ public class OilFragment extends BaseFragment {
     EditText etOilQuantity;
     @BindView(R.id.iae_note)
     ImgAndEtView iaeNote;
-    @BindView(R.id.btn_oil)
-    Button btnOil;
+    @BindView(R.id.btn_confirm)
+    Button btnConfirm;
     @BindView(R.id.cb_oil_is_full)
     CheckBox cbOilIsFull;
     @BindView(R.id.cb_oil_forget_last)
@@ -149,13 +149,13 @@ public class OilFragment extends BaseFragment {
 
 
     //视图点击事件
-    @OnClick({R.id.iae_date, R.id.btn_oil})
+    @OnClick({R.id.iae_date, R.id.btn_confirm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iae_date:
                 showDatePicker();
                 break;
-            case R.id.btn_oil:
+            case R.id.btn_confirm:
                 saveData();
                 break;
         }

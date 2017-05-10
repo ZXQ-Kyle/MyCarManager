@@ -153,14 +153,9 @@
             app:iconLeft="@drawable/note"/>
 
         <Button
-            android:id="@+id/btn_oil"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:layout_marginRight="24dp"
-            android:background="@android:color/transparent"
+            android:id="@+id/btn_confirm"
+            style="@style/btn_confirm"
             android:elevation="10dp"
-            android:text="@string/confirm"
             android:textColor="@color/colorCyan"/>
 
     </LinearLayout>

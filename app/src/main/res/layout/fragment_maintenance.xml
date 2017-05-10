@@ -33,14 +33,6 @@
             app:hint="总费用"
             app:iconLeft="@drawable/money"/>
 
-        <me.gujun.android.taggroup.TagGroup
-            android:id="@+id/tg_mt"
-            style="@style/TagGroup"
-            app:atg_checkedBorderColor="@color/colorRedDark"
-            app:atg_checkedMarkerColor="@color/colorRedDark"
-            app:atg_checkedTextColor="@color/colorRedDark"
-            app:atg_checkedBackgroundColor="@color/colorRedDark"
-            />
 
 
 

@@ -3,11 +3,9 @@ package com.kyle.mycar.Fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 import com.kyle.mycar.R;
 import com.kyle.mycar.View.ImgAndEtView;
 import java.text.SimpleDateFormat;
@@ -15,7 +13,6 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import me.gujun.android.taggroup.TagGroup;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,8 +26,6 @@ public class MaintenanceFragment extends BaseFragment {
     ImgAndEtView iaeMtOdometer;
     @BindView(R.id.iae_mt_money)
     ImgAndEtView iaeMtMoney;
-    @BindView(R.id.tg_mt)
-    TagGroup tgMt;
     Unbinder unbinder;
     private String mDate;
 
@@ -53,26 +48,6 @@ public class MaintenanceFragment extends BaseFragment {
         initTags();
 
         //初始化Tags
-        tgMt.setTags(new String[]{"机油", "机滤", "空滤", "刹车"});
-        tgMt.setOnTagClickListener(new TagGroup.OnTagClickListener() {
-            @Override
-            public void onTagClick(String tag) {
-
-                Toast.makeText(mActivity, tag, Toast.LENGTH_SHORT).show();
-                Log.i("aa", "onTagClick: " + tag);
-            }
-        });
-        tgMt.setOnTagChangeListener(new TagGroup.OnTagChangeListener() {
-            @Override
-            public void onAppend(TagGroup tagGroup, String tag) {
-                Log.i("aa", "onAppend: " + tagGroup.toString() + "---" + tag);
-            }
-
-            @Override
-            public void onDelete(TagGroup tagGroup, String tag) {
-                Log.i("aa", "onDelete: " + tagGroup.toString() + "---" + tag);
-            }
-        });
     }
 
     private void initTags() {
@@ -83,7 +58,6 @@ public class MaintenanceFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
-        tgMt.setTags("");
     }
 
 //    @Override

@@ -4,6 +4,7 @@ package com.kyle.mycar.Fragment;
 import android.app.TimePickerDialog;
 import android.icu.util.Calendar;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.util.TimeUtils;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
@@ -31,6 +32,12 @@ import butterknife.Unbinder;
  */
 public class DatePickerDialogFragment extends AppCompatDialogFragment {
 
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
+
+    private int mFlagDate;
+    private int mFlagTime;
+
     @BindView(R.id.date_picker_time)
     Button datePickerTime;
     @BindView(R.id.date_picker_cancel)
@@ -40,6 +47,15 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment {
     Unbinder unbinder;
     @BindView(R.id.date_picker)
     DatePicker datePicker;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mFlagDate = getArguments().getInt(ARG_PARAM1);
+            mFlagTime = getArguments().getInt(ARG_PARAM2);
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +69,21 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+    }
+
+    /**
+     * 获取日期选择对话框实例
+     * @param flagDate 返回日期的flag
+     * @param flagTime  返回时间的flag
+     * @return 获取日期选择对话框实例
+     */
+    public static DatePickerDialogFragment newInstance(int flagDate,int flagTime) {
+        DatePickerDialogFragment fragment = new DatePickerDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt(ARG_PARAM1, flagDate);
+        args.putInt(ARG_PARAM2, flagTime);
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @OnClick({R.id.date_picker_time, R.id.date_picker_cancel, R.id.date_picker_confirm})
@@ -80,7 +111,9 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment {
                         }else {
                             sb.append(minute);
                         }
-                        postMessage(sb.toString(),GlobalConstant.OILFRAGMENT_RETURN_TIME);
+                        if (mFlagTime!=0){
+                            postMessage(sb.toString(),mFlagTime);
+                        }
                     }
                 }
                 ,hour,minute,true);
@@ -115,7 +148,9 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment {
             sb.append(dayOfMonth);
         }
         sb.append("日");
-        postMessage(sb.toString(), GlobalConstant.OILFRAGMENT_RETURN_DATE);
+        if (mFlagDate!=0){
+            postMessage(sb.toString(),mFlagDate);
+        }
         dismiss();
     }
 

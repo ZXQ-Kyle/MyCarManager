@@ -9,7 +9,10 @@ import com.kyle.mycar.Fragment.OilFragment;
 
 public class GlobalConstant {
 
-    public static final int OILFRAGMENT_RETURN_DATE =1;
-    public static final int OILFRAGMENT_RETURN_TIME =10;
+    public static final int OIL_FRAGMENT_RETURN_DATE =1;
+    public static final int OIL_FRAGMENT_RETURN_TIME =2;
+
+    public static final int MT_FRAGMENT_RETURN_DATE =3;
+    public static final int MT_FRAGMENT_RETURN_TIME =4;
 
 }

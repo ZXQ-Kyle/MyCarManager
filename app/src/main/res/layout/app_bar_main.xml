@@ -63,7 +63,7 @@
             android:id="@+id/fab_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/odometer"
+            android:src="@drawable/money"
             app:fab_label="@string/expenses"
             app:fab_colorNormal="@color/colorAmber"
             app:fab_colorPressed="@color/colorAmberDark"

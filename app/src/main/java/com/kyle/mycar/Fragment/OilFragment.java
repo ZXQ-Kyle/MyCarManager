@@ -32,7 +32,6 @@ import butterknife.Unbinder;
  */
 public class OilFragment extends BaseFragment {
 
-    public static final String TAG = "OilFragment";
     Unbinder unbinder;
     @BindView(R.id.spinner_oil)
     AppCompatSpinner spinnerOil;
@@ -128,23 +127,23 @@ public class OilFragment extends BaseFragment {
 
 
     private void showDatePicker() {
-        DatePickerDialogFragment dialogFragment = new DatePickerDialogFragment();
-        dialogFragment.show(getFragmentManager(), "date");
+        DatePickerDialogFragment dialogFragment =
+                DatePickerDialogFragment.newInstance(GlobalConstant.OIL_FRAGMENT_RETURN_DATE,GlobalConstant.OIL_FRAGMENT_RETURN_TIME);
+        dialogFragment.show(getFragmentManager(), "oilDate");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getDateMessage(MessageEvent msg) {
 
         switch (msg.getFlag()) {
-            case GlobalConstant.OILFRAGMENT_RETURN_DATE:
+            case GlobalConstant.OIL_FRAGMENT_RETURN_DATE:
                 mDate = msg.getMsg() + mDate.substring(11);
                 break;
-            case GlobalConstant.OILFRAGMENT_RETURN_TIME:
+            case GlobalConstant.OIL_FRAGMENT_RETURN_TIME:
                 mDate = mDate.substring(0, 13) + msg.getMsg();
                 break;
         }
         iaeDate.setText(mDate);
-
     }
 
 

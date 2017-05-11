@@ -62,9 +62,9 @@
         <item name="tag_backgroundColor">@color/base_color_6</item>
         <item name="tag_checkedTextColor">@color/base_color_6</item>
         <item name="tag_checkedBackgroundColor">@color/base_color_0</item>
-        <item name="tag_pressedBackgroundColor">#EDEDED</item>
+        <!--<item name="tag_pressedBackgroundColor">#EDEDED</item>-->
         <item name="tag_radius">5dp</item>
-        <item name="tag_strokeColor">@drawable/gray_white_selector</item>
+        <!--<item name="tag_strokeColor">@drawable/gray_white_selector</item>-->
         <item name="tag_checkedStrokeColor">@color/base_color_0</item>
         <item name="tag_strokeWidth">1px</item>
         <!--这里设置固定大小,padding为0-->

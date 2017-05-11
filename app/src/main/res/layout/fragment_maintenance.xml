@@ -36,26 +36,33 @@
             app:iconLeft="@drawable/money"/>
 
         <TextView
-            android:paddingLeft="24dp"
-            android:text="@string/tag_mt_hint"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-        <com.jackuhan.flowlayouttags.FlowlayoutTags
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/edit"
+            android:drawableTint="@color/colorPurple"
             android:paddingLeft="24dp"
             android:paddingRight="24dp"
+            android:text="@string/tag_mt_hint"/>
+
+        <com.jackuhan.flowlayouttags.FlowlayoutTags
             android:id="@+id/tags_mt"
             style="@style/FlowlayoutTags.Beauty_Red2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
             app:tag_horizontalPadding="15dp"
-            app:tag_radius="30dp">
+            app:tag_radius="30dp"
+            app:tag_checkedStrokeColor="@color/colorPurple"
+            app:tag_checkedBackgroundColor="@color/colorPurple">
         </com.jackuhan.flowlayouttags.FlowlayoutTags>
 
+
         <Button
-            android:shadowColor="@color/colorCyanDark"
-            android:textColor="@color/colorPurple"
+            android:id="@+id/btn_confirm"
             style="@style/btn_confirm"
-            android:id="@+id/btn_confirm"/>
+            android:shadowColor="@color/colorCyanDark"
+            android:textColor="@color/colorPurple"/>
 
 
     </LinearLayout>

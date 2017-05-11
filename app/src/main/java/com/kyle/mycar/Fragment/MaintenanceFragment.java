@@ -9,8 +9,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.jackuhan.flowlayouttags.FlowlayoutTags;
+import com.kyle.mycar.Bean.MessageEvent;
+import com.kyle.mycar.MyUtils.GlobalConstant;
 import com.kyle.mycar.R;
 import com.kyle.mycar.View.ImgAndEtView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import butterknife.Unbinder;
 
 /**
@@ -44,6 +51,7 @@ public class MaintenanceFragment extends BaseFragment {
 //        EventBus.getDefault().register(this);
         View view = inflater.inflate(R.layout.fragment_maintenance, container, false);
         unbinder = ButterKnife.bind(this, view);
+        EventBus.getDefault().register(this);
         return view;
     }
 
@@ -55,9 +63,12 @@ public class MaintenanceFragment extends BaseFragment {
         mDate = sdf.format(date);
         iaeMtDate.setText(mDate);
 
+        iaeMtDate.setUnEditable();
+        iaeMtMoney.setInputTypeOfNumber();
+        iaeMtOdometer.setInputTypeOfNumber();
+
         //初始化Tags
         initTags();
-
 
     }
 
@@ -94,14 +105,10 @@ public class MaintenanceFragment extends BaseFragment {
                 Snackbar.make(getView(), "onTagClick:" + sb.toString(), Snackbar.LENGTH_LONG).show();
             }
         });
-//        list.add("haha");
-        tagsMt.appendTag("haha");
-//        tagsMt.
     }
 
     public void refreshCategorys(FlowlayoutTags flowlayoutTags, List<String> list) {
         flowlayoutTags.removeAllViews();
-
         flowlayoutTags.setTags(list);
         flowlayoutTags.setTagsUncheckedColorAnimal(false);
 
@@ -111,12 +118,34 @@ public class MaintenanceFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         unbinder.unbind();
+        EventBus.getDefault().unregister(this);
     }
 
-//    @Override
-//    public void onTagClick(String tag) {
-//        Toast.makeText(mActivity, tag, Toast.LENGTH_SHORT).show();
-//        Log.i("aa", "onTagClick: "+tag);
-//    }
 
+    @OnClick({R.id.iae_mt_date, R.id.btn_confirm})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.iae_mt_date:
+                DatePickerDialogFragment dialogFragment =
+                        DatePickerDialogFragment.newInstance(GlobalConstant.MT_FRAGMENT_RETURN_DATE
+                                ,GlobalConstant.MT_FRAGMENT_RETURN_TIME);
+                dialogFragment.show(getFragmentManager(), "mtDate");
+                break;
+            case R.id.btn_confirm:
+                break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void getDateMessage(MessageEvent msg) {
+        switch (msg.getFlag()) {
+            case GlobalConstant.MT_FRAGMENT_RETURN_DATE:
+                mDate = msg.getMsg() + mDate.substring(11);
+                break;
+            case GlobalConstant.MT_FRAGMENT_RETURN_TIME:
+                mDate = mDate.substring(0, 13) + msg.getMsg();
+                break;
+        }
+        iaeMtDate.setText(mDate);
+    }
 }

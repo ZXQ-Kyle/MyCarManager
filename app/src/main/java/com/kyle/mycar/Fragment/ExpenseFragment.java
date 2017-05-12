@@ -31,7 +31,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MaintenanceFragment extends BaseFragment {
+public class ExpenseFragment extends BaseFragment {
 
 
     @BindView(R.id.iae_mt_date)
@@ -48,7 +48,8 @@ public class MaintenanceFragment extends BaseFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_maintenance, container, false);
+//        EventBus.getDefault().register(this);
+        View view = inflater.inflate(R.layout.fragment_expense, container, false);
         unbinder = ButterKnife.bind(this, view);
         EventBus.getDefault().register(this);
         return view;
@@ -56,7 +57,6 @@ public class MaintenanceFragment extends BaseFragment {
 
     @Override
     public void initData() {
-
         //设置日期默认为当前时间
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
         Date date = new Date(System.currentTimeMillis());
@@ -80,6 +80,7 @@ public class MaintenanceFragment extends BaseFragment {
         list.add(getString(R.string.hello_blank_fragment));
         list.add(getString(R.string.action_settings));
         list.add(getString(R.string.navigation_drawer_close));
+        list.add(getString(R.string.oil));
         list.add(getString(R.string.oil));
         refreshCategorys(tagsMt, list);
         tagsMt.setOnTagChangeListener(new FlowlayoutTags.OnTagChangeListener() {
@@ -127,8 +128,8 @@ public class MaintenanceFragment extends BaseFragment {
         switch (view.getId()) {
             case R.id.iae_mt_date:
                 DatePickerDialogFragment dialogFragment =
-                        DatePickerDialogFragment.newInstance(GlobalConstant.MT_FRAGMENT_RETURN_DATE
-                                ,GlobalConstant.MT_FRAGMENT_RETURN_TIME);
+                        DatePickerDialogFragment.newInstance(GlobalConstant.EX_FRAGMENT_RETURN_DATE
+                                ,GlobalConstant.EX_FRAGMENT_RETURN_TIME);
                 dialogFragment.show(getFragmentManager(), "mtDate");
                 break;
             case R.id.btn_confirm:
@@ -139,10 +140,10 @@ public class MaintenanceFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getDateMessage(MessageEvent msg) {
         switch (msg.getFlag()) {
-            case GlobalConstant.MT_FRAGMENT_RETURN_DATE:
+            case GlobalConstant.EX_FRAGMENT_RETURN_DATE:
                 mDate = msg.getMsg() + mDate.substring(11);
                 break;
-            case GlobalConstant.MT_FRAGMENT_RETURN_TIME:
+            case GlobalConstant.EX_FRAGMENT_RETURN_TIME:
                 mDate = mDate.substring(0, 13) + msg.getMsg();
                 break;
         }

@@ -1,0 +1,69 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            tools:context="com.kyle.mycar.Fragment.MaintenanceFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.kyle.mycar.View.ImgAndEtView
+            android:id="@+id/iae_mt_date"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/oil_fragment_item_height"
+            android:layout_marginTop="8dp"
+            app:drawableColor="@color/colorAmber"
+            app:iconLeft="@drawable/date"/>
+
+        <com.kyle.mycar.View.ImgAndEtView
+            android:id="@+id/iae_mt_odometer"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/oil_fragment_item_height"
+            app:drawableColor="@color/colorAmber"
+            app:hint="里程表(KM)"
+            app:iconLeft="@drawable/odometer"/>
+
+        <com.kyle.mycar.View.ImgAndEtView
+            android:id="@+id/iae_mt_money"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/oil_fragment_item_height"
+            app:drawableColor="@color/colorAmber"
+            app:hint="总费用"
+            app:iconLeft="@drawable/money"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/edit"
+            android:drawableTint="@color/colorAmber"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            android:text="@string/tag_mt_hint"/>
+
+        <com.jackuhan.flowlayouttags.FlowlayoutTags
+            android:id="@+id/tags_mt"
+            style="@style/FlowlayoutTags.Beauty_Red2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="24dp"
+            android:paddingRight="24dp"
+            app:tag_horizontalPadding="15dp"
+            app:tag_radius="30dp"
+            app:tag_checkedStrokeColor="@color/colorAmber"
+            app:tag_checkedBackgroundColor="@color/colorAmber">
+        </com.jackuhan.flowlayouttags.FlowlayoutTags>
+
+
+        <Button
+            android:id="@+id/btn_confirm"
+            style="@style/btn_confirm"
+            android:shadowColor="@color/colorCyanDark"
+            android:textColor="@color/colorAmber"/>
+
+
+    </LinearLayout>
+</ScrollView>

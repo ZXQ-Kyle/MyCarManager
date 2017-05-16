@@ -3,12 +3,14 @@ package com.kyle.mycar;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.ArrayMap;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -18,17 +20,23 @@ import com.kyle.mycar.Fragment.ExpenseFragment;
 import com.kyle.mycar.Fragment.MainFragment;
 import com.kyle.mycar.Fragment.MaintenanceFragment;
 import com.kyle.mycar.Fragment.OilFragment;
+import com.kyle.mycar.MyUtils.GlobalConstant;
+import com.kyle.mycar.MyUtils.SpUtils;
+import com.kyle.mycar.db.Dao.MtTagDao;
+import com.kyle.mycar.db.Dao.OilTypeDao;
+import com.kyle.mycar.db.DbOpenHelper;
+import com.kyle.mycar.db.Table.MtTag;
+import com.kyle.mycar.db.Table.OilType;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String MAINFRAGMENT = "MainFragment";
     private static final String OILFRAGMENT = "OilFragment";
+    private static final String MTFRAGMENT = "MtFragment";
     @BindView(R.id.fab_menu)
     FloatingActionMenu fabMenu;
 
@@ -44,6 +52,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initData();
         initView();
+        initDb();
+    }
+
+    private void initDb() {
+        if (!SpUtils.getboolean(this, GlobalConstant.First_IN)){
+            OilTypeDao typeDao = OilTypeDao.getInstance(this);
+            String[] strings = getResources().getStringArray(R.array.spinner_oil);
+            for (int i = 0; i < strings.length; i++) {
+                int add = typeDao.add(new OilType(strings[i]));
+            }
+
+            MtTagDao tagDao = MtTagDao.getInstance(this);
+            tagDao.add(new MtTag("小保养"));
+            tagDao.add(new MtTag("机油"));
+            tagDao.add(new MtTag("刹车"));
+            tagDao.add(new MtTag("大保养"));
+
+
+
+            SpUtils.putboolean(this,GlobalConstant.First_IN,true);
+        }
+
     }
 
 
@@ -68,7 +98,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mFragmentBackList=new ArrayList();
         }
         mFragmentBackList.add(fragment);
-        getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment, MAINFRAGMENT).commit();
+//        getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment, MAINFRAGMENT)
+//                .commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fl_content,fragment,null)
+                .commit();
         getSupportActionBar().setTitle(R.string.history);
     }
     @Override
@@ -108,13 +142,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         BaseFragment fragment =null;
         if (id == R.id.nav_history) {
-            if ((fragment =mFragmentBackList.get(0))!=null){
-                getSupportFragmentManager().beginTransaction()
-                        .show(fragment)
-
-                        .commit();
+//            if ((fragment =mFragmentBackList.get(0))!=null){
+//                getSupportFragmentManager().beginTransaction()
+//                        .show(fragment)
+//
+//                        .commit();
+            getSupportFragmentManager().popBackStackImmediate();
                 mToolbar.setTitle(R.string.history);
-            }
+//            }
 
         } else if (id == R.id.nav_statistics) {
             mToolbar.setTitle(R.string.statistics);
@@ -140,8 +175,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (view.getId()) {
             case R.id.fab_1:
                 OilFragment fragment = new OilFragment();
-                getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment, OILFRAGMENT).hide
-                        (mFragmentBackList.get(0)).commit();
+//                getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment, OILFRAGMENT).hide
+//                        (mFragmentBackList.get(0)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fl_content,fragment,OILFRAGMENT)
+                        .addToBackStack(OILFRAGMENT).commit();
                 mToolbar.setTitle(R.string.oil);
                 mToolbar.setBackgroundColor(getResources().getColor(R.color.colorCyan));
 
@@ -154,8 +191,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.fab_2:
                 MaintenanceFragment mtFragment = new MaintenanceFragment();
-                getSupportFragmentManager().beginTransaction().add(R.id.fl_content, mtFragment)
-                            .hide(mFragmentBackList.get(0)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, mtFragment)
+                            .addToBackStack(MTFRAGMENT).commit();
                 mToolbar.setTitle(R.string.maintenance);
                 mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPurple));
 
@@ -167,8 +204,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 break;
             case R.id.fab_3:
                 ExpenseFragment exFragment = new ExpenseFragment();
-                getSupportFragmentManager().beginTransaction().add(R.id.fl_content, exFragment)
-                        .hide(mFragmentBackList.get(0)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, exFragment)
+                        .addToBackStack(null).commit();
                 mToolbar.setTitle(R.string.expense);
                 mToolbar.setBackgroundColor(getResources().getColor(R.color.colorAmber));
 

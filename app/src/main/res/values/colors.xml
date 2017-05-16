@@ -3,13 +3,10 @@
     <color name="colorPrimary">#8BC34A</color>
     <color name="colorPrimaryDark">#558B2F</color>
     <color name="colorAccent">#FF6D00</color>
-    <color name="brown">#6D4C41</color>
     <color name="colorCyan">#00BCD4</color>
     <color name="colorCyanDark">#00838F</color>
     <color name="colorPurple">#CE93D8</color>
     <color name="colorPurpleDark">#BA68C8</color>
-    <color name="colorRed">#f44336</color>
-    <color name="colorRedDark">#c62828</color>
     <color name="colorAmber">#FFC107</color>
     <color name="colorAmberDark">#FF8F00</color>
 

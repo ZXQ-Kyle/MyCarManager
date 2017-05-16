@@ -22,4 +22,6 @@
     <string name="date_picker_time">时间</string>
     <string name="cancel">取消</string>
     <string name="tag_mt_hint">标记标签</string>
+    <string name="sucess">保存成功</string>
+    <string name="fail">保存失败</string>
 </resources>

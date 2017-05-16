@@ -53,7 +53,7 @@ public class SpUtils {
     /**
      * @param context
      * @param keyName
-     * @return
+     * @return defValue false
      */
     public static boolean getboolean(Context context, String keyName) {
         if (sp == null){

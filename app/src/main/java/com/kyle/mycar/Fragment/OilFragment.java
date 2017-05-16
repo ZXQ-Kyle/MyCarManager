@@ -1,10 +1,12 @@
 package com.kyle.mycar.Fragment;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatSpinner;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,16 +15,34 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+
+import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.misc.TransactionManager;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.MyUtils.GlobalConstant;
+import com.kyle.mycar.MyUtils.MyDateUtils;
+import com.kyle.mycar.MyUtils.SpUtils;
 import com.kyle.mycar.R;
 import com.kyle.mycar.View.ImgAndEtView;
+import com.kyle.mycar.db.Dao.OilDao;
+import com.kyle.mycar.db.Dao.OilTypeDao;
+import com.kyle.mycar.db.DbOpenHelper;
+import com.kyle.mycar.db.Table.Oil;
+import com.kyle.mycar.db.Table.OilType;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.IllegalFormatCodePointException;
+import java.util.List;
+import java.util.concurrent.Callable;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -32,6 +52,8 @@ import butterknife.Unbinder;
  */
 public class OilFragment extends BaseFragment {
 
+    private static final String OIL_PRICE = "oil_price";
+    private static final String OIL_TYPE = "oil_type";
     Unbinder unbinder;
     @BindView(R.id.spinner_oil)
     AppCompatSpinner spinnerOil;
@@ -81,11 +103,26 @@ public class OilFragment extends BaseFragment {
     @Override
     public void initData() {
         //spinner初始化
-        String[] stringArray = getResources().getStringArray(R.array.spinner_oil);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item,
-                stringArray);
+        OilTypeDao typeDao = OilTypeDao.getInstance(mActivity);
+        Log.i("---", "typeDao: "+typeDao.toString());
+        List<OilType> list = typeDao.queryAllButIsDelete("id", true);
+        ArrayList<String> spinnerStr = new ArrayList<>();
+        for (OilType type : list) {
+            spinnerStr.add(type.getOilType());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, spinnerStr);
         adapter.setDropDownViewResource(R.layout.item_spinner_select_dialog);
         spinnerOil.setAdapter(adapter);
+        //读取上次保存的汽油种类并设置
+        String oilType = SpUtils.getString(mActivity.getApplicationContext(), OIL_TYPE);
+        if (!TextUtils.isEmpty(oilType)){
+            spinnerOil.setSelection(spinnerStr.indexOf(oilType));
+        }
+        //读取上次保存的汽油价格
+        String price = SpUtils.getString(mActivity.getApplicationContext(), OIL_PRICE);
+        if (!TextUtils.isEmpty(oilType)){
+            etOilPrice.setText(price);
+        }
 
         //界面初始化
         iaeNote.setSingleLine();
@@ -127,8 +164,8 @@ public class OilFragment extends BaseFragment {
 
 
     private void showDatePicker() {
-        DatePickerDialogFragment dialogFragment =
-                DatePickerDialogFragment.newInstance(GlobalConstant.OIL_FRAGMENT_RETURN_DATE,GlobalConstant.OIL_FRAGMENT_RETURN_TIME);
+        DatePickerDialogFragment dialogFragment = DatePickerDialogFragment.newInstance(GlobalConstant
+                .OIL_FRAGMENT_RETURN_DATE, GlobalConstant.OIL_FRAGMENT_RETURN_TIME);
         dialogFragment.show(getFragmentManager(), "oilDate");
     }
 
@@ -161,14 +198,36 @@ public class OilFragment extends BaseFragment {
     }
 
     private void saveData() {
+        long date = MyDateUtils.strToLong(mDate);
         String OdometerText = iaeOdometer.getText();
-        String spinner = spinnerOil.getSelectedItem().toString();
+        String oilType = spinnerOil.getSelectedItem().toString();
         String oilMoney = etOilMoney.getText().toString();
         String oilPrice = etOilPrice.getText().toString();
         String oilQuantity = etOilQuantity.getText().toString();
-        boolean cbOilIsFullChecked = cbOilIsFull.isChecked();
-        boolean cbOilForgetLastChecked = cbOilForgetLast.isChecked();
+        boolean isFullChecked = cbOilIsFull.isChecked();
+        boolean isForgetLastChecked = cbOilForgetLast.isChecked();
         String noteText = iaeNote.getText();
+        //保存数据，下次进入自动读取
+        SpUtils.putSring(mActivity.getApplicationContext(),OIL_PRICE,oilPrice);
+        SpUtils.putSring(mActivity.getApplicationContext(),OIL_TYPE,oilType);
+
+        OilDao oilDao = OilDao.getInstance(mActivity);
+        Log.i("---", "oilDao: "+oilDao.toString());
+        final int add = oilDao.add(new Oil(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType,
+                isFullChecked, isForgetLastChecked));
+        Snackbar.make(getView(), getString(R.string.sucess), Snackbar.LENGTH_LONG).setAction(R.string.app_name, new
+                View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.i("---", "onClick: snackbar is clisked,add" + add);
+            }
+        }).show();
+
+        List<Oil> id = oilDao.queryAllButIsDelete("id", true);
+        for (Oil o : id) {
+            Log.i("---", "saveData: "+o.toString());
+        }
+        getFragmentManager().popBackStackImmediate();
 
     }
 }

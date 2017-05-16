@@ -8,20 +8,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.j256.ormlite.dao.BaseForeignCollection;
+import com.j256.ormlite.dao.EagerForeignCollection;
+import com.j256.ormlite.dao.ForeignCollection;
+import com.j256.ormlite.misc.TransactionManager;
 import com.jackuhan.flowlayouttags.FlowlayoutTags;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.MyUtils.GlobalConstant;
+import com.kyle.mycar.MyUtils.MyDateUtils;
 import com.kyle.mycar.R;
 import com.kyle.mycar.View.ImgAndEtView;
+import com.kyle.mycar.db.Dao.MtDao;
+import com.kyle.mycar.db.Dao.MtMapDao;
+import com.kyle.mycar.db.Dao.MtTagDao;
+import com.kyle.mycar.db.DbOpenHelper;
+import com.kyle.mycar.db.Table.Maintenance;
+import com.kyle.mycar.db.Table.MtMap;
+import com.kyle.mycar.db.Table.MtTag;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.logging.Logger;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -73,15 +88,16 @@ public class MaintenanceFragment extends BaseFragment {
     }
 
     private void initTags() {
-        ArrayList<String> list = new ArrayList<>();
-        list.add(getString(R.string.about));
-        list.add(getString(R.string.maintenance));
-        list.add(getString(R.string.confirm));
-        list.add(getString(R.string.hello_blank_fragment));
-        list.add(getString(R.string.action_settings));
-        list.add(getString(R.string.navigation_drawer_close));
-        list.add(getString(R.string.oil));
-        refreshCategorys(tagsMt, list);
+        ArrayList<String> tagList = new ArrayList<>();
+        MtTagDao tagDao = MtTagDao.getInstance(mActivity);
+        List<MtTag> list = tagDao.queryAllButIsDelete("id", true);
+        if (list!=null){
+            for (MtTag tag : list) {
+                tagList.add(tag.getTag());
+            }
+        }
+
+        refreshCategorys(tagsMt, tagList);
         tagsMt.setOnTagChangeListener(new FlowlayoutTags.OnTagChangeListener() {
             @Override
             public void onAppend(FlowlayoutTags flowlayoutTags, String tag) {
@@ -126,15 +142,54 @@ public class MaintenanceFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iae_mt_date:
-                DatePickerDialogFragment dialogFragment =
-                        DatePickerDialogFragment.newInstance(GlobalConstant.MT_FRAGMENT_RETURN_DATE
-                                ,GlobalConstant.MT_FRAGMENT_RETURN_TIME);
+                DatePickerDialogFragment dialogFragment = DatePickerDialogFragment.newInstance(GlobalConstant
+                        .MT_FRAGMENT_RETURN_DATE, GlobalConstant.MT_FRAGMENT_RETURN_TIME);
                 dialogFragment.show(getFragmentManager(), "mtDate");
                 break;
             case R.id.btn_confirm:
+                saveData();
+                getFragmentManager().popBackStackImmediate();
                 break;
         }
     }
+    //事务保存
+    private void transactionSave() {
+        long date = MyDateUtils.strToLong(mDate);
+        String money = iaeMtMoney.getText();
+        String odometer = iaeMtOdometer.getText();
+        String[] tagsText = tagsMt.getCheckedTagsText();
+        MtDao mtDao = MtDao.getInstance(mActivity);
+        MtMapDao mapDao = MtMapDao.getInstance(mActivity);
+
+        Maintenance mt = new Maintenance(date, money, odometer);
+        mtDao.add(mt);
+        for (int i = 0; i < tagsText.length; i++) {
+            mapDao.add(new MtMap(mt,tagsText[i]));
+        }
+    }
+
+    private void saveData() {
+        //事务保存
+        TransactionManager manager = new TransactionManager(DbOpenHelper.getInstance(mActivity).getConnectionSource());
+        Callable<Boolean> callable = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                transactionSave();
+                return true;
+            }
+        };
+
+        try {
+            manager.callInTransaction(callable);
+            Snackbar.make(getView(),getString(R.string.sucess),Snackbar.LENGTH_LONG).show();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Snackbar.make(getView(),getString(R.string.fail),Snackbar.LENGTH_LONG).show();
+        }
+
+    }
+
+
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getDateMessage(MessageEvent msg) {

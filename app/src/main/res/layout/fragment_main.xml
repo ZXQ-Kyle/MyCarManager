@@ -4,8 +4,9 @@
              android:layout_height="match_parent"
              android:background="#23255444"
              tools:context="com.kyle.mycar.Fragment.MainFragment">
-<ImageView
+<TextView
     android:src="@drawable/oilcan"
+    android:id="@+id/tv"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"/>
 

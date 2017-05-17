@@ -59,15 +59,15 @@
             app:fab_colorNormal="@color/colorPurple"
             app:fab_colorPressed="@color/colorPurpleDark"
             />
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/fab_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/money"
-            app:fab_label="@string/expense"
-            app:fab_colorNormal="@color/colorAmber"
-            app:fab_colorPressed="@color/colorAmberDark"
-            />
+        <!--<com.github.clans.fab.FloatingActionButton-->
+            <!--android:id="@+id/fab_3"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:src="@drawable/money"-->
+            <!--app:fab_label="@string/expense"-->
+            <!--app:fab_colorNormal="@color/colorAmber"-->
+            <!--app:fab_colorPressed="@color/colorAmberDark"-->
+            <!--/>-->
     </com.github.clans.fab.FloatingActionMenu>
 
 </RelativeLayout>

@@ -140,11 +140,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         BaseFragment fragment =null;
         if (id == R.id.nav_history) {
-//            if ((fragment =mFragmentBackList.get(0))!=null){
-//                getSupportFragmentManager().beginTransaction()
-//                        .show(fragment)
-//
-//                        .commit();
             getSupportFragmentManager().popBackStackImmediate();
                 mToolbar.setTitle(R.string.history);
 //            }
@@ -152,8 +147,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_statistics) {
             mToolbar.setTitle(R.string.statistics);
         } else if (id == R.id.nav_oil) {
-
-        } else if (id == R.id.nav_maintenance) {
 
         } else if (id == R.id.nav_expenses) {
 
@@ -168,13 +161,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     //  浮动按钮点击事件
-    @OnClick({R.id.fab_1, R.id.fab_2, R.id.fab_3})
+    @OnClick({R.id.fab_1, R.id.fab_2})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.fab_1:
                 OilFragment fragment = new OilFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fl_content,fragment,OILFRAGMENT)
-                        .addToBackStack(OILFRAGMENT).commit();
+                        .commit();
                 mToolbar.setTitle(R.string.oil);
                 mToolbar.setBackgroundColor(getResources().getColor(R.color.colorCyan));
 
@@ -188,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.fab_2:
                 MaintenanceFragment mtFragment = new MaintenanceFragment();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, mtFragment)
-                            .addToBackStack(MTFRAGMENT).commit();
+                            .commit();
                 mToolbar.setTitle(R.string.maintenance);
                 mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPurple));
 
@@ -198,19 +191,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     window.setNavigationBarColor(getResources().getColor(R.color.colorPurpleDark));
                 }
                 break;
-            case R.id.fab_3:
-//                ExpenseFragment exFragment = new ExpenseFragment();
-//                getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, exFragment)
-//                        .addToBackStack(null).commit();
-                mToolbar.setTitle(R.string.expense);
-                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorAmber));
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Window window = getWindow();
-                    window.setStatusBarColor(getResources().getColor(R.color.colorAmberDark));
-                    window.setNavigationBarColor(getResources().getColor(R.color.colorAmberDark));
-                }
-                break;
+//            case R.id.fab_3:
+////                ExpenseFragment exFragment = new ExpenseFragment();
+////                getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, exFragment)
+////                        .addToBackStack(null).commit();
+//                mToolbar.setTitle(R.string.expense);
+//                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorAmber));
+//
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//                    Window window = getWindow();
+//                    window.setStatusBarColor(getResources().getColor(R.color.colorAmberDark));
+//                    window.setNavigationBarColor(getResources().getColor(R.color.colorAmberDark));
+//                }
+//                break;
         }
 
         fabMenu.close(true);

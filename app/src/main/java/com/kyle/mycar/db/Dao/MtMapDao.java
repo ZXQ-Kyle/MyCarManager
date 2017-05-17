@@ -32,4 +32,6 @@ public class MtMapDao extends DaoUtils{
         return instance;
     }
 
+
+
 }

@@ -3,17 +3,21 @@ package com.kyle.mycar.Fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.kyle.mycar.Bean.ItemTagBean;
+import com.kyle.mycar.MyUtils.MyDateUtils;
 import com.kyle.mycar.R;
-import com.kyle.mycar.db.DbOpenHelper;
-import com.kyle.mycar.db.Table.Oil;
+import com.kyle.mycar.db.Dao.MtDao;
+import com.kyle.mycar.db.Dao.MtMapDao;
+import com.kyle.mycar.db.Table.Maintenance;
+import com.kyle.mycar.db.Table.MtMap;
+import com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView;
 
-import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,9 +28,9 @@ import butterknife.Unbinder;
  */
 public class MainFragment extends BaseFragment {
 
-    @BindView(R.id.tv)
-    TextView tv;
     Unbinder unbinder;
+    @BindView(R.id.recycler_view)
+    PullLoadMoreRecyclerView recyclerView;
 
     @Nullable
     @Override
@@ -40,11 +44,37 @@ public class MainFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        try {
-            tv.setText(DbOpenHelper.getInstance(mActivity).getDao(Oil.class).toString());
-        } catch (SQLException e) {
-            e.printStackTrace();
+        ArrayList<ItemTagBean> tagBeens = new ArrayList<>();
+        MtDao mtDao = MtDao.getInstance(mActivity);
+        List<Maintenance> mt = mtDao.queryAllButIsDelete("date", true);
+        MtMapDao mapDao = MtMapDao.getInstance(mActivity);
+        for (Maintenance m : mt) {
+            ItemTagBean bean = new ItemTagBean();
+            bean.setDate(MyDateUtils.longToStr(m.getDate()));
+            bean.setMoney(m.getMoney());
+            List<MtMap> list = mapDao.queryButIsDelete("mt_id", m.getId(), "id", true);
+            bean.setTags(list);
         }
+        recyclerView.setLinearLayout();
+        recyclerView.setAdapter(new RecyclerViewAdapter(tagBeens));
+        //显示下拉刷新
+//        recyclerView.setRefreshing(true);
+        //调用下拉刷新和加载更多
+
+//        recyclerView.setOnPullLoadMoreListener(new PullLoadMoreRecyclerView.PullLoadMoreListener() {
+//            @Override
+//            public void onRefresh() {
+//
+//            }
+//
+//            @Override
+//            public void onLoadMore() {
+//
+//            }
+//        });
+
+        //快速Top
+//        recyclerView.scrollToTop();
     }
 
     @Override
@@ -52,4 +82,6 @@ public class MainFragment extends BaseFragment {
         super.onDestroyView();
         unbinder.unbind();
     }
+
+
 }

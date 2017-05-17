@@ -193,6 +193,7 @@ public class OilFragment extends BaseFragment {
                 break;
             case R.id.btn_confirm:
                 saveData();
+                getFragmentManager().beginTransaction().remove(this);
                 break;
         }
     }
@@ -227,7 +228,6 @@ public class OilFragment extends BaseFragment {
         for (Oil o : id) {
             Log.i("---", "saveData: "+o.toString());
         }
-        getFragmentManager().popBackStackImmediate();
 
     }
 }

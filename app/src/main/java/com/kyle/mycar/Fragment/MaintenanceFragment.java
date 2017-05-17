@@ -136,7 +136,7 @@ public class MaintenanceFragment extends BaseFragment {
                 break;
             case R.id.btn_confirm:
                 saveData();
-                getFragmentManager().popBackStackImmediate();
+                getFragmentManager().beginTransaction().remove(this);
                 break;
         }
     }

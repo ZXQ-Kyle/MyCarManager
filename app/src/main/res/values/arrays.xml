@@ -7,10 +7,19 @@
         <item>其他</item>
     </string-array>
 
-    <string-array name="spinner">
-        <item>柴油</item>
-        <item>92号汽油</item>
-        <item>95号汽油</item>
+    <string-array name="tags">
+        <item>停车</item>
+        <item>洗车</item>
+        <item>高速</item>
+        <item>机油和机滤</item>
+        <item>空气滤芯</item>
+        <item>汽油滤芯</item>
+        <item>空调滤芯</item>
+        <item>轮胎</item>
+        <item>蓄电池</item>
+        <item>制动液</item>
+        <item>变速箱油</item>
+        <item>转向助力油</item>
         <item>其他</item>
     </string-array>
 

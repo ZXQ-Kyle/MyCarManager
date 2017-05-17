@@ -15,8 +15,5 @@ public class GlobalConstant {
     public static final int MT_FRAGMENT_RETURN_DATE =3;
     public static final int MT_FRAGMENT_RETURN_TIME =4;
 
-    public static final int EX_FRAGMENT_RETURN_DATE =5;
-    public static final int EX_FRAGMENT_RETURN_TIME =6;
-
     public static String First_IN = "first_in";
 }

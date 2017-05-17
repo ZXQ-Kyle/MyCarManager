@@ -45,12 +45,13 @@
             android:text="@string/tag_mt_hint"/>
 
         <com.jackuhan.flowlayouttags.FlowlayoutTags
+
             android:id="@+id/tags_mt"
             style="@style/FlowlayoutTags.Beauty_Red2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingLeft="24dp"
-            android:paddingRight="24dp"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="24dp"
             app:tag_horizontalPadding="15dp"
             app:tag_radius="30dp"
             app:tag_checkedStrokeColor="@color/colorPurple"

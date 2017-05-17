@@ -3,20 +3,16 @@ package com.kyle.mycar;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.util.ArrayMap;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import com.github.clans.fab.FloatingActionMenu;
 import com.kyle.mycar.Fragment.BaseFragment;
-import com.kyle.mycar.Fragment.ExpenseFragment;
 import com.kyle.mycar.Fragment.MainFragment;
 import com.kyle.mycar.Fragment.MaintenanceFragment;
 import com.kyle.mycar.Fragment.OilFragment;
@@ -24,7 +20,6 @@ import com.kyle.mycar.MyUtils.GlobalConstant;
 import com.kyle.mycar.MyUtils.SpUtils;
 import com.kyle.mycar.db.Dao.MtTagDao;
 import com.kyle.mycar.db.Dao.OilTypeDao;
-import com.kyle.mycar.db.DbOpenHelper;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.OilType;
 
@@ -52,7 +47,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initData();
         initView();
-        initDb();
+        new Thread(){
+            @Override
+            public void run() {
+                initDb();
+            }
+        }.start();
     }
 
     private void initDb() {
@@ -64,12 +64,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
 
             MtTagDao tagDao = MtTagDao.getInstance(this);
-            tagDao.add(new MtTag("小保养"));
-            tagDao.add(new MtTag("机油"));
-            tagDao.add(new MtTag("刹车"));
-            tagDao.add(new MtTag("大保养"));
-
-
+            String[] stringArray = getResources().getStringArray(R.array.tags);
+            for (int i = 0; i < stringArray.length; i++) {
+                tagDao.add(new MtTag(stringArray[i]));
+            }
 
             SpUtils.putboolean(this,GlobalConstant.First_IN,true);
         }
@@ -175,8 +173,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (view.getId()) {
             case R.id.fab_1:
                 OilFragment fragment = new OilFragment();
-//                getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment, OILFRAGMENT).hide
-//                        (mFragmentBackList.get(0)).commit();
                 getSupportFragmentManager().beginTransaction().replace(R.id.fl_content,fragment,OILFRAGMENT)
                         .addToBackStack(OILFRAGMENT).commit();
                 mToolbar.setTitle(R.string.oil);
@@ -203,9 +199,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 }
                 break;
             case R.id.fab_3:
-                ExpenseFragment exFragment = new ExpenseFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, exFragment)
-                        .addToBackStack(null).commit();
+//                ExpenseFragment exFragment = new ExpenseFragment();
+//                getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, exFragment)
+//                        .addToBackStack(null).commit();
                 mToolbar.setTitle(R.string.expense);
                 mToolbar.setBackgroundColor(getResources().getColor(R.color.colorAmber));
 

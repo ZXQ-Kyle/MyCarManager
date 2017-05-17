@@ -7,10 +7,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.j256.ormlite.dao.BaseForeignCollection;
-import com.j256.ormlite.dao.EagerForeignCollection;
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.misc.TransactionManager;
 import com.jackuhan.flowlayouttags.FlowlayoutTags;
 import com.kyle.mycar.Bean.MessageEvent;
@@ -25,19 +21,15 @@ import com.kyle.mycar.db.DbOpenHelper;
 import com.kyle.mycar.db.Table.Maintenance;
 import com.kyle.mycar.db.Table.MtMap;
 import com.kyle.mycar.db.Table.MtTag;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.logging.Logger;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -96,38 +88,34 @@ public class MaintenanceFragment extends BaseFragment {
                 tagList.add(tag.getTag());
             }
         }
-
         refreshCategorys(tagsMt, tagList);
-        tagsMt.setOnTagChangeListener(new FlowlayoutTags.OnTagChangeListener() {
-            @Override
-            public void onAppend(FlowlayoutTags flowlayoutTags, String tag) {
-                Snackbar.make(getView(), "onAppend" + tag, Snackbar.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onDelete(FlowlayoutTags flowlayoutTags, String tag) {
-                Snackbar.make(getView(), "onDelete" + tag, Snackbar.LENGTH_LONG).show();
-            }
-        });
-        tagsMt.setOnTagClickListener(new FlowlayoutTags.OnTagClickListener() {
-            @Override
-            public void onTagClick(String tag) {
-
-                String[] strings = tagsMt.getCheckedTagsText();
-                StringBuilder sb = new StringBuilder();
-                for (int i = 0; i < strings.length; i++) {
-                    sb.append(strings[i]).append(",");
-                }
-                Snackbar.make(getView(), "onTagClick:" + sb.toString(), Snackbar.LENGTH_LONG).show();
-            }
-        });
+//        tagsMt.setOnTagChangeListener(new FlowlayoutTags.OnTagChangeListener() {
+//            @Override
+//            public void onAppend(FlowlayoutTags flowlayoutTags, String tag) {
+//                Snackbar.make(getView(), "onAppend" + tag, Snackbar.LENGTH_LONG).show();
+//            }
+//
+//            @Override
+//            public void onDelete(FlowlayoutTags flowlayoutTags, String tag) {
+//                Snackbar.make(getView(), "onDelete" + tag, Snackbar.LENGTH_LONG).show();
+//            }
+//        });
+//        tagsMt.setOnTagClickListener(new FlowlayoutTags.OnTagClickListener() {
+//            @Override
+//            public void onTagClick(String tag) {
+//                String[] strings = tagsMt.getCheckedTagsText();
+//                StringBuilder sb = new StringBuilder();
+//                for (int i = 0; i < strings.length; i++) {
+//                    sb.append(strings[i]).append(",");
+//                }
+//            }
+//        });
     }
 
     public void refreshCategorys(FlowlayoutTags flowlayoutTags, List<String> list) {
         flowlayoutTags.removeAllViews();
         flowlayoutTags.setTags(list);
         flowlayoutTags.setTagsUncheckedColorAnimal(false);
-
     }
 
     @Override

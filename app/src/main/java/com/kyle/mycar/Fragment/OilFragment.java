@@ -16,9 +16,9 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import com.j256.ormlite.dao.Dao;
-import com.j256.ormlite.misc.TransactionManager;
 import com.kyle.mycar.Bean.MessageEvent;
+import com.kyle.mycar.Bean.MsgMainFragment;
+import com.kyle.mycar.MainActivity;
 import com.kyle.mycar.MyUtils.GlobalConstant;
 import com.kyle.mycar.MyUtils.MyDateUtils;
 import com.kyle.mycar.MyUtils.SpUtils;
@@ -26,7 +26,6 @@ import com.kyle.mycar.R;
 import com.kyle.mycar.View.ImgAndEtView;
 import com.kyle.mycar.db.Dao.OilDao;
 import com.kyle.mycar.db.Dao.OilTypeDao;
-import com.kyle.mycar.db.DbOpenHelper;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
 
@@ -35,13 +34,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.IllegalFormatCodePointException;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -193,7 +189,10 @@ public class OilFragment extends BaseFragment {
                 break;
             case R.id.btn_confirm:
                 saveData();
-                getFragmentManager().beginTransaction().remove(this);
+                getFragmentManager().beginTransaction().remove(this).
+                        show(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAGMENT))
+                        .commit();
+                EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_DATA));
                 break;
         }
     }
@@ -213,21 +212,8 @@ public class OilFragment extends BaseFragment {
         SpUtils.putSring(mActivity.getApplicationContext(),OIL_TYPE,oilType);
 
         OilDao oilDao = OilDao.getInstance(mActivity);
-        Log.i("---", "oilDao: "+oilDao.toString());
         final int add = oilDao.add(new Oil(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType,
                 isFullChecked, isForgetLastChecked));
-        Snackbar.make(getView(), getString(R.string.sucess), Snackbar.LENGTH_LONG).setAction(R.string.app_name, new
-                View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.i("---", "onClick: snackbar is clisked,add" + add);
-            }
-        }).show();
-
-        List<Oil> id = oilDao.queryAllButIsDelete("id", true);
-        for (Oil o : id) {
-            Log.i("---", "saveData: "+o.toString());
-        }
-
+        Snackbar.make(getView(), getString(R.string.sucess), Snackbar.LENGTH_SHORT).show();
     }
 }

@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,6 +27,10 @@ public abstract class BaseFragment extends Fragment {
         mActivity = getActivity();
     }
 
+    @Override
+    public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
+        return super.onCreateAnimation(transit, enter, nextAnim);
+    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {

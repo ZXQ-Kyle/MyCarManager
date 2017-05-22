@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import com.j256.ormlite.misc.TransactionManager;
 import com.jackuhan.flowlayouttags.FlowlayoutTags;
 import com.kyle.mycar.Bean.MessageEvent;
+import com.kyle.mycar.Bean.MsgMainFragment;
+import com.kyle.mycar.MainActivity;
 import com.kyle.mycar.MyUtils.GlobalConstant;
 import com.kyle.mycar.MyUtils.MyDateUtils;
 import com.kyle.mycar.R;
@@ -136,7 +138,10 @@ public class MaintenanceFragment extends BaseFragment {
                 break;
             case R.id.btn_confirm:
                 saveData();
-                getFragmentManager().beginTransaction().remove(this);
+                getFragmentManager().beginTransaction().remove(this).
+                        show(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAGMENT))
+                        .commit();
+                EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_DATA));
                 break;
         }
     }
@@ -169,10 +174,10 @@ public class MaintenanceFragment extends BaseFragment {
 
         try {
             manager.callInTransaction(callable);
-            Snackbar.make(getView(),getString(R.string.sucess),Snackbar.LENGTH_LONG).show();
+            Snackbar.make(getView(),getString(R.string.sucess),Snackbar.LENGTH_SHORT).show();
         } catch (SQLException e) {
             e.printStackTrace();
-            Snackbar.make(getView(),getString(R.string.fail),Snackbar.LENGTH_LONG).show();
+            Snackbar.make(getView(),getString(R.string.fail),Snackbar.LENGTH_SHORT).show();
         }
 
     }

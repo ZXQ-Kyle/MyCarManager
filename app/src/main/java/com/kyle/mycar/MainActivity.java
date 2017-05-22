@@ -3,6 +3,8 @@ package com.kyle.mycar;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.util.ArrayMap;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -11,7 +13,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+
 import com.github.clans.fab.FloatingActionMenu;
+import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.Fragment.BaseFragment;
 import com.kyle.mycar.Fragment.MainFragment;
 import com.kyle.mycar.Fragment.MaintenanceFragment;
@@ -22,32 +29,40 @@ import com.kyle.mycar.db.Dao.MtTagDao;
 import com.kyle.mycar.db.Dao.OilTypeDao;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.OilType;
+import com.orhanobut.logger.Logger;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    private static final String OILFRAGMENT = "OilFragment";
-    private static final String MTFRAGMENT = "MtFragment";
+    public static final String OILFRAGMENT = "OilFragment";
+    public static final String MAIN_FRAGMENT = "MainFragment";
     @BindView(R.id.fab_menu)
     FloatingActionMenu fabMenu;
 
     private Toolbar mToolbar;
     private DrawerLayout drawer;
-    private ArrayList<BaseFragment> mFragmentBackList ;
+    public ArrayList<BaseFragment> mFrgBackList;
+    public ArrayMap<String,BaseFragment> mFrgMap = new ArrayMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
 
         initData();
         initView();
-        new Thread(){
+        new Thread() {
             @Override
             public void run() {
                 initDb();
@@ -56,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initDb() {
-        if (!SpUtils.getboolean(this, GlobalConstant.First_IN)){
+        if (!SpUtils.getboolean(this, GlobalConstant.First_IN)) {
             OilTypeDao typeDao = OilTypeDao.getInstance(this);
             String[] strings = getResources().getStringArray(R.array.spinner_oil);
             for (int i = 0; i < strings.length; i++) {
@@ -69,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 tagDao.add(new MtTag(stringArray[i]));
             }
 
-            SpUtils.putboolean(this,GlobalConstant.First_IN,true);
+            SpUtils.putboolean(this, GlobalConstant.First_IN, true);
         }
 
     }
@@ -90,25 +105,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initView() {
-
         MainFragment fragment = new MainFragment();
-        if (mFragmentBackList==null){
-            mFragmentBackList=new ArrayList();
+        if (mFrgBackList == null) {
+            mFrgBackList = new ArrayList();
         }
-        mFragmentBackList.add(fragment);
-//        getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment, MAINFRAGMENT)
-//                .commit();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fl_content,fragment,null)
-                .commit();
+        mFrgBackList.add(0,fragment);
+        Logger.d(mFrgBackList.size());
+        mFrgMap.put(MAIN_FRAGMENT,fragment);
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, fragment, MAIN_FRAGMENT).commit();
         getSupportActionBar().setTitle(R.string.history);
     }
+
     @Override
     public void onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            Logger.d(mFrgBackList.size());
+            if (mFrgBackList.size()>1){
+                getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).show(mFrgBackList.get(1))
+                        .remove(mFrgBackList.get(0)).commit();
+                mFrgBackList.remove(0);
+                getFabMenu();
+            }else {
+                super.onBackPressed();
+            }
         }
     }
 //
@@ -138,11 +159,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
 
         int id = item.getItemId();
-        BaseFragment fragment =null;
+        BaseFragment fragment = null;
         if (id == R.id.nav_history) {
-            getSupportFragmentManager().popBackStackImmediate();
-                mToolbar.setTitle(R.string.history);
-//            }
+            mToolbar.setTitle(R.string.history);
 
         } else if (id == R.id.nav_statistics) {
             mToolbar.setTitle(R.string.statistics);
@@ -166,30 +185,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         switch (view.getId()) {
             case R.id.fab_1:
                 OilFragment fragment = new OilFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fl_content,fragment,OILFRAGMENT)
-                        .commit();
-                mToolbar.setTitle(R.string.oil);
-                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorCyan));
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Window window = getWindow();
-                    window.setStatusBarColor(getResources().getColor(R.color.colorCyanDark));
-                    window.setNavigationBarColor(getResources().getColor(R.color.colorCyanDark));
-                }
+                getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .add(R.id.fl_content,fragment).hide
+                        (mFrgMap.get(MAIN_FRAGMENT)).commit();
+                mFrgBackList.add(0,fragment);
+                Logger.d(mFrgBackList.size());
+                setToolbarColor(R.string.oil, getResources().getColor(R.color.colorCyan), getResources().getColor(R
+                        .color.colorCyanDark));
 
                 break;
             case R.id.fab_2:
                 MaintenanceFragment mtFragment = new MaintenanceFragment();
-                getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, mtFragment)
-                            .commit();
-                mToolbar.setTitle(R.string.maintenance);
-                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPurple));
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    Window window = getWindow();
-                    window.setStatusBarColor(getResources().getColor(R.color.colorPurpleDark));
-                    window.setNavigationBarColor(getResources().getColor(R.color.colorPurpleDark));
-                }
+                getSupportFragmentManager().beginTransaction().add(R.id.fl_content,mtFragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).hide
+                        (mFrgMap.get(MAIN_FRAGMENT)).commit();
+                mFrgBackList.add(0,mtFragment);
+                setToolbarColor(R.string.maintenance, getResources().getColor(R.color.colorPurple), getResources()
+                        .getColor(R.color.colorPurpleDark));
                 break;
 //            case R.id.fab_3:
 ////                ExpenseFragment exFragment = new ExpenseFragment();
@@ -209,5 +221,40 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         fabMenu.close(true);
         fabMenu.setVisibility(View.GONE);
 
+    }
+
+    public void setToolbarColor(int toolbarString, int color, int color2) {
+        mToolbar.setTitle(toolbarString);
+        mToolbar.setBackgroundColor(color);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.setStatusBarColor(color2);
+            window.setNavigationBarColor(color2);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void msg(MsgMainFragment msg) {
+        if (msg.getFlag()==MsgMainFragment.UPDATE_DATA){
+            getFabMenu();
+            mFrgBackList.remove(0);
+        }
+    }
+
+
+    public void getFabMenu() {
+        AlphaAnimation animation =new AlphaAnimation(0,1);
+        animation.setDuration(1000);
+        fabMenu.setVisibility(View.VISIBLE);
+        fabMenu.startAnimation(animation);
+        setToolbarColor(R.string.history, getResources().getColor(R.color.colorPrimary), getResources().getColor(R
+                .color.colorPrimaryDark));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

@@ -39,9 +39,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
         List<MtMap> tags = bean.getTags();
         if (tags!=null && tags.size()>0){
             for (int i = 0; i < tags.size(); i++) {
-                sb.append(tags.get(i));
+                sb.append(tags.get(i).getTag());
                 if (i<tags.size()-1){
-                    sb.append(",");
+                    sb.append("，");
                 }
             }
         }

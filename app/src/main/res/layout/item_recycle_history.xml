@@ -3,18 +3,25 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="10dp"
+    app:cardElevation="5dp"
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginTop="8dp"
+    >
 
     <RelativeLayout
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingTop="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp">
 
         <TextView
+            android:textSize="18sp"
             android:id="@+id/it_tv_history_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,6 +29,7 @@
 
 
         <TextView
+            android:textSize="18sp"
             android:id="@+id/it_tv_history_money"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,11 +37,12 @@
             android:text="2500.00"/>
 
         <TextView
-            android:layout_marginTop="8dp"
-            android:layout_below="@id/it_tv_history_date"
+            android:textSize="16sp"
             android:id="@+id/it_tv_history_tags"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_below="@id/it_tv_history_date"
+            android:layout_marginTop="6dp"/>
 
     </RelativeLayout>
 

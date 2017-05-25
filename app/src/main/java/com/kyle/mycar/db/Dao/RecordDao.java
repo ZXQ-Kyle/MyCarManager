@@ -3,33 +3,30 @@ package com.kyle.mycar.db.Dao;
 import android.content.Context;
 import android.util.Log;
 
-import com.j256.ormlite.dao.Dao;
-import com.kyle.mycar.db.DbOpenHelper;
 import com.kyle.mycar.db.Table.Oil;
-import java.sql.SQLException;
 
 /**
  *
  * Created by Zhang on 2017/5/15.
  */
 
-public class OilDao extends DaoUtils{
+public class RecordDao extends DaoUtils{
 
 
-    private static OilDao instance;
+    private static RecordDao instance;
 
-    private OilDao(Context context,Class clazz) {
+    private RecordDao(Context context, Class clazz) {
         super(context,clazz);
     }
 
 
 
-    public static synchronized OilDao getInstance(Context context) {
+    public static synchronized RecordDao getInstance(Context context) {
         if (instance == null) {
             context = context.getApplicationContext();
-            synchronized (OilDao.class) {
+            synchronized (RecordDao.class) {
                 if (instance == null) {
-                    instance=new OilDao(context, Oil.class);
+                    instance=new RecordDao(context, Oil.class);
                 }
             }
         }

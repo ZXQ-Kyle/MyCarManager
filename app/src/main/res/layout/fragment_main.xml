@@ -4,10 +4,7 @@
              android:layout_height="match_parent"
              android:background="#23255444"
              tools:context="com.kyle.mycar.Fragment.MainFragment">
-<!--<com.wuxiaolong.pullloadmorerecyclerview.PullLoadMoreRecyclerView-->
-    <!--android:id="@+id/recycler_view"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"/>-->
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"

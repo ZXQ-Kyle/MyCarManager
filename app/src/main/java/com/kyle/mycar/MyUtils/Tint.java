@@ -16,5 +16,10 @@ public class Tint {
         DrawableCompat.setTintList(wrappedDrawable, colors);
         return wrappedDrawable;
     }
+    public static Drawable tintDrawable(Drawable drawable, int color) {
+        final Drawable wrappedDrawable = DrawableCompat.wrap(drawable);
+        DrawableCompat.setTint(wrappedDrawable, color);
+        return wrappedDrawable;
+    }
 
 }

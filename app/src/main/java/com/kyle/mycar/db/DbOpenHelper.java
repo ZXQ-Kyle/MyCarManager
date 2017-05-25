@@ -12,6 +12,7 @@ import com.kyle.mycar.db.Table.MtMap;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
+import com.kyle.mycar.db.Table.Record;
 
 import java.sql.SQLException;
 
@@ -37,6 +38,7 @@ public class DbOpenHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, OilType.class);
             TableUtils.createTable(connectionSource, Oil.class);
             TableUtils.createTable(connectionSource, MtMap.class);
+            TableUtils.createTable(connectionSource, Record.class);
 
         } catch (SQLException e) {
             e.printStackTrace();

@@ -43,7 +43,7 @@ public class Oil {
     @DatabaseField
     private String reserve2;
     @DatabaseField
-    private String reserve3;
+    private String fuelC;
 
     public Oil() {
     }
@@ -156,12 +156,12 @@ public class Oil {
         this.reserve2 = reserve2;
     }
 
-    public String getReserve3() {
-        return reserve3;
+    public String getFuelC() {
+        return fuelC;
     }
 
-    public void setReserve3(String reserve3) {
-        this.reserve3 = reserve3;
+    public void setFuelC(String fuelC) {
+        this.fuelC = fuelC;
     }
 
     @Override

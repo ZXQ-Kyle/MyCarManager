@@ -11,7 +11,7 @@
     <string name="history">历史</string>
     <string name="statistics">统计</string>
     <string name="oil">加油</string>
-    <string name="maintenance">保养</string>
+    <string name="maintenance">开支</string>
     <string name="expense">开支</string>
     <string name="setting">设置</string>
     <string name="about">关于</string>
@@ -24,4 +24,7 @@
     <string name="tag_mt_hint">标记标签</string>
     <string name="sucess">保存成功</string>
     <string name="fail">保存失败</string>
+    <string name="add_oil">加油</string>
+    <string name="km">km</string>
+    <string name="RMB">¥&#160;</string>
 </resources>

@@ -14,8 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
 
 import com.github.clans.fab.FloatingActionMenu;
 import com.kyle.mycar.Bean.MsgMainFragment;
@@ -110,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mFrgBackList = new ArrayList();
         }
         mFrgBackList.add(0,fragment);
-        Logger.d(mFrgBackList.size());
         mFrgMap.put(MAIN_FRAGMENT,fragment);
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, fragment, MAIN_FRAGMENT).commit();
         getSupportActionBar().setTitle(R.string.history);
@@ -236,7 +233,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void msg(MsgMainFragment msg) {
-        if (msg.getFlag()==MsgMainFragment.UPDATE_DATA){
+        if (msg.getFlag()==MsgMainFragment.UPDATE_AN_NEW_ONE_DATA){
             getFabMenu();
             mFrgBackList.remove(0);
         }

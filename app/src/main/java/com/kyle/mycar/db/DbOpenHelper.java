@@ -8,7 +8,6 @@ import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 import com.kyle.mycar.db.Table.Maintenance;
-import com.kyle.mycar.db.Table.MtMap;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
@@ -37,7 +36,6 @@ public class DbOpenHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource,MtTag.class);
             TableUtils.createTable(connectionSource, OilType.class);
             TableUtils.createTable(connectionSource, Oil.class);
-            TableUtils.createTable(connectionSource, MtMap.class);
             TableUtils.createTable(connectionSource, Record.class);
 
         } catch (SQLException e) {

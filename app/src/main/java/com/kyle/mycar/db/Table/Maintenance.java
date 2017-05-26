@@ -1,13 +1,7 @@
 package com.kyle.mycar.db.Table;
 
-import com.j256.ormlite.dao.ForeignCollection;
 import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.ForeignCollectionField;
 import com.j256.ormlite.table.DatabaseTable;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  *
@@ -28,18 +22,20 @@ public class Maintenance {
     private boolean isDelete;
 
     @DatabaseField
-    private String reserve1;
+    private String tags;
     @DatabaseField
-    private String reserve2;
+    private String reserve;
 
     public Maintenance() {
 
     }
 
-    public Maintenance(long date, String money, String odometer) {
+
+    public Maintenance(long date, String money, String odometer,String tags) {
         this.date = date;
         this.money = money;
         this.odometer = odometer;
+        this.tags=tags;
     }
 
     public int getId() {
@@ -82,20 +78,20 @@ public class Maintenance {
         isDelete = delete;
     }
 
-    public String getReserve1() {
-        return reserve1;
+    public String getTags() {
+        return tags;
     }
 
-    public void setReserve1(String reserve1) {
-        this.reserve1 = reserve1;
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 
-    public String getReserve2() {
-        return reserve2;
+    public String getReserve() {
+        return reserve;
     }
 
-    public void setReserve2(String reserve2) {
-        this.reserve2 = reserve2;
+    public void setReserve(String reserve) {
+        this.reserve = reserve;
     }
 
     @Override

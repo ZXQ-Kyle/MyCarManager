@@ -16,6 +16,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.j256.ormlite.misc.TransactionManager;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.MainActivity;
@@ -26,18 +27,23 @@ import com.kyle.mycar.R;
 import com.kyle.mycar.View.ImgAndEtView;
 import com.kyle.mycar.db.Dao.OilDao;
 import com.kyle.mycar.db.Dao.OilTypeDao;
+import com.kyle.mycar.db.Dao.RecordDao;
+import com.kyle.mycar.db.DbOpenHelper;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
+import com.kyle.mycar.db.Table.Record;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.math.BigDecimal;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -188,16 +194,39 @@ public class OilFragment extends BaseFragment {
                 showDatePicker();
                 break;
             case R.id.btn_confirm:
-                saveData();
+                boolean isSucess = saveData();
                 getFragmentManager().beginTransaction().remove(this).
                         show(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAGMENT))
                         .commit();
-                EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_DATA));
+                if (isSucess){
+                    EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA));
+                }
                 break;
         }
     }
 
-    private void saveData() {
+    private boolean saveData() {
+        //事务保存
+        TransactionManager manager = new TransactionManager(DbOpenHelper.getInstance(mActivity).getConnectionSource());
+        Callable<Boolean> callable = new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                transactionSave();
+                return true;
+            }
+        };
+        try {
+            manager.callInTransaction(callable);
+            Snackbar.make(getView(),getString(R.string.sucess),Snackbar.LENGTH_SHORT).show();
+            return true;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            Snackbar.make(getView(),getString(R.string.fail),Snackbar.LENGTH_SHORT).show();
+            return false;
+        }
+    }
+
+    private void transactionSave() {
         long date = MyDateUtils.strToLong(mDate);
         String OdometerText = iaeOdometer.getText();
         String oilType = spinnerOil.getSelectedItem().toString();
@@ -212,8 +241,11 @@ public class OilFragment extends BaseFragment {
         SpUtils.putSring(mActivity.getApplicationContext(),OIL_TYPE,oilType);
 
         OilDao oilDao = OilDao.getInstance(mActivity);
-        final int add = oilDao.add(new Oil(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType,
-                isFullChecked, isForgetLastChecked));
-        Snackbar.make(getView(), getString(R.string.sucess), Snackbar.LENGTH_SHORT).show();
+        Oil oil = new Oil(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType, isFullChecked,
+                isForgetLastChecked);
+        int add = oilDao.add(oil);
+
+        RecordDao dao = RecordDao.getInstance(mActivity);
+        dao.add(new Record(oil,date));
     }
 }

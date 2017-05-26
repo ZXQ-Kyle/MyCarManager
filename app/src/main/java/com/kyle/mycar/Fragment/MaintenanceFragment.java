@@ -17,12 +17,12 @@ import com.kyle.mycar.MyUtils.MyDateUtils;
 import com.kyle.mycar.R;
 import com.kyle.mycar.View.ImgAndEtView;
 import com.kyle.mycar.db.Dao.MtDao;
-import com.kyle.mycar.db.Dao.MtMapDao;
 import com.kyle.mycar.db.Dao.MtTagDao;
+import com.kyle.mycar.db.Dao.RecordDao;
 import com.kyle.mycar.db.DbOpenHelper;
 import com.kyle.mycar.db.Table.Maintenance;
-import com.kyle.mycar.db.Table.MtMap;
 import com.kyle.mycar.db.Table.MtTag;
+import com.kyle.mycar.db.Table.Record;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -141,7 +141,7 @@ public class MaintenanceFragment extends BaseFragment {
                 getFragmentManager().beginTransaction().remove(this).
                         show(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAGMENT))
                         .commit();
-                EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_DATA));
+                EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA));
                 break;
         }
     }
@@ -151,14 +151,17 @@ public class MaintenanceFragment extends BaseFragment {
         String money = iaeMtMoney.getText();
         String odometer = iaeMtOdometer.getText();
         String[] tagsText = tagsMt.getCheckedTagsText();
-        MtDao mtDao = MtDao.getInstance(mActivity);
-        MtMapDao mapDao = MtMapDao.getInstance(mActivity);
-
-        Maintenance mt = new Maintenance(date, money, odometer);
-        mtDao.add(mt);
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < tagsText.length; i++) {
-            mapDao.add(new MtMap(mt,tagsText[i]));
+            sb.append(tagsText[i]);
+            if (i<tagsText.length-1){
+                sb.append(",");
+            }
         }
+        MtDao mtDao = MtDao.getInstance(mActivity);
+        Maintenance mt = new Maintenance(date, money, odometer,sb.toString());
+        mtDao.add(mt);
+        RecordDao.getInstance(mActivity).add(new Record(mt,date));
     }
 
     private void saveData() {
@@ -171,7 +174,6 @@ public class MaintenanceFragment extends BaseFragment {
                 return true;
             }
         };
-
         try {
             manager.callInTransaction(callable);
             Snackbar.make(getView(),getString(R.string.sucess),Snackbar.LENGTH_SHORT).show();
@@ -179,7 +181,6 @@ public class MaintenanceFragment extends BaseFragment {
             e.printStackTrace();
             Snackbar.make(getView(),getString(R.string.fail),Snackbar.LENGTH_SHORT).show();
         }
-
     }
 
 

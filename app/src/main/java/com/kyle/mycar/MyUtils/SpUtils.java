@@ -79,13 +79,13 @@ public class SpUtils {
     /**
      * @param context
      * @param keyName
-     * @return 无数据时默认返回2，现金账户
+     * @return 无数据时默认返回0
      */
     public static int getInt(Context context, String keyName) {
         if (sp == null){
             sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
         }
-        return sp.getInt(keyName,2);
+        return sp.getInt(keyName,0);
     }
 
 

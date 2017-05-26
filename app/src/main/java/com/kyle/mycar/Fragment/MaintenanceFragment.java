@@ -12,7 +12,7 @@ import com.jackuhan.flowlayouttags.FlowlayoutTags;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.MainActivity;
-import com.kyle.mycar.MyUtils.GlobalConstant;
+import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.MyUtils.MyDateUtils;
 import com.kyle.mycar.R;
 import com.kyle.mycar.View.ImgAndEtView;
@@ -132,8 +132,8 @@ public class MaintenanceFragment extends BaseFragment {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iae_mt_date:
-                DatePickerDialogFragment dialogFragment = DatePickerDialogFragment.newInstance(GlobalConstant
-                        .MT_FRAGMENT_RETURN_DATE, GlobalConstant.MT_FRAGMENT_RETURN_TIME);
+                DatePickerDialogFragment dialogFragment = DatePickerDialogFragment.newInstance(MyConstant
+                        .MT_FRAGMENT_RETURN_DATE, MyConstant.MT_FRAGMENT_RETURN_TIME);
                 dialogFragment.show(getFragmentManager(), "mtDate");
                 break;
             case R.id.btn_confirm:
@@ -188,10 +188,10 @@ public class MaintenanceFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getDateMessage(MessageEvent msg) {
         switch (msg.getFlag()) {
-            case GlobalConstant.MT_FRAGMENT_RETURN_DATE:
+            case MyConstant.MT_FRAGMENT_RETURN_DATE:
                 mDate = msg.getMsg() + mDate.substring(11);
                 break;
-            case GlobalConstant.MT_FRAGMENT_RETURN_TIME:
+            case MyConstant.MT_FRAGMENT_RETURN_TIME:
                 mDate = mDate.substring(0, 13) + msg.getMsg();
                 break;
         }

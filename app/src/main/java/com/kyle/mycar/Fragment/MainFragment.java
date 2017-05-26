@@ -3,6 +3,7 @@ package com.kyle.mycar.Fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,10 +13,15 @@ import android.view.ViewGroup;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.R;
+import com.kyle.mycar.db.Dao.MtDao;
+import com.kyle.mycar.db.Dao.MtTagDao;
+import com.kyle.mycar.db.Dao.OilDao;
+import com.kyle.mycar.db.Dao.OilTypeDao;
 import com.kyle.mycar.db.Dao.RecordDao;
+import com.kyle.mycar.db.Table.Maintenance;
+import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.Record;
 import com.orhanobut.logger.Logger;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -28,7 +34,7 @@ import butterknife.Unbinder;
  *
  */
 public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter
-        .OnItemClickListener, BaseQuickAdapter.RequestLoadMoreListener {
+        .OnItemClickListener, BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemChildClickListener {
 
     Unbinder unbinder;
     @BindView(R.id.recycler_view)
@@ -62,8 +68,24 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         mAdapter.setOnItemClickListener(this);
         mAdapter.disableLoadMoreIfNotFullPage(recyclerView);
         mAdapter.setOnLoadMoreListener(this,recyclerView);
-
+        mAdapter.setOnItemChildClickListener(this);
         getData(pageCount, MsgMainFragment.SET_ADAPTER);
+
+        new Thread(){
+            @Override
+            public void run() {
+                List list = MtDao.getInstance(mActivity).queryAll();
+                List list1 = MtTagDao.getInstance(mActivity).queryAll();
+                List list2 = OilDao.getInstance(mActivity).queryAll();
+                List list3 = OilTypeDao.getInstance(mActivity).queryAll();
+                List list4 = RecordDao.getInstance(mActivity).queryAll();
+                Logger.d(list);
+                Logger.d(list1);
+                Logger.d(list2);
+                Logger.d(list3);
+                Logger.d(list4);
+            }
+        }.start();
     }
 
     private void getData(final long off, final int what) {
@@ -83,6 +105,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     }
                 }else {
                     List<Record> beanList = dao.queryOffestLimit(count-maxLine, PAGE_SIZE);
+                    Logger.d(beanList);
                     EventBus.getDefault().post(new MsgMainFragment(what,beanList));
                 }
                 try {
@@ -147,12 +170,48 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     // mAdapter.setOnItemClickListener(this);
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-
+        Record record = mAdapter.getData().get(position);
+        record.isVisible=!record.isVisible;
+        mAdapter.notifyItemChanged(position);
     }
     // mAdapter.setOnLoadMoreListener(this,recyclerView);
     @Override
     public void onLoadMoreRequested() {
         pageCount++;
         getData(pageCount, MsgMainFragment.LOAD_MORE);
+    }
+    //mAdapter.setOnItemChildClickListener(this);
+    @Override
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
+        switch (view.getId()) {
+            //删除单条记录
+            case R.id.it_iv_delete:
+                RecordDao dao = RecordDao.getInstance(mActivity);
+                Record record = mAdapter.getData().get(position);
+                switch (record.getItemType()) {
+                    case Record.FLAG_MT:
+                        Maintenance mt = record.getMt();
+                        mt.setDelete(true);
+                        MtDao.getInstance(mActivity).updete(mt);
+                        break;
+                    case Record.FLAG_OIL:
+                        Oil oil = record.getOil();
+                        oil.setDelete(true);
+                        OilDao.getInstance(mActivity).updete(oil);
+                        break;
+                }
+                record.setDelete(true);
+                dao.updete(record);
+                mAdapter.getData().remove(position);
+                if (mAdapter.getData().size()==0){
+                    mAdapter.setNewData(null);
+                }else {
+                    mAdapter.notifyItemRemoved(position);
+                }
+                Snackbar.make(getView(),R.string.delete_sucess,Snackbar.LENGTH_LONG).show();
+                break;
+            case R.id.it_iv_update:
+                break;
+                   }
     }
 }

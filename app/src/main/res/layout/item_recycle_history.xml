@@ -1,78 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 
+
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="96dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/touch_bg"
+    android:paddingBottom="8dp"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
     android:paddingTop="8dp"
-    android:paddingBottom="8dp"
-    android:background="@drawable/touch_bg"
     >
 
-    <ImageView
-        android:id="@+id/it_iv_history"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="16dp"
-        />
-
-    <TextView
-        android:id="@+id/it_tv_history_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_toRightOf="@id/it_iv_history"
-        android:text="时间"
-        android:textSize="14sp"/>
-
-
-    <TextView
-        android:id="@+id/it_tv_history_money"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="16dp"
-        android:text="2500.00"
-        android:textSize="20sp"/>
-
-    <ImageView
-        android:id="@+id/it_iv_h_odo"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/it_iv_history"
-        android:padding="4dp"
-        />
-
-    <TextView
-        android:id="@+id/it_tv_history_odo"
+    <RelativeLayout
+        android:id="@+id/item_rl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginTop="4dp"
-        android:layout_toRightOf="@id/it_iv_h_odo"
-        android:text="200"
-        android:textSize="16sp"/>
+        android:layout_height="96dp">
+
+        <ImageView
+            android:id="@+id/it_iv_history"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="16dp"
+            />
+
+        <TextView
+            android:id="@+id/it_tv_history_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_toRightOf="@id/it_iv_history"
+            android:text="时间"
+            android:textSize="14sp"/>
 
 
-    <TextView
-        android:id="@+id/it_tv_h_tags"
+        <TextView
+            android:id="@+id/it_tv_history_money"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="8dp"
+            android:layout_marginTop="16dp"
+            android:text="2500.00"
+            android:textSize="20sp"/>
+
+        <ImageView
+            android:id="@+id/it_iv_h_odo"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/it_iv_history"
+            android:padding="4dp"
+            />
+
+        <TextView
+            android:id="@+id/it_tv_history_odo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="4dp"
+            android:layout_toRightOf="@id/it_iv_h_odo"
+            android:text="200"
+            android:textSize="16sp"/>
+
+
+        <TextView
+            android:id="@+id/it_tv_h_tags"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@id/it_tv_history_odo"
+            android:layout_marginBottom="8dp"
+            android:layout_toRightOf="@id/it_iv_history"
+            android:ellipsize="end"
+            android:gravity="bottom"
+            android:maxLines="1"
+            android:text="@string/add_oil"
+            android:textSize="16sp"/>
+    </RelativeLayout>
+
+    <Button
+        android:layout_below="@id/item_rl"
+        android:id="@+id/it_iv_update"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_below="@id/it_tv_history_odo"
-        android:layout_marginBottom="8dp"
-        android:layout_toRightOf="@id/it_iv_history"
-        android:gravity="bottom"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:text="@string/add_oil"
-        android:textSize="16sp"/>
+        android:background="@drawable/touch_bg"
+        android:text="修改"/>
 
+    <ImageView
+        android:layout_below="@id/item_rl"
+        android:src="@drawable/odo"
+        android:id="@+id/it_iv_delete"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/touch_bg"
+        android:text="删除"/>
 
 </RelativeLayout>

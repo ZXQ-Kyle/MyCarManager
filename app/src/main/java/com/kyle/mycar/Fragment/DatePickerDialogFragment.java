@@ -2,12 +2,9 @@ package com.kyle.mycar.Fragment;
 
 
 import android.app.TimePickerDialog;
-import android.icu.util.Calendar;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.util.TimeUtils;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +13,9 @@ import android.widget.DatePicker;
 import android.widget.TimePicker;
 
 import com.kyle.mycar.Bean.MessageEvent;
-import com.kyle.mycar.MyUtils.GlobalConstant;
 import com.kyle.mycar.R;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.meta.AbstractSubscriberInfo;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

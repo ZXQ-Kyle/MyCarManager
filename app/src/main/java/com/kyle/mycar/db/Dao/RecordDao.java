@@ -57,14 +57,13 @@ public class RecordDao extends DaoUtils{
     }
 
     /**按时间降序排列，去除isDelete数据
-     * @param off
-     * @param limit
+     * @param off 直接使用pageCount
+     * @param limit page_size
      * @return
      */
     public List<Record> queryOffestLimit(long off,long limit) {
         try {
-//            return mDao.queryBuilder().offset(off).limit(limit).orderBy("date",false).where().eq("isDelete",false).query();
-            return mDao.queryBuilder().offset(off).limit(limit).orderBy("date",false).query();
+            return mDao.queryBuilder().offset(off).limit(limit).orderBy("date",false).where().eq("isDelete",false).query();
 
         } catch (SQLException e) {
             e.printStackTrace();

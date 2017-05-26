@@ -34,6 +34,8 @@ public class Record implements MultiItemEntity {
     @DatabaseField
     private int flag;
 
+    public boolean isVisible;
+
     public Record() {
     }
 
@@ -101,12 +103,21 @@ public class Record implements MultiItemEntity {
         this.flag = flag;
     }
 
+//    @Override
+//    public String toString() {
+//        return "Record{" + "id=" + id + ", oil=" + oil + ", mt=" + mt + ", isDelete=" + isDelete + ", date='" + date
+//                + '\'' + ", flag=" + flag + '}';
+//    }
+
+
     @Override
     public String toString() {
-        return "Record{" + "id=" + id + ", oil=" + oil + ", mt=" + mt + ", isDelete=" + isDelete + ", date='" + date
-                + '\'' + ", flag=" + flag + '}';
+        return "Record{" + "id=" + id + ", isDelete=" + isDelete + '}';
     }
 
+    /**
+     * @return flag
+     */
     @Override
     public int getItemType() {
         return flag;

@@ -99,4 +99,5 @@ public class Maintenance {
         return "Maintenance{" + "id=" + id + ", date=" + date + ", money='" + money + '\'' + ", odometer='" +
                 odometer + '\'' + ", isDelete=" + isDelete + ", tags=" +'}';
     }
+
 }

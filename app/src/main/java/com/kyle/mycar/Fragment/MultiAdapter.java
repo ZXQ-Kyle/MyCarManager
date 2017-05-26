@@ -36,16 +36,20 @@ public class MultiAdapter extends BaseMultiItemQuickAdapter<Record,BaseViewHolde
     protected void convert(BaseViewHolder helper, Record item) {
         String rmb = mContext.getString(R.string.RMB);
         String km = mContext.getString(R.string.km);
+        helper.setVisible(R.id.it_iv_delete,item.isVisible)
+                .setVisible(R.id.it_iv_update,item.isVisible)
+                .addOnClickListener(R.id.it_iv_delete)
+                .addOnClickListener(R.id.it_iv_update);
+
         switch (item.getItemType()) {
             case Record.FLAG_OIL:
+                Glide.with(mContext).load(R.drawable.odo).into((ImageView) helper.getView(R.id.it_iv_h_odo));
+                Glide.with(mContext).load(R.drawable.oil_list).into((ImageView) helper.getView(R.id.it_iv_history));
                 Oil oil = item.getOil();
                 helper.setText(R.id.it_tv_history_date, MyDateUtils.longToStr(oil.getDate()))
                         .setText(R.id.it_tv_history_odo, oil.getOdometer()+km)
                         .setText(R.id.it_tv_history_money, rmb+oil.getMoney())
                         .setText(R.id.it_tv_h_tags,R.string.add_oil);
-                Glide.with(mContext).load(R.drawable.oil_list).into((ImageView) helper.getView(R.id.it_iv_history));
-                Glide.with(mContext).load(R.drawable.odo).into((ImageView) helper.getView(R.id.it_iv_h_odo));
-
                 break;
             case Record.FLAG_MT:
                 Maintenance mt = item.getMt();
@@ -55,8 +59,6 @@ public class MultiAdapter extends BaseMultiItemQuickAdapter<Record,BaseViewHolde
                         .setText(R.id.it_tv_history_odo, mt.getOdometer()+km)
                         .setText(R.id.it_tv_history_money, rmb+mt.getMoney())
                         .setText(R.id.it_tv_h_tags,mt.getTags());
-
-
                 break;
 
         }

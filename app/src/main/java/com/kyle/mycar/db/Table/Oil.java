@@ -41,15 +41,16 @@ public class Oil {
     @DatabaseField
     private String reserve1;
     @DatabaseField
-    private String reserve2;
+    private String pricePerKm;
     @DatabaseField
     private String fuelC;
 
     public Oil() {
     }
 
+
     public Oil(long date, String money, String price, String quantity, String odometer, String oilType, boolean
-            isFull, boolean isForgetLast) {
+            isFull, boolean isForgetLast, String pricePerKm, String fuelC) {
         this.date = date;
         this.money = money;
         this.price = price;
@@ -58,6 +59,8 @@ public class Oil {
         this.oilType = oilType;
         this.isFull = isFull;
         this.isForgetLast = isForgetLast;
+        this.pricePerKm = pricePerKm;
+        this.fuelC = fuelC;
     }
 
     public boolean isDelete() {
@@ -148,12 +151,12 @@ public class Oil {
         this.reserve1 = reserve1;
     }
 
-    public String getReserve2() {
-        return reserve2;
+    public String getPricePerKm() {
+        return pricePerKm;
     }
 
-    public void setReserve2(String reserve2) {
-        this.reserve2 = reserve2;
+    public void setPricePerKm(String pricePerKm) {
+        this.pricePerKm = pricePerKm;
     }
 
     public String getFuelC() {
@@ -164,10 +167,16 @@ public class Oil {
         this.fuelC = fuelC;
     }
 
+//    @Override
+//    public String toString() {
+//        return "Oil{" + "id=" + id + ", date=" + date + ", money='" + money + '\'' + ", price='" + price + '\'' + ", " +
+//                "quantity='" + quantity + '\'' + ", odometer='" + odometer + '\'' + ", oilType='" + oilType + '\'' +
+//                ", isFull=" + isFull + ", isForgetLast=" + isForgetLast + ", isDelete=" + isDelete + ", reserve1='" +
+//                reserve1 + '\'' + ", pricePerKm='" + pricePerKm + '\'' + ", fuelC='" + fuelC + '\'' + '}';
+//    }
+
     @Override
     public String toString() {
-        return "Oil{" + "id=" + id + ", date='" + date + '\'' + ", money='" + money + '\'' + ", price='" + price
-                + '\'' + ", quantity='" + quantity + '\'' + ", odometer='" + odometer + '\'' + ", oilType=" + oilType
-                + ", isFull=" + isFull + ", isForgetLast=" + isForgetLast + '}';
+        return "Oil{" + "id=" + id + ", isDelete=" + isDelete + '}';
     }
 }

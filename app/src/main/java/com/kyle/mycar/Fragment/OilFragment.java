@@ -20,7 +20,8 @@ import com.j256.ormlite.misc.TransactionManager;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.MainActivity;
-import com.kyle.mycar.MyUtils.GlobalConstant;
+import com.kyle.mycar.MyUtils.CalcUtils;
+import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.MyUtils.MyDateUtils;
 import com.kyle.mycar.MyUtils.SpUtils;
 import com.kyle.mycar.R;
@@ -32,6 +33,7 @@ import com.kyle.mycar.db.DbOpenHelper;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
 import com.kyle.mycar.db.Table.Record;
+import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -42,6 +44,7 @@ import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.IllegalFormatCodePointException;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -106,7 +109,7 @@ public class OilFragment extends BaseFragment {
     public void initData() {
         //spinner初始化
         OilTypeDao typeDao = OilTypeDao.getInstance(mActivity);
-        Log.i("---", "typeDao: "+typeDao.toString());
+        Log.i("---", "typeDao: " + typeDao.toString());
         List<OilType> list = typeDao.queryAllButIsDelete("id", true);
         ArrayList<String> spinnerStr = new ArrayList<>();
         for (OilType type : list) {
@@ -117,12 +120,12 @@ public class OilFragment extends BaseFragment {
         spinnerOil.setAdapter(adapter);
         //读取上次保存的汽油种类并设置
         String oilType = SpUtils.getString(mActivity.getApplicationContext(), OIL_TYPE);
-        if (!TextUtils.isEmpty(oilType)){
+        if (!TextUtils.isEmpty(oilType)) {
             spinnerOil.setSelection(spinnerStr.indexOf(oilType));
         }
         //读取上次保存的汽油价格
         String price = SpUtils.getString(mActivity.getApplicationContext(), OIL_PRICE);
-        if (!TextUtils.isEmpty(oilType)){
+        if (!TextUtils.isEmpty(oilType)) {
             etOilPrice.setText(price);
         }
 
@@ -166,8 +169,8 @@ public class OilFragment extends BaseFragment {
 
 
     private void showDatePicker() {
-        DatePickerDialogFragment dialogFragment = DatePickerDialogFragment.newInstance(GlobalConstant
-                .OIL_FRAGMENT_RETURN_DATE, GlobalConstant.OIL_FRAGMENT_RETURN_TIME);
+        DatePickerDialogFragment dialogFragment = DatePickerDialogFragment.newInstance(MyConstant
+                .OIL_FRAGMENT_RETURN_DATE, MyConstant.OIL_FRAGMENT_RETURN_TIME);
         dialogFragment.show(getFragmentManager(), "oilDate");
     }
 
@@ -175,10 +178,10 @@ public class OilFragment extends BaseFragment {
     public void getDateMessage(MessageEvent msg) {
 
         switch (msg.getFlag()) {
-            case GlobalConstant.OIL_FRAGMENT_RETURN_DATE:
+            case MyConstant.OIL_FRAGMENT_RETURN_DATE:
                 mDate = msg.getMsg() + mDate.substring(11);
                 break;
-            case GlobalConstant.OIL_FRAGMENT_RETURN_TIME:
+            case MyConstant.OIL_FRAGMENT_RETURN_TIME:
                 mDate = mDate.substring(0, 13) + msg.getMsg();
                 break;
         }
@@ -194,18 +197,26 @@ public class OilFragment extends BaseFragment {
                 showDatePicker();
                 break;
             case R.id.btn_confirm:
-                boolean isSucess = saveData();
-                getFragmentManager().beginTransaction().remove(this).
-                        show(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAGMENT))
-                        .commit();
-                if (isSucess){
-                    EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA));
-                }
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Logger.d(System.currentTimeMillis());
+                        saveData();
+                        Logger.d(System.currentTimeMillis());
+
+                        getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentByTag
+                                (MainActivity.OILFRAGMENT)).
+                                show(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAGMENT)).commit();
+
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA));
+                    }
+                }.start();
+
                 break;
         }
     }
 
-    private boolean saveData() {
+    private void saveData() {
         //事务保存
         TransactionManager manager = new TransactionManager(DbOpenHelper.getInstance(mActivity).getConnectionSource());
         Callable<Boolean> callable = new Callable<Boolean>() {
@@ -217,12 +228,14 @@ public class OilFragment extends BaseFragment {
         };
         try {
             manager.callInTransaction(callable);
-            Snackbar.make(getView(),getString(R.string.sucess),Snackbar.LENGTH_SHORT).show();
-            return true;
+            if (getActivity() != null) {
+                Snackbar.make(getView(), getString(R.string.sucess), Snackbar.LENGTH_SHORT).show();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
-            Snackbar.make(getView(),getString(R.string.fail),Snackbar.LENGTH_SHORT).show();
-            return false;
+            if (getActivity() != null) {
+                Snackbar.make(getView(), getString(R.string.fail), Snackbar.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -236,16 +249,48 @@ public class OilFragment extends BaseFragment {
         boolean isFullChecked = cbOilIsFull.isChecked();
         boolean isForgetLastChecked = cbOilForgetLast.isChecked();
         String noteText = iaeNote.getText();
+        String fuel = null;
+        String pricePerKm = null;
         //保存数据，下次进入自动读取
-        SpUtils.putSring(mActivity.getApplicationContext(),OIL_PRICE,oilPrice);
-        SpUtils.putSring(mActivity.getApplicationContext(),OIL_TYPE,oilType);
-
+        SpUtils.putSring(mActivity.getApplicationContext(), OIL_PRICE, oilPrice);
+        SpUtils.putSring(mActivity.getApplicationContext(), OIL_TYPE, oilType);
         OilDao oilDao = OilDao.getInstance(mActivity);
-        Oil oil = new Oil(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType, isFullChecked,
-                isForgetLastChecked);
-        int add = oilDao.add(oil);
+        long l = oilDao.countOf();
+        //如果加满油计算油耗，并把此次id保存，以便下次读取
+        if (isFullChecked && !isForgetLastChecked) {
+            List<Oil> list1 = oilDao.queryNewest("isFull", true);
+            Logger.d(list1);
+            if (list1.size() > 0) {
+                Oil oilPre = list1.get(0);
+                int preId = oilPre.getId();
+                String odometer = oilPre.getOdometer();
+                //实际里程值
+                BigDecimal odo = CalcUtils.reduceBigDecimal(OdometerText, odometer);
+                //获取燃油消耗（L）和sumMoney
+                BigDecimal quantity = new BigDecimal(oilQuantity);
+                BigDecimal sumMoney = new BigDecimal(oilMoney);
+                List<Oil> list = oilDao.queryBetween("id", preId + 1, l);
+                if (list.size() > 0) {
+                    for (Oil oil : list) {
+                        quantity = CalcUtils.appendBigDecimal(quantity, oil.getQuantity());
+                        sumMoney = CalcUtils.appendBigDecimal(sumMoney, oil.getMoney());
+                    }
+                }
+                //计算油耗 L/百公里和元/每公里
+                BigDecimal odo100 = odo.divide(new BigDecimal(100), 2, BigDecimal.ROUND_HALF_UP);
+                fuel = (quantity.divide(odo100, 2, BigDecimal.ROUND_HALF_UP)).toString();
 
+                pricePerKm = (sumMoney.divide(odo, 2, BigDecimal.ROUND_HALF_UP)).toString();
+            }
+
+        }
+        Oil oil = new Oil(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType, isFullChecked,
+                isForgetLastChecked, pricePerKm, fuel);
+        int add = oilDao.add(oil);
+        Logger.d(oil);
         RecordDao dao = RecordDao.getInstance(mActivity);
-        dao.add(new Record(oil,date));
+        dao.add(new Record(oil, date));
     }
+
+
 }

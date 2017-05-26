@@ -21,7 +21,7 @@ import com.kyle.mycar.Fragment.BaseFragment;
 import com.kyle.mycar.Fragment.MainFragment;
 import com.kyle.mycar.Fragment.MaintenanceFragment;
 import com.kyle.mycar.Fragment.OilFragment;
-import com.kyle.mycar.MyUtils.GlobalConstant;
+import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.MyUtils.SpUtils;
 import com.kyle.mycar.db.Dao.MtTagDao;
 import com.kyle.mycar.db.Dao.OilTypeDao;
@@ -69,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initDb() {
-        if (!SpUtils.getboolean(this, GlobalConstant.First_IN)) {
+        if (!SpUtils.getboolean(this, MyConstant.First_IN)) {
             OilTypeDao typeDao = OilTypeDao.getInstance(this);
             String[] strings = getResources().getStringArray(R.array.spinner_oil);
             for (int i = 0; i < strings.length; i++) {
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 tagDao.add(new MtTag(stringArray[i]));
             }
 
-            SpUtils.putboolean(this, GlobalConstant.First_IN, true);
+            SpUtils.putboolean(this, MyConstant.First_IN, true);
         }
 
     }
@@ -183,10 +183,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case R.id.fab_1:
                 OilFragment fragment = new OilFragment();
                 getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .add(R.id.fl_content,fragment).hide
+                        .add(R.id.fl_content,fragment,OILFRAGMENT).hide
                         (mFrgMap.get(MAIN_FRAGMENT)).commit();
                 mFrgBackList.add(0,fragment);
-                Logger.d(mFrgBackList.size());
                 setToolbarColor(R.string.oil, getResources().getColor(R.color.colorCyan), getResources().getColor(R
                         .color.colorCyanDark));
 

@@ -7,9 +7,15 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.R;
@@ -34,7 +40,8 @@ import butterknife.Unbinder;
  *
  */
 public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnRefreshListener, BaseQuickAdapter
-        .OnItemClickListener, BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemChildClickListener {
+        .OnItemClickListener, BaseQuickAdapter.RequestLoadMoreListener, BaseQuickAdapter.OnItemChildClickListener,
+        Toolbar.OnMenuItemClickListener {
 
     Unbinder unbinder;
     @BindView(R.id.recycler_view)
@@ -46,19 +53,30 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     public static final int PAGE_SIZE=8;
     private long pageCount =1;
 
-    @Nullable
+//    @Nullable
+//    @Override
+//    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
+//            savedInstanceState) {
+//
+//        EventBus.getDefault().register(this);
+//        View view = View.inflate(mActivity, R.layout.fragment_main, null);
+//        unbinder = ButterKnife.bind(this, view);
+//        return view;
+//    }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
-            savedInstanceState) {
-        EventBus.getDefault().register(this);
+    public View initView() {
         View view = View.inflate(mActivity, R.layout.fragment_main, null);
-        unbinder = ButterKnife.bind(this, view);
         return view;
     }
 
 
     @Override
     public void initData() {
+        mToolbar.inflateMenu(R.menu.toolbar_main);
+        initToolbar(R.drawable.ic_menu_white_24dp,R.string.history,R.color.colorPrimary,R.color.colorPrimaryDark,1);
+        mToolbar.setOnMenuItemClickListener(this);
+
         srl.setOnRefreshListener(this);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false);
@@ -88,6 +106,14 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         }.start();
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        if (!hidden){
+            setStatubarColor(R.color.colorPrimary,R.color.colorPrimaryDark);
+        }
+    }
+
+
     private void getData(final long off, final int what) {
 
         new Thread() {
@@ -108,21 +134,10 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     Logger.d(beanList);
                     EventBus.getDefault().post(new MsgMainFragment(what,beanList));
                 }
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }.start();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-        EventBus.getDefault().unregister(this);
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void msg(MsgMainFragment msg) {
@@ -213,5 +228,11 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             case R.id.it_iv_update:
                 break;
                    }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        Toast.makeText(mActivity, "", Toast.LENGTH_SHORT).show();
+        return false;
     }
 }

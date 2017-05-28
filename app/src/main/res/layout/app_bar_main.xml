@@ -7,23 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.kyle.mycar.MainActivity">
 
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/appbarL"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay"/>
-
-    </android.support.design.widget.AppBarLayout>
-
     <FrameLayout
-        android:layout_below="@id/appbarL"
         android:id="@+id/fl_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -59,15 +43,6 @@
             app:fab_colorNormal="@color/colorPurple"
             app:fab_colorPressed="@color/colorPurpleDark"
             />
-        <!--<com.github.clans.fab.FloatingActionButton-->
-            <!--android:id="@+id/fab_3"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:src="@drawable/money"-->
-            <!--app:fab_label="@string/expense"-->
-            <!--app:fab_colorNormal="@color/colorAmber"-->
-            <!--app:fab_colorPressed="@color/colorAmberDark"-->
-            <!--/>-->
     </com.github.clans.fab.FloatingActionMenu>
 
 </RelativeLayout>

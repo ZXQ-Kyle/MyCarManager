@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -59,7 +60,6 @@ public class OilFragment extends BaseFragment {
 
     private static final String OIL_PRICE = "oil_price";
     private static final String OIL_TYPE = "oil_type";
-    Unbinder unbinder;
     @BindView(R.id.spinner_oil)
     AppCompatSpinner spinnerOil;
     @BindView(R.id.iv_oil_oilcan)
@@ -91,22 +91,18 @@ public class OilFragment extends BaseFragment {
     private String mDate;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = View.inflate(mActivity, R.layout.fragment_oil, null);
-        unbinder = ButterKnife.bind(this, rootView);
-        EventBus.getDefault().register(this);
-        return rootView;
+    public View initView() {
+        return View.inflate(mActivity, R.layout.fragment_oil, null);
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-        EventBus.getDefault().unregister(this);
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void initData() {
+        initToolbar(R.drawable.ic_arrow_back,R.string.oil,R.color.colorCyan,R.color.colorCyanDark,2);
         //spinner初始化
         OilTypeDao typeDao = OilTypeDao.getInstance(mActivity);
         Log.i("---", "typeDao: " + typeDao.toString());
@@ -204,7 +200,7 @@ public class OilFragment extends BaseFragment {
                         saveData();
                         Logger.d(System.currentTimeMillis());
 
-                        getFragmentManager().beginTransaction().hide(getFragmentManager().findFragmentByTag
+                        getFragmentManager().beginTransaction().remove(getFragmentManager().findFragmentByTag
                                 (MainActivity.OILFRAGMENT)).
                                 show(getFragmentManager().findFragmentByTag(MainActivity.MAIN_FRAGMENT)).commit();
 

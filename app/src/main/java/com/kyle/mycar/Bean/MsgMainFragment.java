@@ -17,6 +17,7 @@ public class MsgMainFragment {
     public static final int LOAD_MORE = 3;
     public static final int LOAD_MORE_END = 4;
 
+
     private int flag;
     private List<Record> recordList;
 

@@ -49,23 +49,20 @@ public class MaintenanceFragment extends BaseFragment {
     ImgAndEtView iaeMtOdometer;
     @BindView(R.id.iae_mt_money)
     ImgAndEtView iaeMtMoney;
-
-    Unbinder unbinder;
     @BindView(R.id.tags_mt)
     FlowlayoutTags tagsMt;
+
     private String mDate;
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_maintenance, container, false);
-        unbinder = ButterKnife.bind(this, view);
-        EventBus.getDefault().register(this);
-        return view;
+    public View initView() {
+        return View.inflate(mActivity,R.layout.fragment_maintenance, null);
     }
 
     @Override
     public void initData() {
-
+        initToolbar(R.drawable.ic_arrow_back,R.string.expense,R.color.colorPurple,R.color.colorPurpleDark,2);
         //设置日期默认为当前时间
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日  HH:mm");
         Date date = new Date(System.currentTimeMillis());
@@ -75,10 +72,8 @@ public class MaintenanceFragment extends BaseFragment {
         iaeMtDate.setUnEditable();
         iaeMtMoney.setInputTypeOfNumber();
         iaeMtOdometer.setInputTypeOfNumber();
-
         //初始化Tags
         initTags();
-
     }
 
     private void initTags() {
@@ -102,16 +97,7 @@ public class MaintenanceFragment extends BaseFragment {
 //                Snackbar.make(getView(), "onDelete" + tag, Snackbar.LENGTH_LONG).show();
 //            }
 //        });
-//        tagsMt.setOnTagClickListener(new FlowlayoutTags.OnTagClickListener() {
-//            @Override
-//            public void onTagClick(String tag) {
-//                String[] strings = tagsMt.getCheckedTagsText();
-//                StringBuilder sb = new StringBuilder();
-//                for (int i = 0; i < strings.length; i++) {
-//                    sb.append(strings[i]).append(",");
-//                }
-//            }
-//        });
+
     }
 
     public void refreshCategorys(FlowlayoutTags flowlayoutTags, List<String> list) {
@@ -119,14 +105,6 @@ public class MaintenanceFragment extends BaseFragment {
         flowlayoutTags.setTags(list);
         flowlayoutTags.setTagsUncheckedColorAnimal(false);
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        unbinder.unbind();
-        EventBus.getDefault().unregister(this);
-    }
-
 
     @OnClick({R.id.iae_mt_date, R.id.btn_confirm})
     public void onViewClicked(View view) {

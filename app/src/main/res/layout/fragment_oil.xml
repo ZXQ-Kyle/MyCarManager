@@ -13,6 +13,7 @@
         android:orientation="vertical"
         >
 
+        <include layout="@layout/app_bar"/>
 
         <com.kyle.mycar.View.ImgAndEtView
             android:id="@+id/iae_date"

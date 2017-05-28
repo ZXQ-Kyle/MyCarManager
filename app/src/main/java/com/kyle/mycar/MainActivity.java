@@ -1,7 +1,7 @@
 package com.kyle.mycar;
 
-import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.util.ArrayMap;
@@ -12,10 +12,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.animation.AlphaAnimation;
-
 import com.github.clans.fab.FloatingActionMenu;
+import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.Fragment.BaseFragment;
 import com.kyle.mycar.Fragment.MainFragment;
@@ -28,13 +27,10 @@ import com.kyle.mycar.db.Dao.OilTypeDao;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.OilType;
 import com.orhanobut.logger.Logger;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -47,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     FloatingActionMenu fabMenu;
 
     private Toolbar mToolbar;
-    private DrawerLayout drawer;
+    public DrawerLayout drawer;
     public ArrayList<BaseFragment> mFrgBackList;
     public ArrayMap<String,BaseFragment> mFrgMap = new ArrayMap<>();
 
@@ -66,6 +62,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 initDb();
             }
         }.start();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        // TODO: 2017/5/27 旋转，加油等fragment不保存
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 
     private void initDb() {
@@ -89,14 +96,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     private void initData() {
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+//        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+//        setSupportActionBar(mToolbar);
 
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string
-                .navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
+//        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string
+//                .navigation_drawer_open, R.string.navigation_drawer_close);
+//        drawer.setDrawerListener(toggle);
+//        toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -110,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mFrgBackList.add(0,fragment);
         mFrgMap.put(MAIN_FRAGMENT,fragment);
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, fragment, MAIN_FRAGMENT).commit();
-        getSupportActionBar().setTitle(R.string.history);
+//        getSupportActionBar().setTitle(R.string.history);
     }
 
     @Override
@@ -158,10 +165,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         int id = item.getItemId();
         BaseFragment fragment = null;
         if (id == R.id.nav_history) {
-            mToolbar.setTitle(R.string.history);
+//            mToolbar.setTitle(R.string.history);
 
         } else if (id == R.id.nav_statistics) {
-            mToolbar.setTitle(R.string.statistics);
+//            mToolbar.setTitle(R.string.statistics);
         } else if (id == R.id.nav_oil) {
 
         } else if (id == R.id.nav_expenses) {
@@ -186,8 +193,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .add(R.id.fl_content,fragment,OILFRAGMENT).hide
                         (mFrgMap.get(MAIN_FRAGMENT)).commit();
                 mFrgBackList.add(0,fragment);
-                setToolbarColor(R.string.oil, getResources().getColor(R.color.colorCyan), getResources().getColor(R
-                        .color.colorCyanDark));
+//                setStatubarColor(R.string.oil, getResources().getColor(R.color.colorCyan), getResources().getColor(R
+//                        .color.colorCyanDark));
 
                 break;
             case R.id.fab_2:
@@ -196,8 +203,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).hide
                         (mFrgMap.get(MAIN_FRAGMENT)).commit();
                 mFrgBackList.add(0,mtFragment);
-                setToolbarColor(R.string.maintenance, getResources().getColor(R.color.colorPurple), getResources()
-                        .getColor(R.color.colorPurpleDark));
+//                setStatubarColor(R.string.maintenance, getResources().getColor(R.color.colorPurple), getResources()
+//                        .getColor(R.color.colorPurpleDark));
                 break;
 //            case R.id.fab_3:
 ////                ExpenseFragment exFragment = new ExpenseFragment();
@@ -219,16 +226,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
-    public void setToolbarColor(int toolbarString, int color, int color2) {
-        mToolbar.setTitle(toolbarString);
-        mToolbar.setBackgroundColor(color);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(color2);
-            window.setNavigationBarColor(color2);
-        }
-    }
+//    public void setStatubarColor(int toolbarString, int color, int color2) {
+//        mToolbar.setTitle(toolbarString);
+//        mToolbar.setBackgroundColor(color);
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Window window = getWindow();
+//            window.setStatusBarColor(color2);
+//            window.setNavigationBarColor(color2);
+//        }
+//    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void msg(MsgMainFragment msg) {
@@ -237,6 +244,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mFrgBackList.remove(0);
         }
     }
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void msg(MessageEvent msg) {
+        switch (msg.getFlag()) {
+            case MyConstant.SET_TOOLBAR:
+
+                break;
+
+            case MyConstant.OPEN_DRAWER:
+                drawer.openDrawer(GravityCompat.START);
+                break;
+
+        }
+
+    }
 
 
     public void getFabMenu() {
@@ -244,8 +265,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         animation.setDuration(1000);
         fabMenu.setVisibility(View.VISIBLE);
         fabMenu.startAnimation(animation);
-        setToolbarColor(R.string.history, getResources().getColor(R.color.colorPrimary), getResources().getColor(R
-                .color.colorPrimaryDark));
+//        setStatubarColor(R.string.history, getResources().getColor(R.color.colorPrimary), getResources().getColor(R
+//                .color.colorPrimaryDark));
     }
 
     @Override

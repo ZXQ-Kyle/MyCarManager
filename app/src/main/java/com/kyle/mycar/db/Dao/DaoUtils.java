@@ -74,7 +74,7 @@ public abstract class DaoUtils<T> {
      * @param obj
      * @return The number of rows updated in the database.or -1
      */
-    public int updete(T obj) {
+    public int update(T obj) {
         try {
             return mDao.update(obj);
         } catch (SQLException e) {

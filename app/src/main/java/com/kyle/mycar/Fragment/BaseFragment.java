@@ -1,6 +1,7 @@
 package com.kyle.mycar.Fragment;
 
 
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,9 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
+
 import com.kyle.mycar.Bean.MessageEvent;
+import com.kyle.mycar.MainActivity;
 import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.R;
+import com.labo.kaji.fragmentanimations.MoveAnimation;
+import com.labo.kaji.fragmentanimations.SidesAnimation;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -26,7 +31,7 @@ import butterknife.Unbinder;
  */
 public abstract class BaseFragment extends Fragment {
 
-    public FragmentActivity mActivity;
+    public MainActivity mActivity;
     Unbinder unbinder;
     public Toolbar mToolbar;
 
@@ -49,22 +54,25 @@ public abstract class BaseFragment extends Fragment {
         return view;
     }
 
-    /**初始化Toolbar
-     * @param drawable   导航图标
-     * @param strID     标题
-     * @param color     颜色 浅
-     * @param color2    颜色 深
-     * @param flag      1左边栏导航式样，2返回式样
+    /**
+     * 初始化Toolbar，必须放到initData中
+     *
+     * @param strID  标题
+     * @param color  颜色 浅
+     * @param color2 颜色 深
+     * @param flag   1左边栏导航式样，2返回式样
      */
-    protected void initToolbar(int drawable,int strID,int color, int color2,int flag) {
-        if (flag==1){
+    protected void initToolbar(int strID, int color, int color2, int flag) {
+        if (flag == 1) {
+            mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     EventBus.getDefault().post(new MessageEvent(MyConstant.OPEN_DRAWER));
                 }
             });
-        }else {
+        } else {
+            mToolbar.setNavigationIcon(R.drawable.ic_arrow_back);
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -72,13 +80,12 @@ public abstract class BaseFragment extends Fragment {
                 }
             });
         }
-        mToolbar.setNavigationIcon(drawable);
         mToolbar.setTitle(strID);
         mToolbar.setBackgroundColor(getResources().getColor(color));
-        setStatubarColor(color,color2);
+        setStatubarColor(color, color2);
     }
 
-    protected void setStatubarColor(int color,int color2) {
+    protected void setStatubarColor(int color, int color2) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = mActivity.getWindow();
             window.setNavigationBarColor(getResources().getColor(color));
@@ -99,12 +106,12 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mActivity = getActivity();
+//        mActivity = getActivity();
     }
 
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        return super.onCreateAnimation(transit, enter, nextAnim);
+        return MoveAnimation.create(MoveAnimation.LEFT, enter, 300);
     }
 
     @Override
@@ -116,4 +123,16 @@ public abstract class BaseFragment extends Fragment {
 
     // 初始化数据, 必须由子类实现
     public abstract void initData();
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        mActivity = (MainActivity) getActivity();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
 }

@@ -22,7 +22,7 @@ public class SpUtils {
      */
     public static void putSring(Context context, String keyName, String value) {
         if (sp == null){
-            sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+            sp = context.getApplicationContext().getSharedPreferences("config", Context.MODE_PRIVATE);
         }
         SharedPreferences.Editor editor = sp.edit();
         editor.putString(keyName, value);
@@ -36,7 +36,7 @@ public class SpUtils {
      */
     public static String getString(Context context, String keyName) {
         if (sp == null){
-            sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+            sp = context.getApplicationContext().getSharedPreferences("config", Context.MODE_PRIVATE);
         }
 
         return sp.getString(keyName,"");
@@ -44,7 +44,7 @@ public class SpUtils {
 
     public static void putboolean(Context context, String keyName, boolean value) {
         if (sp == null){
-            sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+            sp = context.getApplicationContext().getSharedPreferences("config", Context.MODE_PRIVATE);
         }
 
         sp.edit().putBoolean(keyName, value).apply();
@@ -57,13 +57,13 @@ public class SpUtils {
      */
     public static boolean getboolean(Context context, String keyName) {
         if (sp == null){
-            sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+            sp = context.getApplicationContext().getSharedPreferences("config", Context.MODE_PRIVATE);
         }
         return sp.getBoolean(keyName,false);
     }
     public static void remove(Context context, String keyName) {
         if (sp == null){
-            sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+            sp = context.getApplicationContext().getSharedPreferences("config", Context.MODE_PRIVATE);
         }
         sp.edit().remove(keyName).apply();
 
@@ -71,7 +71,7 @@ public class SpUtils {
 
     public static void putInt(Context context, String keyName, int value) {
         if (sp == null){
-            sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+            sp = context.getApplicationContext().getSharedPreferences("config", Context.MODE_PRIVATE);
         }
         sp.edit().putInt(keyName,value).apply();
     }
@@ -83,7 +83,7 @@ public class SpUtils {
      */
     public static int getInt(Context context, String keyName) {
         if (sp == null){
-            sp = context.getSharedPreferences("config", Context.MODE_PRIVATE);
+            sp = context.getApplicationContext().getSharedPreferences("config", Context.MODE_PRIVATE);
         }
         return sp.getInt(keyName,0);
     }

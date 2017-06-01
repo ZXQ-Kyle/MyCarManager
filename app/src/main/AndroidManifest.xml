@@ -3,8 +3,9 @@
           xmlns:tools="http://schemas.android.com/tools"
           package="com.kyle.mycar">
 
+    <!--android:name=".MyApplication"-->
     <application
-        android:name=".MyApplication"
+
         android:allowBackup="true"
         android:icon="@drawable/car_launcher"
         android:label="@string/app_name"

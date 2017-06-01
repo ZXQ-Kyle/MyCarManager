@@ -28,4 +28,5 @@
     <string name="km">km</string>
     <string name="RMB">¥&#160;</string>
     <string name="delete_sucess">删除成功</string>
+    <string name="chart">油耗表</string>
 </resources>

@@ -16,7 +16,8 @@ public class MsgMainFragment {
     public static final int UPDATE_AN_NEW_ONE_DATA =2;
     public static final int LOAD_MORE = 3;
     public static final int LOAD_MORE_END = 4;
-
+    public static final int UPDATE_AN_OLD_DATA =5;
+    public static final int UPDATE_REFRESH =6;
 
     private int flag;
     private List<Record> recordList;

@@ -37,20 +37,45 @@ public class OilDao extends DaoUtils{
         return instance;
     }
 
-    /**按时间降序排序后，查询最新一个数据
-     *  并且isDelete=false
+    /**按时间降序排序后，查询最新一个数据eq(column, value),
+     *  并且isDelete=false,"isFull"=true
      * @param column
      * @param value
+     * @param limitRow
      * @return
      */
-    public List<Oil> queryNewest(String column, Object value) {
+    public List<Oil> queryNewest(String column, Object value, long limitRow) {
         try {
             return mDao.queryBuilder()
-                    .limit(1l)
+                    .limit(limitRow)
                     .orderBy("date",false)
                     .where()
                     .eq("isDelete", false).and()
+                    .eq("isFull",true).and()
                     .eq(column, value)
+                    .query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /** < (column, value)
+     * eq("isDelete", false).and().eq("isFull",true)  false表示降序，true表示升序
+     * @param column 比较列列名
+     * @param value  比较列数值
+     * @param limitRow 限制值
+     * @return  按时间降序排列，小于输入值得第一个数据
+     */
+    public List<Oil> queryNewestLt(String column, Object value, long limitRow) {
+        try {
+            return mDao.queryBuilder()
+                    .orderBy("date",false)
+                    .limit(limitRow)
+                    .where()
+                    .eq("isDelete", false).and()
+                    .eq("isFull",true).and()
+                    .lt(column, value)
                     .query();
         } catch (SQLException e) {
             e.printStackTrace();

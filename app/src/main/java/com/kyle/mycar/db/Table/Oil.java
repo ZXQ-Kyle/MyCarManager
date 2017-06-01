@@ -48,6 +48,19 @@ public class Oil {
     public Oil() {
     }
 
+    public void update(long date, String money, String price, String quantity, String odometer, String oilType, boolean
+            isFull, boolean isForgetLast, String pricePerKm, String fuelC){
+        this.date = date;
+        this.money = money;
+        this.price = price;
+        this.quantity = quantity;
+        this.odometer = odometer;
+        this.oilType = oilType;
+        this.isFull = isFull;
+        this.isForgetLast = isForgetLast;
+        this.pricePerKm = pricePerKm;
+        this.fuelC = fuelC;
+    }
 
     public Oil(long date, String money, String price, String quantity, String odometer, String oilType, boolean
             isFull, boolean isForgetLast, String pricePerKm, String fuelC) {
@@ -171,8 +184,8 @@ public class Oil {
 //    public String toString() {
 //        return "Oil{" + "id=" + id + ", date=" + date + ", money='" + money + '\'' + ", price='" + price + '\'' + ", " +
 //                "quantity='" + quantity + '\'' + ", odometer='" + odometer + '\'' + ", oilType='" + oilType + '\'' +
-//                ", isFull=" + isFull + ", isForgetLast=" + isForgetLast + ", isDelete=" + isDelete + ", reserve1='" +
-//                reserve1 + '\'' + ", pricePerKm='" + pricePerKm + '\'' + ", fuelC='" + fuelC + '\'' + '}';
+//                ", isFull=" + isFull + ", isForgetLast=" + isForgetLast + ", isDelete=" + isDelete + ", note='" +
+//                note + '\'' + ", pricePerKm='" + pricePerKm + '\'' + ", fuelC='" + fuelC + '\'' + '}';
 //    }
 
     @Override

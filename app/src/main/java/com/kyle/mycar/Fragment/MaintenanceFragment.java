@@ -3,6 +3,8 @@ package com.kyle.mycar.Fragment;
 
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.j256.ormlite.misc.TransactionManager;
@@ -38,7 +40,7 @@ import butterknife.OnClick;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MaintenanceFragment extends BaseFragment {
+public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuItemClickListener {
 
 
     @BindView(R.id.iae_mt_date)
@@ -61,7 +63,7 @@ public class MaintenanceFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        initToolbar(R.string.expense, R.color.colorPurple, R.color.colorPurpleDark, 2);
+        initToolbar(R.string.expense, R.color.colorPurple, R.color.colorPurpleDark, 2,R.menu.toolbar_confirm,this);
         //设置日期默认为当前时间
         mDate = MyDateUtils.longToStr(System.currentTimeMillis());
         iaeMtDate.setText(mDate);
@@ -216,5 +218,9 @@ public class MaintenanceFragment extends BaseFragment {
         iaeMtDate.setText(mDate);
     }
 
-
+    //toolbar menu点击事件
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        return false;
+    }
 }

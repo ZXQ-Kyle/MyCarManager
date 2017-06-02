@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -61,8 +62,10 @@ public abstract class BaseFragment extends Fragment {
      * @param color  颜色 浅
      * @param color2 颜色 深
      * @param flag   1左边栏导航式样，2返回式样
+     * @param menuId      0 不生成菜单
+     * @param listener      监听
      */
-    protected void initToolbar(int strID, int color, int color2, int flag) {
+    protected void initToolbar(int strID, int color, int color2, int flag,int menuId,Toolbar.OnMenuItemClickListener listener) {
         if (flag == 1) {
             mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -83,6 +86,10 @@ public abstract class BaseFragment extends Fragment {
         mToolbar.setTitle(strID);
         mToolbar.setBackgroundColor(getResources().getColor(color));
         setStatubarColor(color, color2);
+        if (menuId !=0){
+            mToolbar.inflateMenu(menuId);
+        }
+        mToolbar.setOnMenuItemClickListener(listener);
     }
 
     protected void setStatubarColor(int color, int color2) {

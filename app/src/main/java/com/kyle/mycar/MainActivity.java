@@ -3,20 +3,15 @@ package com.kyle.mycar;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.util.ArrayMap;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.AlphaAnimation;
-import com.github.clans.fab.FloatingActionMenu;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.MsgMainFragment;
-import com.kyle.mycar.Fragment.BaseFragment;
 import com.kyle.mycar.Fragment.ChartFragment;
 import com.kyle.mycar.Fragment.MainFragment;
 import com.kyle.mycar.Fragment.MaintenanceFragment;
@@ -25,29 +20,21 @@ import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.MyUtils.SpUtils;
 import com.kyle.mycar.db.Dao.MtTagDao;
 import com.kyle.mycar.db.Dao.OilTypeDao;
+import com.kyle.mycar.db.Table.Maintenance;
 import com.kyle.mycar.db.Table.MtTag;
+import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
-import com.orhanobut.logger.Logger;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import java.util.ArrayList;
-import java.util.concurrent.Executors;
-
-import butterknife.BindView;
+import java.util.LinkedList;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final String MAIN_FRAGMENT = "MainFragment";
-    @BindView(R.id.fab_menu)
-    public FloatingActionMenu fabMenu;
-
     private Toolbar mToolbar;
     public DrawerLayout drawer;
-    public ArrayList<BaseFragment> mFrgBackList;
-    public ArrayMap<String,BaseFragment> mFrgMap = new ArrayMap<>();
+    public LinkedList<Fragment> mFrgBackList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,12 +94,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void initView() {
         MainFragment fragment = new MainFragment();
         if (mFrgBackList == null) {
-            mFrgBackList = new ArrayList();
+            mFrgBackList = new LinkedList<>();
         }
-        addToBackStack(fragment);
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, fragment, MainFragment.class.getSimpleName()).commit();
-//        getSupportActionBar().setTitle(R.string.history);
+        mFrgBackList.add(0, fragment);
+        getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment, MainFragment.class
+                .getSimpleName()).commit();
     }
 
     @Override
@@ -120,54 +106,25 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            Logger.d(mFrgBackList.size());
-            if (mFrgBackList.size()>1){
-                getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).show(mFrgBackList.get(1))
-                        .remove(mFrgBackList.get(0)).commit();
+            if (mFrgBackList.size() > 1) {
+                getSupportFragmentManager().beginTransaction().show(mFrgBackList.get(1)).remove(mFrgBackList.get(0)).commit();
                 mFrgBackList.remove(0);
-                getFabMenu();
-            }else {
+            } else {
                 super.onBackPressed();
             }
         }
     }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.main, menu);
-//        return true;
-//    }
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        int id = item.getItemId();
-//        //noinspection SimplifiableIfStatement
-//        if (id == android.R.id.home) {
-//            Toast.makeText(MainActivity.this, "hahahhahaha", Toast.LENGTH_SHORT).show();
-//            return true;
-//        }
-//        if (id == R.id.action_settings) {
-//            Toast.makeText(MainActivity.this, "22222222222222", Toast.LENGTH_SHORT).show();
-//            return true;
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
+        Fragment fromFrag = mFrgBackList.get(0);
 
         int id = item.getItemId();
-        BaseFragment fragment = null;
         if (id == R.id.nav_history) {
-//            mToolbar.setTitle(R.string.history);
-            getFabMenu();
-        } else if (id == R.id.nav_statistics) {
-            ChartFragment chartFragment = new ChartFragment();
-            getSupportFragmentManager().beginTransaction().hide(mFrgBackList.get(0)).setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .add(R.id.fl_content,chartFragment,chartFragment.getClass().getSimpleName()).commit();
-            addToBackStack(chartFragment);
-            fabMenu.setVisibility(View.GONE);
+            switchFrag(fromFrag.getClass(),MainFragment.class,false);
+        } else if (id == R.id.nav_chart) {
+            switchFrag(fromFrag.getClass(),ChartFragment.class,false);
         } else if (id == R.id.nav_oil) {
 
         } else if (id == R.id.nav_expenses) {
@@ -182,72 +139,17 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    //  浮动按钮点击事件
-    @OnClick({R.id.fab_1, R.id.fab_2})
-    public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.fab_1:
-                OilFragment fragment = new OilFragment();
-                getSupportFragmentManager().beginTransaction().setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .add(R.id.fl_content,fragment,fragment.getClass().getSimpleName()).hide
-                        (mFrgMap.get(MainFragment.class.getSimpleName())).commit();
-                mFrgBackList.add(0,fragment);
-//                setStatubarColor(R.string.oil, getResources().getColor(R.color.colorCyan), getResources().getColor(R
-//                        .color.colorCyanDark));
-
-                break;
-            case R.id.fab_2:
-                MaintenanceFragment mtFragment = new MaintenanceFragment();
-                getSupportFragmentManager().beginTransaction().add(R.id.fl_content,mtFragment)
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN).hide
-                        (mFrgMap.get(MainFragment.class.getSimpleName())).commit();
-                mFrgBackList.add(0,mtFragment);
-//                setStatubarColor(R.string.maintenance, getResources().getColor(R.color.colorPurple), getResources()
-//                        .getColor(R.color.colorPurpleDark));
-                break;
-//            case R.id.fab_3:
-////                ExpenseFragment exFragment = new ExpenseFragment();
-////                getSupportFragmentManager().beginTransaction().replace(R.id.fl_content, exFragment)
-////                        .addToBackStack(null).commit();
-//                mToolbar.setTitle(R.string.expense);
-//                mToolbar.setBackgroundColor(getResources().getColor(R.color.colorAmber));
-//
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//                    Window window = getWindow();
-//                    window.setStatusBarColor(getResources().getColor(R.color.colorAmberDark));
-//                    window.setNavigationBarColor(getResources().getColor(R.color.colorAmberDark));
-//                }
-//                break;
-        }
-
-        fabMenu.close(true);
-        fabMenu.setVisibility(View.GONE);
-
-    }
-
-//    public void setStatubarColor(int toolbarString, int color, int color2) {
-//        mToolbar.setTitle(toolbarString);
-//        mToolbar.setBackgroundColor(color);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            Window window = getWindow();
-//            window.setStatusBarColor(color2);
-//            window.setNavigationBarColor(color2);
-//        }
-//    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void msg(MsgMainFragment msg) {
-        if (msg.getFlag()==MsgMainFragment.UPDATE_AN_NEW_ONE_DATA){
-            getFabMenu();
+        if (msg.getFlag() == MsgMainFragment.UPDATE_AN_NEW_ONE_DATA) {
             mFrgBackList.remove(0);
         }
     }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void msg(MessageEvent msg) {
         switch (msg.getFlag()) {
             case MyConstant.SET_TOOLBAR:
-
                 break;
 
             case MyConstant.OPEN_DRAWER:
@@ -259,21 +161,77 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void getFabMenu() {
-        AlphaAnimation animation =new AlphaAnimation(0,1);
-        animation.setDuration(1000);
-        fabMenu.setVisibility(View.VISIBLE);
-        fabMenu.startAnimation(animation);
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
     }
 
-    public void addToBackStack(BaseFragment fragment){
-        mFrgBackList.add(0,fragment);
-        mFrgMap.put(fragment.getClass().getSimpleName(),fragment);
+
+    /** fragment 跳转逻辑封装
+     * @param fromClass
+     * @param toClass
+     * @param isRemove 是否移除from的fragment,false hide,true remove
+     * @param obj 为toFrag 赋值，用于点击条目修改已有数据时跳转
+     */
+    public void switchFrag(Class<? extends Fragment> fromClass, Class<? extends Fragment> toClass, boolean isRemove,Object obj) {
+        if (fromClass==toClass) return;
+        Fragment fromFrag = getSupportFragmentManager().findFragmentByTag(fromClass.getSimpleName());
+        Fragment toFrag = getSupportFragmentManager().findFragmentByTag(toClass.getSimpleName());
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+        if (fromFrag == null) try {
+            fromFrag = fromClass.newInstance();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (toFrag == null) {
+            try {
+                toFrag = toClass.newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            if (null!=obj){
+                if (obj instanceof Oil){
+                    ((OilFragment)toFrag).oil=(Oil)obj;
+                }else {
+                    ((MaintenanceFragment)toFrag).mt=(Maintenance) obj;
+                }
+            }
+            if (isRemove) {
+                transaction.remove(fromFrag).add(R.id.fl_content, toFrag, toClass.getSimpleName()).commit();
+                mFrgBackList.remove(0);
+            } else {
+                transaction.hide(fromFrag).add(R.id.fl_content, toFrag, toClass.getSimpleName()).commit();
+            }
+            //add frag,保存到回退栈
+            mFrgBackList.addFirst(toFrag);
+        } else {
+            if (null!=obj){
+                if (obj instanceof Oil){
+                    ((OilFragment)toFrag).oil=(Oil)obj;
+                }else {
+                    ((MaintenanceFragment)toFrag).mt=(Maintenance) obj;
+                }
+            }
+            if (isRemove) {
+                transaction.remove(fromFrag).show(toFrag).commit();
+                mFrgBackList.remove(0);
+            } else {
+                transaction.hide(fromFrag).show(toFrag).commit();
+            }
+            //show frag，保存到回退栈
+            int indexOf = mFrgBackList.indexOf(toFrag);
+            if (indexOf > -1){
+                mFrgBackList.remove(indexOf);
+                mFrgBackList.addFirst(toFrag);
+            }else {
+                mFrgBackList.addFirst(toFrag);
+            }
+        }
     }
+    public void switchFrag(Class<? extends Fragment> fromClass, Class<? extends Fragment> toClass, boolean isRemove) {
+        switchFrag(fromClass,toClass,isRemove,null);
+    }
+
 }

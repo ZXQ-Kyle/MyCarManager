@@ -2,6 +2,7 @@ package com.kyle.mycar.Fragment;
 
 
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +10,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
+import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.MainActivity;
 import com.kyle.mycar.R;
@@ -23,13 +24,10 @@ import com.kyle.mycar.db.Table.Maintenance;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.Record;
 import com.orhanobut.logger.Logger;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.List;
-
 import butterknife.BindView;
 
 /**
@@ -47,6 +45,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     private MultiAdapter mAdapter = new MultiAdapter(null);
     public static final int PAGE_SIZE = 8;
     private long pageCount = 0;
+    private int openRecordPosition =-1;
 
     @Override
     public View initView() {
@@ -57,9 +56,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void initData() {
-        mToolbar.inflateMenu(R.menu.toolbar_main);
-        initToolbar(R.string.history, R.color.colorPrimary, R.color.colorPrimaryDark, 1);
-        mToolbar.setOnMenuItemClickListener(this);
+        initToolbar(R.string.history, R.color.colorPrimary, R.color.colorPrimaryDark, 1,R.menu.toolbar_main,this);
 
         srl.setOnRefreshListener(this);
         recyclerView.setHasFixedSize(true);
@@ -73,21 +70,6 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         mAdapter.setOnItemChildClickListener(this);
         getData(0, MsgMainFragment.SET_ADAPTER);
 
-        new Thread() {
-            @Override
-            public void run() {
-                List list = MtDao.getInstance(mActivity).queryAll();
-                List list1 = MtTagDao.getInstance(mActivity).queryAll();
-                List list2 = OilDao.getInstance(mActivity).queryAll();
-                List list3 = OilTypeDao.getInstance(mActivity).queryAll();
-                List list4 = RecordDao.getInstance(mActivity).queryAll();
-                Logger.d(list);
-                Logger.d(list1);
-                Logger.d(list2);
-                Logger.d(list3);
-                Logger.d(list4);
-            }
-        }.start();
     }
 
     @Override
@@ -141,6 +123,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 mAdapter.setNewData(msg.getTag());
                 mAdapter.setEnableLoadMore(true);
                 srl.setRefreshing(false);
+                openRecordPosition=-1;
                 break;
             case MsgMainFragment.UPDATE_AN_NEW_ONE_DATA:
                 RecordDao dao = RecordDao.getInstance(mActivity);
@@ -149,6 +132,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                     mAdapter.addData(0, record);
                 }
                 recyclerView.smoothScrollToPosition(0);
+                openRecordPosition++;
                 break;
             case MsgMainFragment.LOAD_MORE:
                 mAdapter.loadMoreComplete();
@@ -164,6 +148,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 break;
             case MsgMainFragment.UPDATE_REFRESH:
                 mAdapter.setNewData(msg.getTag());
+                openRecordPosition=-1;
                 break;
 
         }
@@ -179,6 +164,20 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     // mAdapter.setOnItemClickListener(this);
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
+
+        if (openRecordPosition!=position){
+            openItem(position);
+            if (openRecordPosition!=-1){
+                openItem(openRecordPosition);
+            }
+            openRecordPosition=position;
+        }else if (openRecordPosition == position){
+            openItem(position);
+            openRecordPosition=-1;
+        }
+    }
+
+    public void openItem(int position) {
         Record record = mAdapter.getData().get(position);
         record.isVisible = !record.isVisible;
         mAdapter.notifyItemChanged(position);
@@ -225,29 +224,39 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 switch (record.getItemType()) {
                     case Record.FLAG_MT:
                         Maintenance mt = record.getMt();
-                        MaintenanceFragment fragment = new MaintenanceFragment();
-                        fragment.mt = mt;
-                        mActivity.getSupportFragmentManager().beginTransaction().hide(this).add(R.id.fl_content,
-                                fragment,fragment.getClass().getSimpleName()).commit();
-                        mActivity.addToBackStack(fragment);
+                        mActivity.switchFrag(MainFragment.class,MaintenanceFragment.class,false, mt);
+
+//                        MaintenanceFragment fragment = new MaintenanceFragment();
+//                        fragment.mt = mt;
+//                        mActivity.getSupportFragmentManager().beginTransaction().hide(this).add(R.id.fl_content,
+//                                fragment,fragment.getClass().getSimpleName()).commit();
+//                        mActivity.addToBackStack(fragment);
                         break;
                     case Record.FLAG_OIL:
                         Oil oil = record.getOil();
-                        OilFragment fragment1 = new OilFragment();
-                        fragment1.oil=oil;
-                        mActivity.getSupportFragmentManager().beginTransaction().hide(this).add(R.id.fl_content,
-                                fragment1,fragment1.getClass().getSimpleName()).commit();
-                        mActivity.addToBackStack(fragment1);
+                        mActivity.switchFrag(MainFragment.class,OilFragment.class,false,oil);
+
+//                        OilFragment fragment1 = new OilFragment();
+//                        fragment1.oil=oil;
+//                        mActivity.getSupportFragmentManager().beginTransaction().hide(this).add(R.id.fl_content,
+//                                fragment1,fragment1.getClass().getSimpleName()).commit();
+//                        mActivity.addToBackStack(fragment1);
                         break;
                 }
-                mActivity.fabMenu.setVisibility(View.GONE);
                 break;
         }
     }
 
     @Override
     public boolean onMenuItemClick(MenuItem item) {
-        Toast.makeText(mActivity, "", Toast.LENGTH_SHORT).show();
-        return false;
+        switch (item.getItemId()) {
+            case R.id.menu_main_oil:
+                mActivity.switchFrag(MainFragment.class,OilFragment.class,false);
+                break;
+            case R.id.menu_main_expense:
+                mActivity.switchFrag(MainFragment.class,OilFragment.class,false);
+                break;
+        }
+        return true;
     }
 }

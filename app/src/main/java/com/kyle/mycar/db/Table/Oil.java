@@ -45,6 +45,9 @@ public class Oil {
     @DatabaseField
     private String fuelC;
 
+    @DatabaseField
+    private String note;
+
     public Oil() {
     }
 
@@ -74,6 +77,14 @@ public class Oil {
         this.isForgetLast = isForgetLast;
         this.pricePerKm = pricePerKm;
         this.fuelC = fuelC;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public boolean isDelete() {
@@ -182,14 +193,16 @@ public class Oil {
 
 //    @Override
 //    public String toString() {
-//        return "Oil{" + "id=" + id + ", date=" + date + ", money='" + money + '\'' + ", price='" + price + '\'' + ", " +
-//                "quantity='" + quantity + '\'' + ", odometer='" + odometer + '\'' + ", oilType='" + oilType + '\'' +
-//                ", isFull=" + isFull + ", isForgetLast=" + isForgetLast + ", isDelete=" + isDelete + ", note='" +
-//                note + '\'' + ", pricePerKm='" + pricePerKm + '\'' + ", fuelC='" + fuelC + '\'' + '}';
+//        return "Oil{" + "id=" + id + ", isDelete=" + isDelete + '}';
 //    }
+
 
     @Override
     public String toString() {
-        return "Oil{" + "id=" + id + ", isDelete=" + isDelete + '}';
+        return "Oil{" + "id=" + id + ", date=" + date + ", money='" + money + '\'' + ", price='" + price + '\'' + ", " +
+                "quantity='" + quantity + '\'' + ", odometer='" + odometer + '\'' + ", oilType='" + oilType + '\'' +
+                ", isFull=" + isFull + ", isForgetLast=" + isForgetLast + ", isDelete=" + isDelete + ", reserve1='" +
+                reserve1 + '\'' + ", pricePerKm='" + pricePerKm + '\'' + ", fuelC='" + fuelC + '\'' + ", note='" +
+                note + '\'' + '}';
     }
 }

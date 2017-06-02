@@ -25,8 +25,9 @@ public class DbOpenHelper extends OrmLiteSqliteOpenHelper {
 
     private static DbOpenHelper instance;
 
+    //version 2 Table
     public DbOpenHelper(Context context) {
-        super(context, DB_NAME, null, 1);
+        super(context, DB_NAME, null, 2);
     }
 
     @Override
@@ -46,15 +47,16 @@ public class DbOpenHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         //更新数据库
-        try {
-            TableUtils.dropTable(connectionSource,Oil.class,true);
-            TableUtils.dropTable(connectionSource,OilType.class,true);
-            TableUtils.createTable(connectionSource, Maintenance.class);
-            TableUtils.createTable(connectionSource, MtTag.class);
-            onCreate(database,connectionSource);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+            if (oldVersion<2){
+                try {
+                    Dao<Oil, Integer> dao = getDao(Oil.class);
+                    dao.executeRaw("ALTER TABLE `Oil` ADD COLUMN note TEXT DEFAULT '';");
+
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
     }
 
     /**

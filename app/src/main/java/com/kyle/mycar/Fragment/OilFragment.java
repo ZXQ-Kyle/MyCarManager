@@ -2,6 +2,7 @@ package com.kyle.mycar.Fragment;
 
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -48,7 +49,7 @@ import butterknife.OnClick;
 
 /**
  */
-public class OilFragment extends BaseFragment {
+public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClickListener {
 
     private static final String OIL_PRICE = "oil_price";
     private static final String OIL_TYPE = "oil_type";
@@ -96,7 +97,7 @@ public class OilFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        initToolbar(R.string.oil, R.color.colorCyan, R.color.colorCyanDark, 2);
+        initToolbar(R.string.oil, R.color.colorCyan, R.color.colorCyanDark, 2,R.menu.toolbar_confirm,this);
         //spinner初始化
         OilTypeDao typeDao = OilTypeDao.getInstance(mActivity);
         Log.i("---", "typeDao: " + typeDao.toString());
@@ -338,5 +339,9 @@ public class OilFragment extends BaseFragment {
 
     }
 
-
+    //toolbar menu点击事件
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        return false;
+    }
 }

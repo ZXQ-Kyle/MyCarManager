@@ -1,24 +1,19 @@
 package com.kyle.mycar.Fragment;
 
 
+import android.content.Context;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 import com.chad.library.adapter.base.BaseQuickAdapter;
-import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.MsgMainFragment;
-import com.kyle.mycar.MainActivity;
 import com.kyle.mycar.R;
 import com.kyle.mycar.db.Dao.MtDao;
-import com.kyle.mycar.db.Dao.MtTagDao;
 import com.kyle.mycar.db.Dao.OilDao;
-import com.kyle.mycar.db.Dao.OilTypeDao;
 import com.kyle.mycar.db.Dao.RecordDao;
 import com.kyle.mycar.db.Table.Maintenance;
 import com.kyle.mycar.db.Table.Oil;
@@ -45,7 +40,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     private MultiAdapter mAdapter = new MultiAdapter(null);
     public static final int PAGE_SIZE = 8;
     private long pageCount = 0;
-    private int openRecordPosition =-1;
+    private int openRecordPosition = -1;
 
     @Override
     public View initView() {
@@ -56,7 +51,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void initData() {
-        initToolbar(R.string.history, R.color.colorPrimary, R.color.colorPrimaryDark, 1,R.menu.toolbar_main,this);
+        initToolbar(R.string.history, R.color.colorPrimary, R.color.colorPrimaryDark, 1, R.menu.toolbar_main, this);
 
         srl.setOnRefreshListener(this);
         recyclerView.setHasFixedSize(true);
@@ -68,8 +63,9 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         mAdapter.disableLoadMoreIfNotFullPage(recyclerView);
         mAdapter.setOnLoadMoreListener(this, recyclerView);
         mAdapter.setOnItemChildClickListener(this);
-        getData(0, MsgMainFragment.SET_ADAPTER);
-
+//        getData(0, MsgMainFragment.SET_ADAPTER);
+        mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(),0,MsgMainFragment.SET_ADAPTER));
+        pageCount=1;
     }
 
     @Override
@@ -77,35 +73,6 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         if (!hidden) {
             setStatubarColor(R.color.colorPrimary, R.color.colorPrimaryDark);
         }
-    }
-
-
-    /**
-     * @param off  刷新第一页，为0，其余设置pageCount
-     * @param what 获取数据后返回
-     */
-    private void getData(final long off, final int what) {
-        pageCount = off + 1;
-        new Thread() {
-            @Override
-            public void run() {
-                RecordDao dao = RecordDao.getInstance(mActivity);
-                long count = dao.countOf();
-                long maxLine = count - off * PAGE_SIZE;
-                if (maxLine <= 0) {
-                    //数据到底了，并且是上拉加载更多的情况,或者初次进入无数据
-                    if (what == MsgMainFragment.LOAD_MORE) {
-                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.LOAD_MORE_END));
-                    } else if (what == MsgMainFragment.SET_ADAPTER) {
-                        EventBus.getDefault().post(new MsgMainFragment(what));
-                    }
-                } else {
-                    List<Record> beanList = dao.queryOffestLimit(count - maxLine, PAGE_SIZE);
-                    Logger.d(beanList);
-                    EventBus.getDefault().post(new MsgMainFragment(what, beanList));
-                }
-            }
-        }.start();
     }
 
 
@@ -123,7 +90,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 mAdapter.setNewData(msg.getTag());
                 mAdapter.setEnableLoadMore(true);
                 srl.setRefreshing(false);
-                openRecordPosition=-1;
+                openRecordPosition = -1;
                 break;
             case MsgMainFragment.UPDATE_AN_NEW_ONE_DATA:
                 RecordDao dao = RecordDao.getInstance(mActivity);
@@ -144,11 +111,13 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 Logger.d("MsgMainFragment.LOAD_MORE_END");
                 break;
             case MsgMainFragment.UPDATE_AN_OLD_DATA:
-                getData(0, MsgMainFragment.UPDATE_REFRESH);
+//                getData(0, MsgMainFragment.UPDATE_REFRESH);
+                mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(),0,MsgMainFragment.UPDATE_REFRESH));
+                pageCount=1;
                 break;
             case MsgMainFragment.UPDATE_REFRESH:
                 mAdapter.setNewData(msg.getTag());
-                openRecordPosition=-1;
+                openRecordPosition = -1;
                 break;
 
         }
@@ -158,22 +127,24 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     public void onRefresh() {
         mAdapter.setEnableLoadMore(false);
-        getData(0, MsgMainFragment.REFRESH);
+//        getData(0, MsgMainFragment.REFRESH);
+        mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(),0,MsgMainFragment.REFRESH));
+        pageCount=1;
     }
 
     // mAdapter.setOnItemClickListener(this);
     @Override
     public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
 
-        if (openRecordPosition!=position){
+        if (openRecordPosition != position) {
             openItem(position);
-            if (openRecordPosition!=-1){
+            if (openRecordPosition != -1) {
                 openItem(openRecordPosition);
             }
-            openRecordPosition=position;
-        }else if (openRecordPosition == position){
+            openRecordPosition = position;
+        } else if (openRecordPosition == position) {
             openItem(position);
-            openRecordPosition=-1;
+            openRecordPosition = -1;
         }
     }
 
@@ -186,7 +157,9 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     // mAdapter.setOnLoadMoreListener(this,recyclerView);
     @Override
     public void onLoadMoreRequested() {
-        getData(pageCount, MsgMainFragment.LOAD_MORE);
+//        getData(pageCount, MsgMainFragment.LOAD_MORE);
+        mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(),pageCount,MsgMainFragment.LOAD_MORE));
+        pageCount++;
     }
 
     //mAdapter.setOnItemChildClickListener(this);
@@ -224,7 +197,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 switch (record.getItemType()) {
                     case Record.FLAG_MT:
                         Maintenance mt = record.getMt();
-                        mActivity.switchFrag(MainFragment.class,MaintenanceFragment.class,false, mt);
+                        mActivity.switchFrag(MainFragment.class, MaintenanceFragment.class, false, mt);
 
 //                        MaintenanceFragment fragment = new MaintenanceFragment();
 //                        fragment.mt = mt;
@@ -234,7 +207,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                         break;
                     case Record.FLAG_OIL:
                         Oil oil = record.getOil();
-                        mActivity.switchFrag(MainFragment.class,OilFragment.class,false,oil);
+                        mActivity.switchFrag(MainFragment.class, OilFragment.class, false, oil);
 
 //                        OilFragment fragment1 = new OilFragment();
 //                        fragment1.oil=oil;
@@ -251,12 +224,46 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_main_oil:
-                mActivity.switchFrag(MainFragment.class,OilFragment.class,false);
+                mActivity.switchFrag(MainFragment.class, OilFragment.class, false);
                 break;
             case R.id.menu_main_expense:
-                mActivity.switchFrag(MainFragment.class,OilFragment.class,false);
+                mActivity.switchFrag(MainFragment.class, MaintenanceFragment.class, false);
                 break;
         }
         return true;
+    }
+
+
+    private static class getDataRun implements Runnable {
+        private Context mContext;
+        private long mOff;
+        private int mWhat;
+        /**
+         * @param off  刷新第一页，为0，其余设置pageCount
+         * @param what 获取数据后返回
+         */
+        public getDataRun(Context context, long off, int what) {
+            mContext = context;
+            mOff = off;
+            mWhat = what;
+        }
+        @Override
+        public void run() {
+//            pageCount = off + 1;
+            RecordDao dao = RecordDao.getInstance(mContext);
+            long count = dao.countOf();
+            long maxLine = count - mOff * PAGE_SIZE;
+            if (maxLine <= 0) {
+                //数据到底了，并且是上拉加载更多的情况,或者初次进入无数据
+                if (mWhat == MsgMainFragment.LOAD_MORE) {
+                    EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.LOAD_MORE_END));
+                } else if (mWhat == MsgMainFragment.SET_ADAPTER) {
+                    EventBus.getDefault().post(new MsgMainFragment(mWhat));
+                }
+            } else {
+                List<Record> beanList = dao.queryOffestLimit(count - maxLine, PAGE_SIZE);
+                EventBus.getDefault().post(new MsgMainFragment(mWhat, beanList));
+            }
+        }
     }
 }

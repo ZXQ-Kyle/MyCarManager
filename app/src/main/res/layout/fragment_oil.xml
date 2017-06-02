@@ -1,163 +1,167 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical"
-            tools:context="com.kyle.mycar.Fragment.OilFragment"
-    >
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-
-        <include layout="@layout/app_bar"/>
-
-        <com.kyle.mycar.View.ImgAndEtView
-            android:id="@+id/iae_date"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/oil_fragment_item_height"
-            app:unEditable="true"
-            android:layout_marginTop="8dp"
-            app:drawableColor="@color/colorCyan"
-            app:iconLeft="@drawable/date"/>
-
-        <com.kyle.mycar.View.ImgAndEtView
-            android:id="@+id/iae_odometer"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/oil_fragment_item_height"
-            app:drawableColor="@color/colorCyan"
-            app:hint="里程表(KM)"
-            app:iconLeft="@drawable/odometer"/>
-
-        <RelativeLayout
-            style="@style/OilFragmentLineatLyout"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/oil_fragment_item_height">
-
-            <ImageView
-                android:id="@+id/iv_oil_oilcan"
-                style="@style/OilFragmentImageView"
-                android:layout_centerVertical="true"
-                android:src="@drawable/oilcan"
-                android:tint="@color/colorCyan"
-                android:tintMode="multiply"
-                />
-
-            <android.support.v7.widget.AppCompatSpinner
-                android:id="@+id/spinner_oil"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                xmlns:tools="http://schemas.android.com/tools"
                 android:layout_width="match_parent"
-                android:layout_height="36dp"
-                android:layout_centerVertical="true"
-                android:layout_toRightOf="@id/iv_oil_oilcan"
-                android:textAlignment="center"/>
+                android:layout_height="match_parent"
+                android:scrollbars="vertical"
+                tools:context="com.kyle.mycar.Fragment.OilFragment"
+    >
+    <include layout="@layout/app_bar"/>
 
-        </RelativeLayout>
+    <ScrollView
+        android:layout_below="@id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 
         <LinearLayout
-            style="@style/OilFragmentLineatLyout"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/oil_fragment_item_height"
-            android:gravity="center_vertical"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
             >
 
-            <ImageView
-                android:id="@+id/iv_oil_money"
-                style="@style/OilFragmentImageView"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/money"
-                android:tint="@color/colorCyan"
-                android:tintMode="multiply"/>
 
-            <EditText
-                android:id="@+id/et_oil_money"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/oil_money"
-                android:inputType="numberDecimal"
-                android:textAlignment="center"/>
 
-            <EditText
-                android:id="@+id/et_oil_price"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:hint="@string/oil_price"
-                android:inputType="numberDecimal"
-                android:textAlignment="center"/>
+            <com.kyle.mycar.View.ImgAndEtView
+                android:id="@+id/iae_date"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/oil_fragment_item_height"
+                android:layout_marginTop="8dp"
+                app:drawableColor="@color/colorCyan"
+                app:iconLeft="@drawable/date"
+                app:unEditable="true"/>
 
-            <EditText
-                android:id="@+id/et_oil_quantity"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:editable="false"
-                android:hint="@string/oil_quantity"
-                android:textAlignment="center"/>
+            <com.kyle.mycar.View.ImgAndEtView
+                android:id="@+id/iae_odometer"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/oil_fragment_item_height"
+                app:drawableColor="@color/colorCyan"
+                app:hint="里程表(KM)"
+                app:iconLeft="@drawable/odometer"/>
+
+            <RelativeLayout
+                style="@style/OilFragmentLineatLyout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/oil_fragment_item_height">
+
+                <ImageView
+                    android:id="@+id/iv_oil_oilcan"
+                    style="@style/OilFragmentImageView"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/oilcan"
+                    android:tint="@color/colorCyan"
+                    android:tintMode="multiply"
+                    />
+
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/spinner_oil"
+                    android:layout_width="match_parent"
+                    android:layout_height="36dp"
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@id/iv_oil_oilcan"
+                    android:textAlignment="center"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                style="@style/OilFragmentLineatLyout"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/oil_fragment_item_height"
+                android:gravity="center_vertical"
+                >
+
+                <ImageView
+                    android:id="@+id/iv_oil_money"
+                    style="@style/OilFragmentImageView"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/money"
+                    android:tint="@color/colorCyan"
+                    android:tintMode="multiply"/>
+
+                <EditText
+                    android:id="@+id/et_oil_money"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/oil_money"
+                    android:inputType="numberDecimal"
+                    android:textAlignment="center"/>
+
+                <EditText
+                    android:id="@+id/et_oil_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/oil_price"
+                    android:inputType="numberDecimal"
+                    android:textAlignment="center"/>
+
+                <EditText
+                    android:id="@+id/et_oil_quantity"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:editable="false"
+                    android:hint="@string/oil_quantity"
+                    android:textAlignment="center"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/oil_fragment_item_height">
+
+                <com.kyle.mycar.View.ImgAndEtView
+                    android:id="@+id/iae_full_oil"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:drawableColor="@color/colorCyan"
+                    app:iconLeft="@drawable/oilcan"
+                    app:text="本次邮箱是否加满？"
+                    app:unEditable="true"/>
+
+                <CheckBox
+                    android:id="@+id/cb_oil_is_full"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="24dp"/>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/oil_fragment_item_height">
+
+                <com.kyle.mycar.View.ImgAndEtView
+                    android:id="@+id/iae_warning"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:drawableColor="@color/colorCyan"
+                    app:iconLeft="@drawable/warning"
+                    app:text="忘记记录上次加油？"
+                    app:unEditable="true"/>
+
+                <CheckBox
+                    android:id="@+id/cb_oil_forget_last"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="24dp"/>
+            </RelativeLayout>
+
+            <com.kyle.mycar.View.ImgAndEtView
+                android:id="@+id/iae_note"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/oil_fragment_item_height"
+                android:layout_marginTop="8dp"
+
+                app:drawableColor="@color/colorCyan"
+                app:iconLeft="@drawable/note"/>
+
 
         </LinearLayout>
+    </ScrollView>
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/oil_fragment_item_height">
 
-            <com.kyle.mycar.View.ImgAndEtView
-                android:id="@+id/iae_full_oil"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:drawableColor="@color/colorCyan"
-                app:iconLeft="@drawable/oilcan"
-                app:text="本次邮箱是否加满？"
-                app:unEditable="true"/>
-
-            <CheckBox
-                android:id="@+id/cb_oil_is_full"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="24dp"/>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/oil_fragment_item_height">
-
-            <com.kyle.mycar.View.ImgAndEtView
-                android:id="@+id/iae_warning"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:drawableColor="@color/colorCyan"
-                app:iconLeft="@drawable/warning"
-                app:text="忘记记录上次加油？"
-                app:unEditable="true"/>
-
-            <CheckBox
-                android:id="@+id/cb_oil_forget_last"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="24dp"/>
-        </RelativeLayout>
-
-        <com.kyle.mycar.View.ImgAndEtView
-            android:id="@+id/iae_note"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/oil_fragment_item_height"
-            android:layout_marginTop="8dp"
-
-            app:drawableColor="@color/colorCyan"
-            app:iconLeft="@drawable/note"/>
-
-        <Button
-            android:id="@+id/btn_confirm"
-            style="@style/btn_confirm"
-            android:elevation="10dp"
-            android:textColor="@color/colorCyan"/>
-
-    </LinearLayout>
-</ScrollView>
+</RelativeLayout>

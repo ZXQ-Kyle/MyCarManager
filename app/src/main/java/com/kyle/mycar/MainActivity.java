@@ -1,5 +1,6 @@
 package com.kyle.mycar;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.design.widget.NavigationView;
@@ -28,6 +29,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar mToolbar;
     public DrawerLayout drawer;
     public LinkedList<Fragment> mFrgBackList;
+    public ExecutorService mThreadPool = Executors.newFixedThreadPool(5);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,12 +50,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initData();
         initView();
-        new Thread() {
-            @Override
-            public void run() {
-                initDb();
-            }
-        }.start();
+        if (!SpUtils.getboolean(this.getApplicationContext(), MyConstant.First_IN)) {
+            mThreadPool.execute(new initDb(this.getApplicationContext()));
+        }
+
     }
 
     @Override
@@ -65,21 +68,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initDb() {
-        if (!SpUtils.getboolean(this, MyConstant.First_IN)) {
-            OilTypeDao typeDao = OilTypeDao.getInstance(this);
-            String[] strings = getResources().getStringArray(R.array.spinner_oil);
-            for (int i = 0; i < strings.length; i++) {
-                int add = typeDao.add(new OilType(strings[i]));
-            }
 
-            MtTagDao tagDao = MtTagDao.getInstance(this);
-            String[] stringArray = getResources().getStringArray(R.array.tags);
-            for (int i = 0; i < stringArray.length; i++) {
-                tagDao.add(new MtTag(stringArray[i]));
-            }
-
-            SpUtils.putboolean(this, MyConstant.First_IN, true);
-        }
 
     }
 
@@ -232,6 +221,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     public void switchFrag(Class<? extends Fragment> fromClass, Class<? extends Fragment> toClass, boolean isRemove) {
         switchFrag(fromClass,toClass,isRemove,null);
+    }
+
+    private static class initDb implements Runnable{
+        private Context mContext;
+        public initDb(Context context) {
+            mContext=context;
+        }
+        @Override
+        public void run() {
+                OilTypeDao typeDao = OilTypeDao.getInstance(mContext);
+                String[] strings = mContext.getResources().getStringArray(R.array.spinner_oil);
+                for (int i = 0; i < strings.length; i++) {
+                    int add = typeDao.add(new OilType(strings[i]));
+                }
+
+                MtTagDao tagDao = MtTagDao.getInstance(mContext);
+                String[] stringArray = mContext.getResources().getStringArray(R.array.tags);
+                for (int i = 0; i < stringArray.length; i++) {
+                    tagDao.add(new MtTag(stringArray[i]));
+                }
+
+                SpUtils.putboolean(mContext, MyConstant.First_IN, true);
+        }
     }
 
 }

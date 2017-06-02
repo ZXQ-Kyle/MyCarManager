@@ -4,9 +4,9 @@ package com.kyle.mycar.Fragment;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-
 import com.j256.ormlite.misc.TransactionManager;
 import com.jackuhan.flowlayouttags.FlowlayoutTags;
 import com.kyle.mycar.Bean.MessageEvent;
@@ -22,18 +22,13 @@ import com.kyle.mycar.db.DbOpenHelper;
 import com.kyle.mycar.db.Table.Maintenance;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.Record;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
-
 import butterknife.BindView;
 import butterknife.OnClick;
 
@@ -63,7 +58,7 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
 
     @Override
     public void initData() {
-        initToolbar(R.string.expense, R.color.colorPurple, R.color.colorPurpleDark, 2,R.menu.toolbar_confirm,this);
+        initToolbar(R.string.expense, R.color.colorPurple, R.color.colorPurpleDark, 2, R.menu.toolbar_confirm, this);
         //设置日期默认为当前时间
         mDate = MyDateUtils.longToStr(System.currentTimeMillis());
         iaeMtDate.setText(mDate);
@@ -86,21 +81,10 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
             }
         }
         refreshCategorys(tagsMt, tagList);
-//        tagsMt.setOnTagChangeListener(new FlowlayoutTags.OnTagChangeListener() {
-//            @Override
-//            public void onAppend(FlowlayoutTags flowlayoutTags, String tag) {
-//                Snackbar.make(getView(), "onAppend" + tag, Snackbar.LENGTH_LONG).show();
-//            }
-//
-//            @Override
-//            public void onDelete(FlowlayoutTags flowlayoutTags, String tag) {
-//                Snackbar.make(getView(), "onDelete" + tag, Snackbar.LENGTH_LONG).show();
-//            }
-//        });
 
         //初始化数据
         if (mt != null) {
-            mDate= MyDateUtils.longToStr(mt.getDate());
+            mDate = MyDateUtils.longToStr(mt.getDate());
             iaeMtDate.setText(mDate);
             iaeMtMoney.setText(mt.getMoney());
             iaeMtOdometer.setText(mt.getOdometer());
@@ -128,25 +112,11 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
         flowlayoutTags.setTagsUncheckedColorAnimal(false);
     }
 
-    @OnClick({R.id.iae_mt_date, R.id.btn_confirm})
+    @OnClick({R.id.iae_mt_date})
     public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.iae_mt_date:
-                DatePickerDialogFragment dialogFragment = DatePickerDialogFragment.newInstance(MyConstant
-                        .MT_FRAGMENT_RETURN_DATE, MyConstant.MT_FRAGMENT_RETURN_TIME);
-                dialogFragment.show(getFragmentManager(), "mtDate");
-                break;
-            case R.id.btn_confirm:
-                saveData();
-                getFragmentManager().beginTransaction().remove(this).
-                        show(getFragmentManager().findFragmentByTag(MainFragment.class.getSimpleName())).commit();
-                if (mt!=null){
-                    EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA));
-                }else {
-                    EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA));
-                }
-                break;
-        }
+        DatePickerDialogFragment dialogFragment = DatePickerDialogFragment.newInstance(MyConstant
+                .MT_FRAGMENT_RETURN_DATE, MyConstant.MT_FRAGMENT_RETURN_TIME);
+        dialogFragment.show(getFragmentManager(), "mtDate");
     }
 
     //事务保存
@@ -221,6 +191,30 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
     //toolbar menu点击事件
     @Override
     public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.menu_confirm) {
+            String money = iaeMtMoney.getText();
+            String odometer = iaeMtOdometer.getText();
+            if (TextUtils.isEmpty(money)||TextUtils.isEmpty(odometer)) {
+                Snackbar.make(getView(),R.string.err_empty_data,Snackbar.LENGTH_LONG).show();
+                return true;
+            }
+            money=null;
+            odometer=null;
+            mActivity.mThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    saveData();
+
+                    if (mt != null) {
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA));
+                    } else {
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA));
+                    }
+                    mActivity.switchFrag(MaintenanceFragment.class, MainFragment.class, true);
+                }
+            });
+            return true;
+        }
         return false;
     }
 }

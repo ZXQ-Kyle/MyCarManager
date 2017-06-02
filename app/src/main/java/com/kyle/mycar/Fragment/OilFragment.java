@@ -1,6 +1,6 @@
 package com.kyle.mycar.Fragment;
 
-import android.support.v4.app.Fragment;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -10,11 +10,9 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
-
 import com.j256.ormlite.misc.TransactionManager;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.MsgMainFragment;
@@ -31,11 +29,9 @@ import com.kyle.mycar.db.DbOpenHelper;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
 import com.kyle.mycar.db.Table.Record;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -65,8 +61,6 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
     ImgAndEtView iaeDate;
     @BindView(R.id.iae_odometer)
     ImgAndEtView iaeOdometer;
-    //    @BindView(R.id.iv_oil_money)
-//    ImageView ivOilMoney;
     @BindView(R.id.et_oil_money)
     EditText etOilMoney;
     @BindView(R.id.et_oil_price)
@@ -75,14 +69,13 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
     EditText etOilQuantity;
     @BindView(R.id.iae_note)
     ImgAndEtView iaeNote;
-    @BindView(R.id.btn_confirm)
-    Button btnConfirm;
     @BindView(R.id.cb_oil_is_full)
     CheckBox cbOilIsFull;
     @BindView(R.id.cb_oil_forget_last)
     CheckBox cbOilForgetLast;
-    private String mDate;
 
+
+    private String mDate;
     public Oil oil;
 
     @Override
@@ -97,7 +90,7 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
 
     @Override
     public void initData() {
-        initToolbar(R.string.oil, R.color.colorCyan, R.color.colorCyanDark, 2,R.menu.toolbar_confirm,this);
+        initToolbar(R.string.oil, R.color.colorCyan, R.color.colorCyanDark, 2, R.menu.toolbar_confirm, this);
         //spinner初始化
         OilTypeDao typeDao = OilTypeDao.getInstance(mActivity);
         Log.i("---", "typeDao: " + typeDao.toString());
@@ -200,33 +193,9 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
 
 
     //视图点击事件
-    @OnClick({R.id.iae_date, R.id.btn_confirm})
+    @OnClick({R.id.iae_date})
     public void onViewClicked(View view) {
-        switch (view.getId()) {
-            case R.id.iae_date:
-                showDatePicker();
-                break;
-            case R.id.btn_confirm:
-                new Thread() {
-                    @Override
-                    public void run() {
-                        saveData();
-
-                        if (oil == null) {
-                            EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA));
-                        } else {
-                            EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA));
-                        }
-                        Fragment fragment = getFragmentManager().findFragmentByTag(MainFragment.class.getSimpleName());
-                        if (fragment == null) {
-                            fragment = new MainFragment();
-                        }
-                        getFragmentManager().beginTransaction().remove(mActivity.getSupportFragmentManager()
-                                .findFragmentByTag(OilFragment.class.getSimpleName())).show(fragment).commit();
-                    }
-                }.start();
-                break;
-        }
+        showDatePicker();
     }
 
     private void saveData() {
@@ -235,24 +204,20 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
         Callable<Boolean> callable = new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                transactionSave();
+                save();
                 return true;
             }
         };
         try {
             manager.callInTransaction(callable);
-            if (getActivity() != null) {
-//                Snackbar.make(, getString(R.string.sucess), Snackbar.LENGTH_SHORT).show();
-            }
+                Snackbar.make(getView(), getString(R.string.sucess), Snackbar.LENGTH_SHORT).show();
         } catch (SQLException e) {
             e.printStackTrace();
-            if (getActivity() != null) {
-//                Snackbar.make(, getString(R.string.fail), Snackbar.LENGTH_SHORT).show();
-            }
+                Snackbar.make(getView(), getString(R.string.fail), Snackbar.LENGTH_SHORT).show();
         }
     }
 
-    private void transactionSave() {
+    private void save() {
         long date = MyDateUtils.strToLong(mDate);
         String OdometerText = iaeOdometer.getText();
         String oilType = spinnerOil.getSelectedItem().toString();
@@ -264,7 +229,6 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
         String noteText = iaeNote.getText();
         String fuel = null;
         String pricePerKm = null;
-
 
         if (oil == null) {
             //保存数据，下次进入自动读取
@@ -294,12 +258,12 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
                 List<Oil> list = null;
                 if (oil == null) {
 
-                    list = oilDao.queryBetween("date",oilPre.getDate()+1, date-1);
+                    list = oilDao.queryBetween("date", oilPre.getDate() + 1, date - 1);
                 } else {
-                    list = oilDao.queryBetween("date", oilPre.getDate()+1, oil.getDate()-1);
+                    list = oilDao.queryBetween("date", oilPre.getDate() + 1, oil.getDate() - 1);
                 }
 
-                if (list!=null && list.size() > 0) {
+                if (list != null && list.size() > 0) {
                     for (Oil oil : list) {
                         quantity = CalcUtils.appendBigDecimal(quantity, oil.getQuantity());
                         sumMoney = CalcUtils.appendBigDecimal(sumMoney, oil.getMoney());
@@ -342,6 +306,31 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
     //toolbar menu点击事件
     @Override
     public boolean onMenuItemClick(MenuItem item) {
+        if (item.getItemId() == R.id.menu_confirm) {
+            String money = etOilMoney.getText().toString();
+            String odometer = iaeOdometer.getText();
+            if (TextUtils.isEmpty(money)||TextUtils.isEmpty(odometer)) {
+                Snackbar.make(getView(),R.string.err_empty_data,Snackbar.LENGTH_LONG).show();
+                return true;
+            }
+            money=null;
+            odometer=null;
+            mActivity.mThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+                    saveData();
+                    if (oil == null) {
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA));
+                    } else {
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA));
+                    }
+
+                    mActivity.switchFrag(OilFragment.class, MainFragment.class, true);
+                }
+            });
+            return true;
+        }
         return false;
     }
+
 }

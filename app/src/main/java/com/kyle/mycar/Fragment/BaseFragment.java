@@ -6,24 +6,18 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.animation.Animation;
-
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.MainActivity;
 import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.R;
 import com.labo.kaji.fragmentanimations.MoveAnimation;
-import com.labo.kaji.fragmentanimations.SidesAnimation;
-
 import org.greenrobot.eventbus.EventBus;
-
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 

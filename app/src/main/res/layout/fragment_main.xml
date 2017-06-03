@@ -3,7 +3,7 @@
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="#23255444"
+              android:background="@android:color/transparent"
               android:fitsSystemWindows="true"
               android:orientation="vertical"
               tools:context="com.kyle.mycar.Fragment.MainFragment">
@@ -12,12 +12,14 @@
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/srl"
+        android:background="@android:color/transparent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
+            android:background="@android:color/transparent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />

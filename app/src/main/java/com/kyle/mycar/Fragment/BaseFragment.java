@@ -2,6 +2,7 @@ package com.kyle.mycar.Fragment;
 
 
 import android.app.Activity;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.MainActivity;
@@ -31,7 +33,6 @@ public abstract class BaseFragment extends Fragment {
     public Toolbar mToolbar;
 
     public BaseFragment() {
-        // Required empty public constructor
     }
 
     @Nullable
@@ -40,26 +41,21 @@ public abstract class BaseFragment extends Fragment {
             savedInstanceState) {
         EventBus.getDefault().register(this);
         View view = initView();
+
         unbinder = ButterKnife.bind(this, view);
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
-//        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbar);
-        //调用Fragment的onCreateOptionsMenu()
-//        setHasOptionsMenu(true);
-        //设置点击开启左边栏
+
         return view;
     }
 
     /**
      * 初始化Toolbar，必须放到initData中
-     *
-     * @param strID  标题
-     * @param color  颜色 浅
-     * @param color2 颜色 深
+     *  @param strID  标题
      * @param flag   1左边栏导航式样，2返回式样
      * @param menuId      0 不生成菜单
      * @param listener      监听
      */
-    protected void initToolbar(int strID, int color, int color2, int flag,int menuId,Toolbar.OnMenuItemClickListener listener) {
+    protected void initToolbar(int strID, int flag, int menuId, Toolbar.OnMenuItemClickListener listener) {
         if (flag == 1) {
             mToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
             mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -78,21 +74,20 @@ public abstract class BaseFragment extends Fragment {
             });
         }
         mToolbar.setTitle(strID);
-        mToolbar.setBackgroundColor(getResources().getColor(color));
-        setStatubarColor(color, color2);
+        mToolbar.setBackgroundResource(R.drawable.toolbar);
         if (menuId !=0){
             mToolbar.inflateMenu(menuId);
         }
         mToolbar.setOnMenuItemClickListener(listener);
     }
 
-    protected void setStatubarColor(int color, int color2) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = mActivity.getWindow();
-            window.setNavigationBarColor(getResources().getColor(color));
-            window.setStatusBarColor(getResources().getColor(color2));
-        }
-    }
+//    protected void setStatubarColor(int color, int color2) {
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            Window window = mActivity.getWindow();
+//            window.setNavigationBarColor(getResources().getColor(color));
+//            window.setStatusBarColor(getResources().getColor(color2));
+//        }
+//    }
 
 
     @Override

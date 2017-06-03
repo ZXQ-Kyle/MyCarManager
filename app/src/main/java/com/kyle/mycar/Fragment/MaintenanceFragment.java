@@ -58,7 +58,7 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
 
     @Override
     public void initData() {
-        initToolbar(R.string.expense, R.color.colorPurple, R.color.colorPurpleDark, 2, R.menu.toolbar_confirm, this);
+        initToolbar(R.string.expense, 2, R.menu.toolbar_confirm, this);
         //设置日期默认为当前时间
         mDate = MyDateUtils.longToStr(System.currentTimeMillis());
         iaeMtDate.setText(mDate);

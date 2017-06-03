@@ -24,4 +24,9 @@
         <item>其他</item>
     </string-array>
 
+    <string-array name="settings">
+        <item>汽车管理</item>
+        <item>燃料</item>
+        <item>开支</item>
+    </string-array>
 </resources>

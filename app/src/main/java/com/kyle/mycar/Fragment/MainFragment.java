@@ -51,8 +51,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     @Override
     public void initData() {
-        initToolbar(R.string.history, R.color.colorPrimary, R.color.colorPrimaryDark, 1, R.menu.toolbar_main, this);
-
+        initToolbar(R.string.history, 1, R.menu.toolbar_main, this);
         srl.setOnRefreshListener(this);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false);
@@ -63,16 +62,9 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         mAdapter.disableLoadMoreIfNotFullPage(recyclerView);
         mAdapter.setOnLoadMoreListener(this, recyclerView);
         mAdapter.setOnItemChildClickListener(this);
-//        getData(0, MsgMainFragment.SET_ADAPTER);
         mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(),0,MsgMainFragment.SET_ADAPTER));
         pageCount=1;
-    }
 
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        if (!hidden) {
-            setStatubarColor(R.color.colorPrimary, R.color.colorPrimaryDark);
-        }
     }
 
 

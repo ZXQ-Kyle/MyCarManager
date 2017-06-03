@@ -18,7 +18,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.utils.Utils;
 import com.kyle.mycar.Bean.MsgChart;
 import com.kyle.mycar.R;
-import com.kyle.mycar.View.MyMarkerView;
 import com.kyle.mycar.db.Dao.RecordDao;
 import com.kyle.mycar.db.Table.Record;
 import org.greenrobot.eventbus.EventBus;
@@ -52,7 +51,7 @@ public class ChartFragment extends BaseFragment {
     public void initData() {
         Thread thread = new Thread(new getChartData(mActivity));
         thread.start();
-        initToolbar(R.string.chart, R.color.Blue100, R.color.Blue300, 1,0,null);
+        initToolbar(R.string.chart, 1,0,null);
         initChart();
     }
 
@@ -135,13 +134,6 @@ public class ChartFragment extends BaseFragment {
         }
         mChart.invalidate();
 
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        if (!hidden) {
-            setStatubarColor(R.color.Blue100, R.color.Blue300);
-        }
     }
 
     static class getChartData implements Runnable {

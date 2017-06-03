@@ -90,7 +90,7 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
 
     @Override
     public void initData() {
-        initToolbar(R.string.oil, R.color.colorCyan, R.color.colorCyanDark, 2, R.menu.toolbar_confirm, this);
+        initToolbar(R.string.oil, 2, R.menu.toolbar_confirm, this);
         //spinner初始化
         OilTypeDao typeDao = OilTypeDao.getInstance(mActivity);
         Log.i("---", "typeDao: " + typeDao.toString());

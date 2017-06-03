@@ -3,42 +3,32 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:checked="true"
             android:id="@+id/nav_history"
+            android:checked="true"
             android:icon="@drawable/ic_menu_camera"
             android:title="@string/history"/>
         <item
             android:id="@+id/nav_chart"
             android:icon="@drawable/ic_show_chart"
             android:title="@string/statistics"/>
-    </group>
-
-    <group android:id="@+id/nav_group2"
-        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_oil"
             android:icon="@drawable/oil"
             android:title="@string/oil"/>
-        <!--<item-->
-            <!--android:id="@+id/nav_maintenance"-->
-            <!--android:icon="@drawable/ic_menu_gallery"-->
-            <!--android:title="@string/maintenance"/>-->
-        <item
-            android:id="@+id/nav_expenses"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="@string/expense"/>
     </group>
 
     <item android:title="@string/about">
         <menu>
-            <item
-                android:id="@+id/nav_setting"
-                android:icon="@drawable/ic_settings"
-                android:title="@string/setting"/>
-            <item
-                android:id="@+id/nav_about"
-                android:icon="@drawable/ic_menu_send"
-                android:title="@string/about"/>
+            <group android:checkableBehavior="single">
+                <item
+                    android:id="@+id/nav_setting"
+                    android:icon="@drawable/ic_settings"
+                    android:title="@string/setting"/>
+                <item
+                    android:id="@+id/nav_about"
+                    android:icon="@drawable/ic_menu_send"
+                    android:title="@string/about"/>
+            </group>
         </menu>
     </item>
 

@@ -147,9 +147,9 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment {
     }
 
     private void postMessage(String str, int OilFragmentConstant) {
-        MessageEvent msg = new MessageEvent();
-        msg.setMsg(str.toString());
-        msg.setFlag(OilFragmentConstant);
-        EventBus.getDefault().post(msg);
+//        MessageEvent msg = new MessageEvent();
+//        msg.setMsg(str.toString());
+//        msg.setFlag(OilFragmentConstant);
+        EventBus.getDefault().post(new MessageEvent(str.toString(),OilFragmentConstant));
     }
 }

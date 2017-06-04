@@ -93,7 +93,6 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
         initToolbar(R.string.oil, 2, R.menu.toolbar_confirm, this);
         //spinner初始化
         OilTypeDao typeDao = OilTypeDao.getInstance(mActivity);
-        Log.i("---", "typeDao: " + typeDao.toString());
         List<OilType> list = typeDao.queryAllButIsDelete("id", true);
         ArrayList<String> spinnerStr = new ArrayList<>();
         for (OilType type : list) {

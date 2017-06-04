@@ -12,6 +12,7 @@ import android.view.View;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.R;
+import com.kyle.mycar.View.MyItemDecoration;
 import com.kyle.mycar.db.Dao.MtDao;
 import com.kyle.mycar.db.Dao.OilDao;
 import com.kyle.mycar.db.Dao.RecordDao;
@@ -56,6 +57,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
+//        recyclerView.addItemDecoration(new MyItemDecoration(mActivity));
         mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
         mAdapter.isFirstOnly(false);
         mAdapter.setOnItemClickListener(this);
@@ -73,9 +75,10 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         switch (msg.getFlag()) {
             case MsgMainFragment.SET_ADAPTER:
                 if (mAdapter == null) {
-                    mAdapter = new MultiAdapter(null);
+                    mAdapter = new MultiAdapter(msg.getTag());
+                }else {
+                    mAdapter.setNewData(msg.getTag());
                 }
-                mAdapter.setNewData(msg.getTag());
                 recyclerView.setAdapter(mAdapter);
                 break;
             case MsgMainFragment.REFRESH:

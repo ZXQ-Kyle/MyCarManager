@@ -29,4 +29,15 @@
         <item>燃料</item>
         <item>开支</item>
     </string-array>
+
+    <integer-array name="color">
+        <item>@color/Blue300</item>
+        <item>@color/colorAmber500</item>
+        <item>@color/lightGreen200</item>
+        <item>@color/colorAccent</item>
+        <item>@color/b2</item>
+        <item>@color/BlueGray</item>
+    </integer-array>
+
+
 </resources>

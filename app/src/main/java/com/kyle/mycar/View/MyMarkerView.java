@@ -23,7 +23,7 @@ public class MyMarkerView extends MarkerView {
         tv = (TextView) findViewById(R.id.tv_markerView);
     }
 
-    // callbacks everytime the MarkerView is redrawn, can be used to update the
+    // callbacks everytime the MarkerView is redrawn, can be used to selector_update the
     // content (user-interface)
     @Override
     public void refreshContent(Entry e, Highlight highlight) {

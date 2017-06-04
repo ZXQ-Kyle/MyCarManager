@@ -41,7 +41,6 @@ public abstract class BaseFragment extends Fragment {
             savedInstanceState) {
         EventBus.getDefault().register(this);
         View view = initView();
-
         unbinder = ButterKnife.bind(this, view);
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
 

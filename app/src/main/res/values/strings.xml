@@ -30,4 +30,5 @@
     <string name="delete_sucess">删除成功</string>
     <string name="chart">油耗表</string>
     <string name="err_empty_data">请输入数据</string>
+    <string name="oil_type">燃料种类</string>
 </resources>

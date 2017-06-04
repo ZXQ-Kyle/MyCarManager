@@ -1,5 +1,7 @@
 package com.kyle.mycar.Bean;
 
+import android.graphics.Bitmap;
+
 /**
  * eventbus bean
  * Created by Zhang on 2017/5/4.

@@ -1,36 +1,23 @@
 package com.kyle.mycar;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 
-import com.bumptech.glide.Glide;
 import com.kyle.mycar.Bean.MessageEvent;
-import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.Fragment.ChartFragment;
 import com.kyle.mycar.Fragment.MainFragment;
 import com.kyle.mycar.Fragment.MaintenanceFragment;
@@ -49,11 +36,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.BufferedInputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
@@ -62,13 +46,11 @@ import java.util.concurrent.Executors;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, View
-        .OnClickListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public static final int RQ_CODE_PICK_HEAD_IMAGE = 99;
-    public static final int RQ_CODE_REQUEST_PERMISSIONS = 98;
-    private static final int RQ_CODE_CROP_PICTURE = 97;
-    private Toolbar mToolbar;
+//    public static final int RQ_CODE_PICK_HEAD_IMAGE = 99;
+//    public static final int RQ_CODE_REQUEST_PERMISSIONS = 98;
+//    private static final int RQ_CODE_CROP_PICTURE = 97;
     public DrawerLayout drawer;
     public LinkedList<Fragment> mFrgBackList;
     public ExecutorService mThreadPool = Executors.newFixedThreadPool(5);
@@ -77,7 +59,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ButterKnife.bind(this);
         EventBus.getDefault().register(this);
 
 
@@ -92,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             window.setNavigationBarColor(getResources().getColor(R.color.b2));
         }
 
-        initData();
+        initNav();
         initView();
         if (!SpUtils.getboolean(this.getApplicationContext(), MyConstant.First_IN)) {
             mThreadPool.execute(new initDb(this.getApplicationContext()));
@@ -110,16 +91,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    private void initData() {
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+    private void initNav() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
         CircleImageView headImage = (CircleImageView) headerView.findViewById(R.id.nav_header_head);
-
         initHeadImage(headImage);
-
-        headImage.setOnClickListener(this);
+//        headImage.setOnClickListener(this);
     }
 
     public void initHeadImage(CircleImageView headImage) {
@@ -144,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     private void initView() {
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         MainFragment fragment = new MainFragment();
         if (mFrgBackList == null) {
             mFrgBackList = new LinkedList<>();
@@ -190,25 +169,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void msg(MsgMainFragment msg) {
-        if (msg.getFlag() == MsgMainFragment.UPDATE_AN_NEW_ONE_DATA) {
-            mFrgBackList.remove(0);
-        }
-    }
+//    @Subscribe(threadMode = ThreadMode.POSTING)
+//    public void msg(MsgMainFragment msg) {
+//        if (msg.getFlag() == MsgMainFragment.UPDATE_AN_NEW_ONE_DATA) {
+//            mFrgBackList.remove(0);
+//        }
+//    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void msg(MessageEvent msg) {
         switch (msg.getFlag()) {
-            case MyConstant.SET_TOOLBAR:
+            case MyConstant.UPDATE_HEAD_IMAGE:
+                initNav();
                 break;
 
             case MyConstant.OPEN_DRAWER:
                 drawer.openDrawer(GravityCompat.START);
                 break;
-
         }
-
     }
 
 
@@ -288,91 +266,90 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void switchFrag(Class<? extends Fragment> fromClass, Class<? extends Fragment> toClass, boolean isRemove) {
         switchFrag(fromClass, toClass, isRemove, null);
     }
-
-    @Override
-    public void onClick(View v) {
-        //点击更换头像
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager
-                .PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest
-                    .permission.WRITE_EXTERNAL_STORAGE}, RQ_CODE_REQUEST_PERMISSIONS);
-        } else {
-            goPickPicture();
-        }
-    }
-
-    public void goPickPicture() {
-        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivityForResult(intent, RQ_CODE_PICK_HEAD_IMAGE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
-            grantResults) {
-        if (requestCode == RQ_CODE_REQUEST_PERMISSIONS) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager
-                    .PERMISSION_GRANTED) {
-                Snackbar.make(getWindow().getDecorView(), "权限获取成功", Snackbar.LENGTH_LONG).show();
-                goPickPicture();
-            } else {
-                Snackbar.make(getWindow().getDecorView(), "权限获取失败", Snackbar.LENGTH_LONG).show();
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (null == data) return;
-        if (requestCode == RQ_CODE_PICK_HEAD_IMAGE) {
-            Uri uri = data.getData();
-            //剪裁
-            //构建隐式Intent来启动裁剪程序
-            Intent intent = new Intent("com.android.camera.action.CROP");
-            //设置数据uri和类型为图片类型
-            intent.setDataAndType(uri, "image/*");
-            //显示View为可裁剪的
-            intent.putExtra("crop", true);
-            //裁剪的宽高的比例为1:1
-            intent.putExtra("aspectX", 1);
-            intent.putExtra("aspectY", 1);
-            //输出图片的宽高均为150
-            intent.putExtra("outputX", 150);
-            intent.putExtra("outputY", 150);
-            //裁剪之后的数据是通过Intent返回
-            intent.putExtra("return-data", true);
-            startActivityForResult(intent, RQ_CODE_CROP_PICTURE);
-        }
-        if (requestCode == RQ_CODE_CROP_PICTURE) {
-            Bundle extras = data.getExtras();
-            if (extras != null) {
-                //获取到裁剪后的图像
-                Bitmap bm = extras.getParcelable("data");
-                try {
-                    //打开文件输出流
-                    FileOutputStream fos = openFileOutput("head.png", Context.MODE_PRIVATE);
-                    //将bitmap压缩后写入输出流(参数依次为图片格式、图片质量和输出流)
-                    bm.compress(Bitmap.CompressFormat.PNG, 85, fos);
-                    //刷新输出流
-                    fos.flush();
-                    //关闭输出流
-                    fos.close();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                SpUtils.putboolean(this.getApplicationContext(), "hasHeadImage", true);
-
-                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-                View headerView = navigationView.getHeaderView(0);
-                CircleImageView headImage = (CircleImageView) headerView.findViewById(R.id.nav_header_head);
-//                Glide.with(this).load(bm).into(headImage);
-                headImage.setImageBitmap(bm);
-            }
-        }
-    }
-
+//
+//    @Override
+//    public void onClick(View v) {
+//        //点击更换头像
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager
+//                .PERMISSION_GRANTED) {
+//            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest
+//                    .permission.WRITE_EXTERNAL_STORAGE}, RQ_CODE_REQUEST_PERMISSIONS);
+//        } else {
+//            goPickPicture();
+//        }
+//    }
+//
+//    public void goPickPicture() {
+//        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//        startActivityForResult(intent, RQ_CODE_PICK_HEAD_IMAGE);
+//    }
+//
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
+//            grantResults) {
+//        if (requestCode == RQ_CODE_REQUEST_PERMISSIONS) {
+//            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager
+//                    .PERMISSION_GRANTED) {
+//                Snackbar.make(getWindow().getDecorView(), "权限获取成功", Snackbar.LENGTH_LONG).show();
+//                goPickPicture();
+//            } else {
+//                Snackbar.make(getWindow().getDecorView(), "权限获取失败", Snackbar.LENGTH_LONG).show();
+//            }
+//        }
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//    }
+//
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        if (null == data) return;
+//        if (requestCode == RQ_CODE_PICK_HEAD_IMAGE) {
+//            Uri uri = data.getData();
+//            //剪裁
+//            //构建隐式Intent来启动裁剪程序
+//            Intent intent = new Intent("com.android.camera.action.CROP");
+//            //设置数据uri和类型为图片类型
+//            intent.setDataAndType(uri, "image/*");
+//            //显示View为可裁剪的
+//            intent.putExtra("crop", true);
+//            //裁剪的宽高的比例为1:1
+//            intent.putExtra("aspectX", 1);
+//            intent.putExtra("aspectY", 1);
+//            //输出图片的宽高均为150
+//            intent.putExtra("outputX", 150);
+//            intent.putExtra("outputY", 150);
+//            //裁剪之后的数据是通过Intent返回
+//            intent.putExtra("return-data", true);
+//            startActivityForResult(intent, RQ_CODE_CROP_PICTURE);
+//        }
+//        if (requestCode == RQ_CODE_CROP_PICTURE) {
+//            Bundle extras = data.getExtras();
+//            if (extras != null) {
+//                //获取到裁剪后的图像
+//                Bitmap bm = extras.getParcelable("data");
+//                try {
+//                    //打开文件输出流
+//                    FileOutputStream fos = openFileOutput("head.png", Context.MODE_PRIVATE);
+//                    //将bitmap压缩后写入输出流(参数依次为图片格式、图片质量和输出流)
+//                    bm.compress(Bitmap.CompressFormat.PNG, 85, fos);
+//                    //刷新输出流
+//                    fos.flush();
+//                    //关闭输出流
+//                    fos.close();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//
+//                SpUtils.putboolean(this.getApplicationContext(), "hasHeadImage", true);
+//
+//                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+//                View headerView = navigationView.getHeaderView(0);
+//                CircleImageView headImage = (CircleImageView) headerView.findViewById(R.id.nav_header_head);
+////                Glide.with(this).load(bm).into(headImage);
+//                headImage.setImageBitmap(bm);
+//            }
+//        }
+//    }
 
     private static class initDb implements Runnable {
         private Context mContext;

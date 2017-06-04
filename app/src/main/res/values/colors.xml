@@ -19,6 +19,6 @@
     <color name="b1">#bbf2c8</color>
     <color name="b2">#4ebcab</color>
     <color name="b3">#144452</color>
-    <color name="tran">#0000</color>
     <color name="gray1">#66000000</color>
+    <color name="BlueGray">#90A4AE</color>
 </resources>

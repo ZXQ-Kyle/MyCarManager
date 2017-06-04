@@ -17,7 +17,7 @@ public class MyConstant {
     public static final int MT_FRAGMENT_RETURN_DATE =3;
     public static final int MT_FRAGMENT_RETURN_TIME =4;
     //MessageEvent  flag
-    public static final int SET_TOOLBAR = 5;
+    public static final int UPDATE_HEAD_IMAGE = 5;
     public static final int OPEN_DRAWER = 6;
 
     public static final int UPDATE_MT = 7;

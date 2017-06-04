@@ -31,4 +31,7 @@
     <string name="chart">油耗表</string>
     <string name="err_empty_data">请输入数据</string>
     <string name="oil_type">燃料种类</string>
+    <string name="setting_oiltype_dialog_title">删除</string>
+    <string name="setting_oiltype_dialog_msg">请确认是否删除？</string>
+    <string name="add">添加</string>
 </resources>

@@ -47,7 +47,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:drawableRight="@drawable/edit"
+                android:drawableRight="@drawable/ic_update"
                 android:drawableTint="@color/colorPurple"
                 android:paddingLeft="24dp"
                 android:paddingRight="24dp"

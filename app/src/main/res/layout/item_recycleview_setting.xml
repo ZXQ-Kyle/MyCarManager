@@ -49,8 +49,8 @@
         android:layout_toLeftOf="@id/iv_delete_setting_oiltype"
         android:clickable="true"
         android:padding="12dp"
-        android:src="@drawable/ic_update"
-        android:tint="@color/selector_update"/>
+        android:src="@drawable/selector_update"
+        />
 
 
 </RelativeLayout>

@@ -1,12 +1,15 @@
 package com.kyle.mycar;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -16,7 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Fragment.ChartFragment;
 import com.kyle.mycar.Fragment.MainFragment;
@@ -31,24 +33,20 @@ import com.kyle.mycar.db.Table.Maintenance;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-//    public static final int RQ_CODE_PICK_HEAD_IMAGE = 99;
+    //    public static final int RQ_CODE_PICK_HEAD_IMAGE = 99;
 //    public static final int RQ_CODE_REQUEST_PERMISSIONS = 98;
 //    private static final int RQ_CODE_CROP_PICTURE = 97;
     public DrawerLayout drawer;
@@ -97,26 +95,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View headerView = navigationView.getHeaderView(0);
         CircleImageView headImage = (CircleImageView) headerView.findViewById(R.id.nav_header_head);
         initHeadImage(headImage);
-//        headImage.setOnClickListener(this);
     }
 
     public void initHeadImage(CircleImageView headImage) {
-        boolean image = SpUtils.getboolean(this.getApplicationContext(), "hasHeadImage");
         FileInputStream is = null;
         try {
             is = openFileInput("head.png");
-            if (image && null != is) {
-                headImage.setImageBitmap(BitmapFactory.decodeStream(is));
-            } else {
-                headImage.setImageResource(R.drawable.head);
-            }
+            headImage.setImageBitmap(BitmapFactory.decodeStream(is));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+            headImage.setImageResource(R.drawable.head);
         } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (null != is) {
+                try {
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -196,6 +191,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         EventBus.getDefault().unregister(this);
     }
 
+    //fragment 中的申请也是反馈到父activity的方法中
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
+            grantResults) {
+        if (requestCode == SettingFragment.RQ_CODE_REQUEST_PERMISSIONS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager
+                    .PERMISSION_GRANTED) {
+                Fragment fragment = mFrgBackList.get(0);
+                if (fragment instanceof SettingFragment){
+                    ((SettingFragment)fragment).goPickPicture();
+                }
+            } else {
+                Snackbar.make(getWindow().getDecorView(), "权限获取失败", Snackbar.LENGTH_LONG).show();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 
     /**
      * fragment 跳转逻辑封装

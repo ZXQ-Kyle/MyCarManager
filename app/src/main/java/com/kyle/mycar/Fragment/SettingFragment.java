@@ -181,7 +181,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                SpUtils.putboolean(mActivity.getApplicationContext(), "hasHeadImage", true);
+//                SpUtils.putboolean(mActivity.getApplicationContext(), "hasHeadImage", true);
                 EventBus.getDefault().post(new MessageEvent(MyConstant.UPDATE_HEAD_IMAGE));
 
             }

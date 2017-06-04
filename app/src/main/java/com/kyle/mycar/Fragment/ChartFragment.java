@@ -120,19 +120,23 @@ public class ChartFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void MsgEvent(MsgChart msg){
-        LineDataSet set=new LineDataSet(msg.entries,"油耗");
-        mChart.setData(new LineData(set));
-        //数据显示设置
-        set.setCircleRadius(2);
-        set.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        set.setDrawFilled(true);
-        set.setValueTextSize(12);
-        if (Utils.getSDKInt() >= 18) {
-            // fill drawable only supported on api level 18 and above
-            Drawable drawable = ContextCompat.getDrawable(mActivity, R.drawable.fade_red);
-            set.setFillDrawable(drawable);
+        ArrayList<Entry> entries = msg.entries;
+        if (null!= entries && entries.size()>0){
+            LineDataSet set=new LineDataSet(msg.entries,"油耗");
+            mChart.setData(new LineData(set));
+            //数据显示设置
+            set.setCircleRadius(2);
+            set.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
+            set.setDrawFilled(true);
+            set.setValueTextSize(12);
+            if (Utils.getSDKInt() >= 18) {
+                // fill drawable only supported on api level 18 and above
+                Drawable drawable = ContextCompat.getDrawable(mActivity, R.drawable.fade_red);
+                set.setFillDrawable(drawable);
+            }
+            mChart.invalidate();
         }
-        mChart.invalidate();
+
 
     }
 

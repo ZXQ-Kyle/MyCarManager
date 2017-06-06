@@ -26,7 +26,7 @@
         android:layout_marginLeft="16dp"
         android:layout_toRightOf="@id/it_iv_setting_oiltype"
         android:text="@string/about"
-        android:textColor="@color/gray1"
+        android:textColor="@color/TextGray"
         android:textSize="18sp"/>
 
     <ImageView

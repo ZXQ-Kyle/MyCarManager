@@ -272,6 +272,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction = getSupportFragmentManager().beginTransaction();
         }
         boolean hidden = toFrag.isHidden();
+        transaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.fade_in,R.anim.fade_out);
         if (isRemove) {
             if (hidden) {
                 transaction.remove(fromFrag).show(toFrag).commit();

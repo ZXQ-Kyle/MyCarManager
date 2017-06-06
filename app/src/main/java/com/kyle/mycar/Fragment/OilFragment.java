@@ -1,12 +1,12 @@
 package com.kyle.mycar.Fragment;
 
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -76,7 +76,8 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
 
 
     private String mDate;
-    public Oil oil;
+    public Oil mOil;
+    public Record mRecord;
 
     @Override
     public View initView() {
@@ -101,7 +102,7 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
         ArrayAdapter<String> adapter = new ArrayAdapter<>(mActivity, android.R.layout.simple_spinner_item, spinnerStr);
         adapter.setDropDownViewResource(R.layout.item_spinner_select_dialog);
         spinnerOil.setAdapter(adapter);
-        if (oil == null) {
+        if (mOil == null) {
             //读取上次保存的汽油种类并设置
             String oilType = SpUtils.getString(mActivity.getApplicationContext(), OIL_TYPE);
             if (!TextUtils.isEmpty(oilType)) {
@@ -150,21 +151,21 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
         etOilMoney.addTextChangedListener(textWatcher);
         etOilPrice.addTextChangedListener(textWatcher);
 
-        if (oil != null) {
-            mDate = MyDateUtils.longToStr(oil.getDate());
+        if (mOil != null) {
+            mDate = MyDateUtils.longToStr(mOil.getDate());
             iaeDate.setText(mDate);
-            iaeOdometer.setText(oil.getOdometer());
-            int indexOf = spinnerStr.indexOf(oil.getOilType());
+            iaeOdometer.setText(mOil.getOdometer());
+            int indexOf = spinnerStr.indexOf(mOil.getOilType());
             if (indexOf >= 0) {
                 spinnerOil.setSelection(indexOf);
             } else {
                 spinnerOil.setSelection(0);
             }
-            etOilMoney.setText(oil.getMoney());
-            etOilPrice.setText(oil.getPrice());
-            etOilQuantity.setText(oil.getQuantity());
-            cbOilIsFull.setChecked(oil.isFull());
-            cbOilForgetLast.setChecked(oil.isForgetLast());
+            etOilMoney.setText(mOil.getMoney());
+            etOilPrice.setText(mOil.getPrice());
+            etOilQuantity.setText(mOil.getQuantity());
+            cbOilIsFull.setChecked(mOil.isFull());
+            cbOilForgetLast.setChecked(mOil.isForgetLast());
 //            iaeNote.setText(oil.getNote());
         }
     }
@@ -229,7 +230,7 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
         String fuel = null;
         String pricePerKm = null;
 
-        if (oil == null) {
+        if (null == mOil) {
             //保存数据，下次进入自动读取
             SpUtils.putSring(mActivity.getApplicationContext(), OIL_PRICE, oilPrice);
             SpUtils.putSring(mActivity.getApplicationContext(), OIL_TYPE, oilType);
@@ -240,10 +241,10 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
         //如果加满油计算油耗
         if (isFullChecked && !isForgetLastChecked) {
             List<Oil> list1 = null;
-            if (oil == null) {
+            if (null == mOil) {
                 list1 = oilDao.queryNewestLt("date", date, 1);
             } else {
-                list1 = oilDao.queryNewestLt("date", oil.getDate(), 1);
+                list1 = oilDao.queryNewestLt("date", mOil.getDate(), 1);
             }
             if (list1.size() > 0) {
                 Oil oilPre = list1.get(0);
@@ -255,14 +256,14 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
                 BigDecimal quantity = new BigDecimal(oilQuantity);
                 BigDecimal sumMoney = new BigDecimal(oilMoney);
                 List<Oil> list = null;
-                if (oil == null) {
+                if (null == mOil) {
 
                     list = oilDao.queryBetween("date", oilPre.getDate() + 1, date - 1);
                 } else {
-                    list = oilDao.queryBetween("date", oilPre.getDate() + 1, oil.getDate() - 1);
+                    list = oilDao.queryBetween("date", oilPre.getDate() + 1, mOil.getDate() - 1);
                 }
 
-                if (list != null && list.size() > 0) {
+                if (null != list && list.size() > 0) {
                     for (Oil oil : list) {
                         quantity = CalcUtils.appendBigDecimal(quantity, oil.getQuantity());
                         sumMoney = CalcUtils.appendBigDecimal(sumMoney, oil.getMoney());
@@ -274,28 +275,26 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
                 pricePerKm = (sumMoney.divide(odo, 2, BigDecimal.ROUND_HALF_UP)).toString();
             }
         }
-        if (oil == null) {
+        if (null == mOil) {
             Oil oil = new Oil(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType, isFullChecked,
                     isForgetLastChecked, pricePerKm, fuel);
             oilDao.add(oil);
             RecordDao dao = RecordDao.getInstance(mActivity);
             dao.add(new Record(oil, date));
         } else {
-            if (oil.getDate() == date) {
-                //不用更新record
-                oil.update(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType, isFullChecked,
-                        isForgetLastChecked, pricePerKm, fuel);
-                oilDao.update(oil);
-            } else {
+            //不用更新record
+            mOil.update(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType, isFullChecked,
+                    isForgetLastChecked, pricePerKm, fuel);
+            oilDao.update(mOil);
+            if (mRecord.getDate() != date) {
                 //需要更新record
-                oil.update(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType, isFullChecked,
-                        isForgetLastChecked, pricePerKm, fuel);
-                oilDao.update(oil);
-                RecordDao dao = RecordDao.getInstance(mActivity);
-                List<Record> records = dao.queryButIsDelete(Record.COLUMN_OIL_ID, oil, "id", false);
-                Record record = records.get(0);
-                record.setDate(date);
-                dao.update(record);
+                mRecord.setDate(date);
+                RecordDao.getInstance(mActivity.getApplicationContext()).update(mRecord);
+//                RecordDao dao = RecordDao.getInstance(mActivity);
+//                List<Record> records = dao.queryButIsDelete(Record.COLUMN_OIL_ID, mOil, "id", false);
+//                Record record = records.get(0);
+//                record.setDate(date);
+//                dao.update(record);
             }
 
         }
@@ -318,13 +317,16 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
                 @Override
                 public void run() {
                     saveData();
-                    if (oil == null) {
+                    if (null == mOil) {
+                        //新建数据
                         EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA));
                     } else {
-                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA));
+                        //更新数据
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA,mRecord));
                     }
 
-                    mActivity.switchFrag(OilFragment.class, MainFragment.class, true);
+//                    mActivity.switchFrag(OilFragment.class, MainFragment.class, true);
+                    mActivity.onBackPressed();
                 }
             });
             return true;

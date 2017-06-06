@@ -26,6 +26,7 @@
     <string name="add_oil">加油</string>
     <string name="km">km</string>
     <string name="RMB">¥&#160;</string>
+    <string name="next_line">&#160;</string>
     <string name="delete_sucess">删除成功</string>
     <string name="chart">油耗表</string>
     <string name="err_empty_data">请输入数据</string>
@@ -37,4 +38,8 @@
     <string name="update_sucess">修改数据成功</string>
     <string name="update">修改</string>
     <string name="total_money">总花费</string>
+    <string name="fuelC">百公里油耗（L/100KM）：</string>
+    <string name="perKm">每公里单价（元/L）：</string>
+    <string name="tips">提示</string>
+    <string name="tips_msg">两次加满油之间计算油耗。</string>
 </resources>

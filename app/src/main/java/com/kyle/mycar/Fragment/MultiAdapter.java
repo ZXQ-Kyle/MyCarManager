@@ -40,6 +40,7 @@ public class MultiAdapter extends BaseMultiItemQuickAdapter<Record,BaseViewHolde
                 .setVisible(R.id.it_iv_update,item.isVisible)
                 .setVisible(R.id.it_iv_detail,item.isVisible)
                 .addOnClickListener(R.id.it_iv_delete)
+                .addOnClickListener(R.id.it_iv_detail)
                 .addOnClickListener(R.id.it_iv_update);
 
         int itemType = item.getItemType();

@@ -11,6 +11,6 @@
         android:id="@+id/menu_main_expense"
         android:orderInCategory="100"
         android:title="@string/expense"
-        android:icon="@drawable/money"
+        android:icon="@drawable/money_white"
         app:showAsAction="always"/>
 </menu>

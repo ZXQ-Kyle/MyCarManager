@@ -2,8 +2,6 @@ package com.kyle.mycar.Fragment;
 
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,18 +9,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
-
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.MainActivity;
 import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.R;
-import com.labo.kaji.fragmentanimations.MoveAnimation;
-
 import org.greenrobot.eventbus.EventBus;
-
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
@@ -98,7 +90,7 @@ public abstract class BaseFragment extends Fragment {
 
     @Override
     public Animation onCreateAnimation(int transit, boolean enter, int nextAnim) {
-        return MoveAnimation.create(MoveAnimation.LEFT, enter, 300);
+        return null;
     }
 
     @Override
@@ -122,4 +114,5 @@ public abstract class BaseFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
     }
+
 }

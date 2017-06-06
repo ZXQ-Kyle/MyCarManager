@@ -35,4 +35,6 @@
     <string name="add">添加</string>
     <string name="delete">删除</string>
     <string name="update_sucess">修改数据成功</string>
+    <string name="update">修改</string>
+    <string name="total_money">总花费</string>
 </resources>

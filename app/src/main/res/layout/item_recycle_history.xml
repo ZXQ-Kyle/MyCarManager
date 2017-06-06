@@ -84,8 +84,10 @@
         android:src="@drawable/selector_delete"
         android:id="@+id/it_iv_delete"
         android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:padding="8dp"
+        android:layout_height="28dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:layout_alignParentRight="true"
         />
     <ImageView
@@ -93,17 +95,22 @@
         android:layout_below="@id/item_rl"
         android:id="@+id/it_iv_detail"
         android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:padding="8dp"
+        android:layout_height="28dp"
+        android:paddingBottom="4dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:src="@drawable/selector_detail"
         />
+
     <ImageView
-        android:layout_toLeftOf="@id/it_iv_detail"
-        android:layout_below="@id/item_rl"
         android:id="@+id/it_iv_update"
         android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:padding="8dp"
+        android:layout_height="28dp"
+        android:paddingBottom="4dp"
+        android:layout_below="@id/item_rl"
+        android:layout_toLeftOf="@id/it_iv_detail"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:src="@drawable/selector_update"
         />
 </RelativeLayout>

@@ -1,0 +1,52 @@
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="match_parent"
+                                             tools:context="com.kyle.mycar.Fragment.AddTypeOrTagFragment">
+
+    <include
+        android:id="@+id/include"
+        layout="@layout/app_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="@+id/iv_setting_add_oiltype"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageView
+
+        android:id="@+id/iv_setting_add_oiltype"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_below="@id/toolbar"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:padding="20dp"
+        android:src="@drawable/ic_sort"
+        android:tint="@color/colorPrimary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include"/>
+
+    <com.kyle.mycar.View.ClearEditText
+        android:id="@+id/et_setting_add_oiltype"
+        android:layout_width="0dp"
+        android:layout_height="64dp"
+        android:singleLine="true"
+        android:textColor="@color/colorAccent"
+        android:layout_below="@id/toolbar"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="24dp"
+        android:layout_marginTop="0dp"
+        android:layout_toRightOf="@id/iv_setting_add_oiltype"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toRightOf="@+id/iv_setting_add_oiltype"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include"/>
+
+</android.support.constraint.ConstraintLayout>

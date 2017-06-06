@@ -38,10 +38,12 @@ public class MultiAdapter extends BaseMultiItemQuickAdapter<Record,BaseViewHolde
         String km = mContext.getString(R.string.km);
         helper.setVisible(R.id.it_iv_delete,item.isVisible)
                 .setVisible(R.id.it_iv_update,item.isVisible)
+                .setVisible(R.id.it_iv_detail,item.isVisible)
                 .addOnClickListener(R.id.it_iv_delete)
                 .addOnClickListener(R.id.it_iv_update);
 
-        switch (item.getItemType()) {
+        int itemType = item.getItemType();
+        switch (itemType) {
             case Record.FLAG_OIL:
                 Glide.with(mContext).load(R.drawable.odo).into((ImageView) helper.getView(R.id.it_iv_h_odo));
                 Glide.with(mContext).load(R.drawable.oil_list).into((ImageView) helper.getView(R.id.it_iv_history));

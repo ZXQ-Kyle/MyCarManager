@@ -25,6 +25,7 @@ public class OilType {
     public OilType() {
     }
 
+
     public OilType(String oilType) {
         this.oilType = oilType;
     }

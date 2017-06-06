@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -18,25 +19,28 @@ import com.kyle.mycar.Bean.MsgSetting;
 import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.R;
 import com.kyle.mycar.View.MyItemDecoration;
-import com.kyle.mycar.db.Dao.OilTypeDao;
-import com.kyle.mycar.db.Table.OilType;
+import com.kyle.mycar.db.Dao.MtTagDao;
+import com.kyle.mycar.db.Table.MtTag;
+
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.Unbinder;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SettingOilTypeFrag extends BaseFragment implements Toolbar.OnMenuItemClickListener, BaseQuickAdapter
+public class SettingTagFrag extends BaseFragment implements Toolbar.OnMenuItemClickListener, BaseQuickAdapter
         .OnItemChildClickListener {
 
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
     Unbinder unbinder;
-    private List<OilType> mList;
+    private List<MtTag> mList;
     private QuickAdapter mAdapter;
 
     @Override
@@ -46,9 +50,9 @@ public class SettingOilTypeFrag extends BaseFragment implements Toolbar.OnMenuIt
 
     @Override
     public void initData() {
-        initToolbar(R.string.oil_type, 2, R.menu.toolbar_add, this);
-        OilTypeDao typeDao = OilTypeDao.getInstance(mActivity);
-        mList = typeDao.queryAllButIsDelete("id", true);
+        initToolbar(R.string.expense, 2, R.menu.toolbar_add, this);
+        MtTagDao dao = MtTagDao.getInstance(mActivity);
+        mList = dao.queryAllButIsDelete("id", true);
         mAdapter = new QuickAdapter(mActivity, mList);
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false);
@@ -58,16 +62,17 @@ public class SettingOilTypeFrag extends BaseFragment implements Toolbar.OnMenuIt
         mAdapter.setOnItemChildClickListener(this);
         recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new MyItemDecoration(mActivity));
+        // TODO: 2017/6/5         //添加下拉刷新
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
     public void onEvent(MsgSetting msg) {
         int flag = msg.flag;
-        if (flag == MyConstant.SETTING_ADD_OIL_TYPE) {
-            mAdapter.addData((OilType) msg.object);
+        if (flag == MyConstant.SETTING_ADD_TAG) {
+            mAdapter.addData((MtTag) msg.object);
             mAdapter.notifyItemInserted(mAdapter.getData().size());
-        } else if (flag == MyConstant.SETTING_UPDATE_OIL_TYPE) {
-            OilType type = (OilType) msg.object;
+        } else if (flag == MyConstant.SETTING_UPDATE_TAG) {
+            MtTag type = (MtTag) msg.object;
             int indexOf = mAdapter.getData().indexOf(type);
             mAdapter.notifyItemChanged(indexOf);
         }
@@ -76,7 +81,7 @@ public class SettingOilTypeFrag extends BaseFragment implements Toolbar.OnMenuIt
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.menu_add) {
-            mActivity.switchFrag(this, AddTypeOrTagFragment.newInstance(true),false,null);
+            mActivity.switchFrag(this, AddTypeOrTagFragment.newInstance(false), false, null);
             return true;
         }
         return false;
@@ -92,9 +97,9 @@ public class SettingOilTypeFrag extends BaseFragment implements Toolbar.OnMenuIt
                         .OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        OilType oilType = mList.get(position);
-                        oilType.setDelete(true);
-                        OilTypeDao.getInstance(mActivity.getApplicationContext()).update(oilType);
+                        MtTag tag = mList.get(position);
+                        tag.setDelete(true);
+                        MtTagDao.getInstance(mActivity.getApplicationContext()).update(tag);
                         mAdapter.getData().remove(position);
                         mAdapter.notifyItemRemoved(position);
                     }
@@ -102,36 +107,36 @@ public class SettingOilTypeFrag extends BaseFragment implements Toolbar.OnMenuIt
                 break;
 
             case R.id.iv_update_setting_oiltype:
-                AddTypeOrTagFragment fragment = AddTypeOrTagFragment.newInstance(true);
-                fragment.mOilType = mList.get(position);
+                AddTypeOrTagFragment fragment = AddTypeOrTagFragment.newInstance(false);
+                fragment.mTag = mList.get(position);
                 mActivity.switchFrag(this, fragment, false, null);
                 break;
         }
     }
 
-    static class QuickAdapter extends BaseQuickAdapter<OilType, BaseViewHolder> {
+    static class QuickAdapter extends BaseQuickAdapter<MtTag, BaseViewHolder> {
         private int[] colors;
 
-        public QuickAdapter(Context context, @Nullable List<OilType> data) {
+        public QuickAdapter(Context context, @Nullable List<MtTag> data) {
             super(R.layout.item_recycleview_setting, data);
             colors = context.getResources().getIntArray(R.array.color);
         }
 
         @Override
-        protected void convert(BaseViewHolder helper, OilType item) {
-            String oilType = item.getOilType();
+        protected void convert(BaseViewHolder helper, MtTag item) {
+            String tag = item.getTag();
             char c;
-            if (TextUtils.isEmpty(oilType)) {
+            if (TextUtils.isEmpty(tag)) {
                 c = 'c';
             } else {
-                c = oilType.charAt(0);
+                c = tag.charAt(0);
             }
             int length = colors.length;
             int i = item.getId() % length;
             TextDrawable drawable1 = TextDrawable.builder().buildRound(String.valueOf(c), colors[i]);
-            helper.setText(R.id.it_tv_setting_oiltype, item.getOilType()).setImageDrawable(R.id
-                    .it_iv_setting_oiltype, drawable1).addOnClickListener(R.id.iv_delete_setting_oiltype)
-                    .addOnClickListener(R.id.iv_update_setting_oiltype);
+            helper.setText(R.id.it_tv_setting_oiltype, item.getTag()).setImageDrawable(R.id.it_iv_setting_oiltype, 
+                    drawable1).addOnClickListener(R.id.iv_delete_setting_oiltype).addOnClickListener(R.id
+                    .iv_update_setting_oiltype);
         }
     }
 

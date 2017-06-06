@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 
 public class MessageEvent {
 
-
     private String msg;
 
     private int flag;

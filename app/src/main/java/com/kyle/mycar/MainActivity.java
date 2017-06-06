@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -15,10 +16,12 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Fragment.ChartFragment;
 import com.kyle.mycar.Fragment.MainFragment;
@@ -33,15 +36,18 @@ import com.kyle.mycar.db.Table.Maintenance;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
@@ -58,7 +64,24 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
-
+//        mThreadPool.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//                int size=0;
+//                int sizeNew = 0;
+//                while (true) {
+//                    SystemClock.sleep(1000);
+//                    sizeNew=mFrgBackList.size();
+//                    if (size != sizeNew) {
+//                        size=sizeNew;
+//                        Log.i("---------", "mFrgBackList:"+size);
+//                        for (Fragment f : mFrgBackList) {
+//                            Log.i("----", f.toString());
+//                        }
+//                    }
+//                }
+//            }
+//        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -199,8 +222,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager
                     .PERMISSION_GRANTED) {
                 Fragment fragment = mFrgBackList.get(0);
-                if (fragment instanceof SettingFragment){
-                    ((SettingFragment)fragment).goPickPicture();
+                if (fragment instanceof SettingFragment) {
+                    ((SettingFragment) fragment).goPickPicture();
                 }
             } else {
                 Snackbar.make(getWindow().getDecorView(), "权限获取失败", Snackbar.LENGTH_LONG).show();
@@ -215,69 +238,65 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
      * @param fromClass
      * @param toClass
      * @param isRemove  是否移除from的fragment,false hide,true remove
-     * @param obj       为toFrag 赋值，用于点击条目修改已有数据时跳转
      */
-    public void switchFrag(Class<? extends Fragment> fromClass, Class<? extends Fragment> toClass, boolean isRemove,
-                           Object obj) {
+    public void switchFrag(Class<? extends Fragment> fromClass, Class<? extends Fragment> toClass, boolean isRemove) {
         if (fromClass == toClass) return;
         Fragment fromFrag = getSupportFragmentManager().findFragmentByTag(fromClass.getSimpleName());
         Fragment toFrag = getSupportFragmentManager().findFragmentByTag(toClass.getSimpleName());
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        if (fromFrag == null) try {
+        if (null == fromFrag) try {
             fromFrag = fromClass.newInstance();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (toFrag == null) {
+        if (null == toFrag) {
             try {
                 toFrag = toClass.newInstance();
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            if (null != obj) {
-                if (obj instanceof Oil) {
-                    ((OilFragment) toFrag).oil = (Oil) obj;
-                } else {
-                    ((MaintenanceFragment) toFrag).mt = (Maintenance) obj;
-                }
-            }
-            if (isRemove) {
-                transaction.remove(fromFrag).add(R.id.fl_content, toFrag, toClass.getSimpleName()).commit();
-                mFrgBackList.remove(0);
-            } else {
-                transaction.hide(fromFrag).add(R.id.fl_content, toFrag, toClass.getSimpleName()).commit();
-            }
-            //add frag,保存到回退栈
-            mFrgBackList.addFirst(toFrag);
-        } else {
-            if (null != obj) {
-                if (obj instanceof Oil) {
-                    ((OilFragment) toFrag).oil = (Oil) obj;
-                } else {
-                    ((MaintenanceFragment) toFrag).mt = (Maintenance) obj;
-                }
-            }
-            if (isRemove) {
+        }
+        switchFrag(fromFrag, toFrag, isRemove, transaction);
+    }
+
+    /**
+     * @param fromFrag
+     * @param toFrag
+     * @param isRemove    是否移除from的fragment,false hide,true remove
+     * @param transaction 可以为null；
+     */
+    public void switchFrag(Fragment fromFrag, Fragment toFrag, boolean isRemove, FragmentTransaction transaction) {
+        if (fromFrag == toFrag || null == toFrag) return;
+        if (null == transaction) {
+            transaction = getSupportFragmentManager().beginTransaction();
+        }
+        boolean hidden = toFrag.isHidden();
+        if (isRemove) {
+            if (hidden) {
                 transaction.remove(fromFrag).show(toFrag).commit();
                 mFrgBackList.remove(0);
             } else {
+                transaction.remove(fromFrag).add(R.id.fl_content, toFrag, toFrag.getClass().getSimpleName()).commit();
+                mFrgBackList.remove(0);
+            }
+        } else {
+            if (hidden) {
                 transaction.hide(fromFrag).show(toFrag).commit();
-            }
-            //show frag，保存到回退栈
-            int indexOf = mFrgBackList.indexOf(toFrag);
-            if (indexOf > -1) {
-                mFrgBackList.remove(indexOf);
-                mFrgBackList.addFirst(toFrag);
             } else {
-                mFrgBackList.addFirst(toFrag);
+                transaction.hide(fromFrag).add(R.id.fl_content, toFrag, toFrag.getClass().getSimpleName()).commit();
             }
+        }
+        //show frag，保存到回退栈
+        int indexOf = mFrgBackList.indexOf(toFrag);
+        if (indexOf > -1) {
+            mFrgBackList.remove(indexOf);
+            mFrgBackList.addFirst(toFrag);
+        } else {
+            mFrgBackList.addFirst(toFrag);
         }
     }
 
-    public void switchFrag(Class<? extends Fragment> fromClass, Class<? extends Fragment> toClass, boolean isRemove) {
-        switchFrag(fromClass, toClass, isRemove, null);
-    }
 //
 //    @Override
 //    public void onClick(View v) {

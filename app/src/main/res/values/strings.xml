@@ -6,7 +6,6 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="history">历史</string>
     <string name="statistics">统计</string>
@@ -30,8 +29,10 @@
     <string name="delete_sucess">删除成功</string>
     <string name="chart">油耗表</string>
     <string name="err_empty_data">请输入数据</string>
-    <string name="oil_type">燃料种类</string>
+    <string name="oil_type">燃料</string>
     <string name="setting_oiltype_dialog_title">删除</string>
-    <string name="setting_oiltype_dialog_msg">请确认是否删除？</string>
+    <string name="setting_oiltype_dialog_msg">您确认要删除吗？</string>
     <string name="add">添加</string>
+    <string name="delete">删除</string>
+    <string name="update_sucess">修改数据成功</string>
 </resources>

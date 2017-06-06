@@ -114,9 +114,21 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
 
     @OnClick({R.id.iae_mt_date})
     public void onViewClicked(View view) {
-        DatePickerDialogFragment dialogFragment = DatePickerDialogFragment.newInstance(MyConstant
-                .MT_FRAGMENT_RETURN_DATE, MyConstant.MT_FRAGMENT_RETURN_TIME);
-        dialogFragment.show(getFragmentManager(), "mtDate");
+        int id = view.getId();
+        switch (id) {
+            case R.id.iae_mt_date:
+                //打开时间选择对话框
+                DatePickerDialogFragment dialogFragment = DatePickerDialogFragment.newInstance(MyConstant
+                        .MT_FRAGMENT_RETURN_DATE, MyConstant.MT_FRAGMENT_RETURN_TIME);
+                dialogFragment.show(getFragmentManager(), "mtDate");
+                break;
+//            case R.id.iv_mt:
+//                //点击打开修改tag界面
+//                mActivity.switchFrag(this,new SettingTagFrag(),false,null);
+//                // TODO: 2017/6/5 消息回传
+//                break;
+                   }
+
     }
 
     //事务保存

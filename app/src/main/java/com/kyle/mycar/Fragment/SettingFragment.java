@@ -51,6 +51,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public View initView() {
+        noEventBus = true;
         View view = View.inflate(mActivity, R.layout.fragment_setting, null);
         View view1 = view.findViewById(R.id.setting_1);
         View view2 = view.findViewById(R.id.setting_2);
@@ -89,21 +90,18 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
-    public void no(MsgChart msgChart) {
-
-    }
-
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.setting_1:
+
                 break;
             case R.id.setting_2:
-                mActivity.switchFrag(SettingFragment.class, SettingOilTypeFrag.class, false);
+                mActivity.switchFrag(this, new SettingOilTypeFrag(), false, null);
                 break;
             case R.id.setting_3:
+                mActivity.switchFrag(this, new SettingTagFrag(), false, null);
                 break;
             case R.id.head:
                 //点击更换头像

@@ -2,8 +2,10 @@ package com.kyle.mycar.Fragment;
 
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -66,6 +68,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         mAdapter.setOnItemChildClickListener(this);
         mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(),0,MsgMainFragment.SET_ADAPTER));
         pageCount=1;
+        recyclerView.addItemDecoration(new MyItemDecoration(mActivity));
 
     }
 
@@ -159,56 +162,76 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
     //mAdapter.setOnItemChildClickListener(this);
     @Override
-    public void onItemChildClick(BaseQuickAdapter adapter, View view, int position) {
-        RecordDao dao = RecordDao.getInstance(mActivity);
-        Record record = mAdapter.getData().get(position);
-        switch (view.getId()) {
+    public void onItemChildClick(BaseQuickAdapter adapter, View view, final int position) {
+        final RecordDao dao = RecordDao.getInstance(mActivity);
+        final Record record = mAdapter.getData().get(position);
+        int id = view.getId();
+        final int itemType = record.getItemType();
+        switch (id) {
             //删除单条记录
             case R.id.it_iv_delete:
-                switch (record.getItemType()) {
-                    case Record.FLAG_MT:
-                        Maintenance mt = record.getMt();
-                        mt.setDelete(true);
-                        MtDao.getInstance(mActivity).update(mt);
-                        break;
-                    case Record.FLAG_OIL:
-                        Oil oil = record.getOil();
-                        oil.setDelete(true);
-                        OilDao.getInstance(mActivity).update(oil);
-                        break;
-                }
-                record.setDelete(true);
-                dao.update(record);
-                mAdapter.getData().remove(position);
-                if (mAdapter.getData().size() == 0) {
-                    mAdapter.setNewData(null);
-                } else {
-                    mAdapter.notifyItemRemoved(position);
-                }
-                Snackbar.make(getView(), R.string.delete_sucess, Snackbar.LENGTH_LONG).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                builder.setTitle(R.string.delete).setIcon(R.drawable.ic_delete_pressed).setMessage(R.string
+                        .setting_oiltype_dialog_msg).setPositiveButton(R.string.confirm, new DialogInterface
+                        .OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (itemType) {
+                            case Record.FLAG_MT:
+                                Maintenance mt = record.getMt();
+                                mt.setDelete(true);
+                                MtDao.getInstance(mActivity).update(mt);
+                                break;
+                            case Record.FLAG_OIL:
+                                Oil oil = record.getOil();
+                                oil.setDelete(true);
+                                OilDao.getInstance(mActivity).update(oil);
+                                break;
+                        }
+                        record.setDelete(true);
+                        dao.update(record);
+                        mAdapter.getData().remove(position);
+                        //更新openRecordPosition位置
+                        openRecordPosition=-1;
+                        if (mAdapter.getData().size() == 0) {
+                            mAdapter.setNewData(null);
+                        } else {
+                            mAdapter.notifyItemRemoved(position);
+                        }
+                        Snackbar.make(getView(), R.string.delete_sucess, Snackbar.LENGTH_LONG).show();
+                    }
+                }).setNegativeButton(R.string.cancel, null).show();
                 break;
             //修改数据
             case R.id.it_iv_update:
-                switch (record.getItemType()) {
+                switch (itemType) {
                     case Record.FLAG_MT:
-                        Maintenance mt = record.getMt();
-                        mActivity.switchFrag(MainFragment.class, MaintenanceFragment.class, false, mt);
-
-//                        MaintenanceFragment fragment = new MaintenanceFragment();
-//                        fragment.mt = mt;
-//                        mActivity.getSupportFragmentManager().beginTransaction().hide(this).add(R.id.fl_content,
-//                                fragment,fragment.getClass().getSimpleName()).commit();
-//                        mActivity.addToBackStack(fragment);
+                        MaintenanceFragment fragment = new MaintenanceFragment();
+                        fragment.mt=record.getMt();
+                        mActivity.switchFrag(this,fragment,false,null);
                         break;
-                    case Record.FLAG_OIL:
-                        Oil oil = record.getOil();
-                        mActivity.switchFrag(MainFragment.class, OilFragment.class, false, oil);
 
+                    case Record.FLAG_OIL:
+                        OilFragment fragment1 = new OilFragment();
+                        fragment1.oil = record.getOil();
+                        mActivity.switchFrag(this, fragment1, false, null);
+                        break;
+                }
+                break;
+            //查看明细
+            case R.id.it_iv_detail:
+                switch (itemType) {
+                    case Record.FLAG_MT:
+                        // TODO: 2017/6/6 详情页面
+//                        MaintenanceFragment fragment = new MaintenanceFragment();
+//                        fragment.mt=record.getMt();
+//                        mActivity.switchFrag(this,fragment,false,null);
+//                        break;
+//
+//                    case Record.FLAG_OIL:
 //                        OilFragment fragment1 = new OilFragment();
-//                        fragment1.oil=oil;
-//                        mActivity.getSupportFragmentManager().beginTransaction().hide(this).add(R.id.fl_content,
-//                                fragment1,fragment1.getClass().getSimpleName()).commit();
-//                        mActivity.addToBackStack(fragment1);
+//                        fragment1.oil = record.getOil();
+//                        mActivity.switchFrag(this, fragment1, false, null);
                         break;
                 }
                 break;

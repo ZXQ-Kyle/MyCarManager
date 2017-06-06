@@ -7,10 +7,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/touch_bg"
-    android:paddingBottom="8dp"
     android:paddingLeft="24dp"
     android:paddingRight="24dp"
-    android:paddingTop="8dp"
     >
 
     <RelativeLayout
@@ -20,8 +18,8 @@
 
         <ImageView
             android:id="@+id/it_iv_history"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_centerVertical="true"
             android:layout_marginRight="16dp"
             />
@@ -81,22 +79,31 @@
             android:textSize="16sp"/>
     </RelativeLayout>
 
-    <Button
-        android:layout_below="@id/item_rl"
-        android:id="@+id/it_iv_update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/touch_bg"
-        android:text="修改"/>
-
     <ImageView
         android:layout_below="@id/item_rl"
-        android:src="@drawable/odo"
+        android:src="@drawable/selector_delete"
         android:id="@+id/it_iv_delete"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="8dp"
         android:layout_alignParentRight="true"
-        android:background="@drawable/touch_bg"
-        android:text="删除"/>
-
+        />
+    <ImageView
+        android:layout_toLeftOf="@id/it_iv_delete"
+        android:layout_below="@id/item_rl"
+        android:id="@+id/it_iv_detail"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="8dp"
+        android:src="@drawable/selector_detail"
+        />
+    <ImageView
+        android:layout_toLeftOf="@id/it_iv_detail"
+        android:layout_below="@id/item_rl"
+        android:id="@+id/it_iv_update"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:padding="8dp"
+        android:src="@drawable/selector_update"
+        />
 </RelativeLayout>

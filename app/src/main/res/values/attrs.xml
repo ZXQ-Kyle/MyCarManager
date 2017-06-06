@@ -6,6 +6,12 @@
         <attr name="hint" format="string"/>
         <attr name="text" format="string"/>
         <attr name="unEditable" format="boolean"/>
+    </declare-styleable>
 
+    <declare-styleable name="ClearEditText">
+        <!-- 清除按钮的图标 -->
+        <attr name="iconClear" format="reference"/>
+        <!--icon混色-->
+        <attr name="iconTint" format="color"/>
     </declare-styleable>
 </resources>

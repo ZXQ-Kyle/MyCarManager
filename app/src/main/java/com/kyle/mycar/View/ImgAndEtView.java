@@ -35,6 +35,7 @@ public class ImgAndEtView extends LinearLayoutCompat {
         super(context, attrs);
         //取得属性集合
         TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.ImgAndEtView);
+
         ColorStateList colorStateList = typedArray.getColorStateList(R.styleable.ImgAndEtView_drawableColor);
         Drawable drawable = typedArray.getDrawable(R.styleable.ImgAndEtView_iconLeft);
         String hint = typedArray.getString(R.styleable.ImgAndEtView_hint);

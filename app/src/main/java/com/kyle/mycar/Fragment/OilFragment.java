@@ -1,7 +1,5 @@
 package com.kyle.mycar.Fragment;
 
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -13,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
+
 import com.j256.ormlite.misc.TransactionManager;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.MsgMainFragment;
@@ -29,9 +29,11 @@ import com.kyle.mycar.db.DbOpenHelper;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
 import com.kyle.mycar.db.Table.Record;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.math.BigDecimal;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
@@ -45,7 +47,7 @@ import butterknife.OnClick;
 
 /**
  */
-public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClickListener {
+public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClickListener, TextWatcher {
 
     private static final String OIL_PRICE = "oil_price";
     private static final String OIL_TYPE = "oil_type";
@@ -127,29 +129,11 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
         iaeDate.setText(mDate);
 
         //初始化默认值
-        TextWatcher textWatcher = new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+        etOilMoney.addTextChangedListener(this);
+        etOilPrice.addTextChangedListener(this);
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String s1 = etOilMoney.getText().toString();
-                String s2 = etOilPrice.getText().toString();
-                if (!TextUtils.isEmpty(s1) && !TextUtils.isEmpty(s2)) {
-                    BigDecimal money = new BigDecimal(s1);
-                    BigDecimal price = new BigDecimal(s2);
-                    BigDecimal quantity = money.divide(price, 2, BigDecimal.ROUND_HALF_UP);
-                    etOilQuantity.setText(String.valueOf(quantity));
-                }
-            }
-        };
-        etOilMoney.addTextChangedListener(textWatcher);
-        etOilPrice.addTextChangedListener(textWatcher);
+        iaeOdometer.rqFocus();
+        mActivity.showKeyboard(iaeOdometer);
 
         if (mOil != null) {
             mDate = MyDateUtils.longToStr(mOil.getDate());
@@ -210,10 +194,10 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
         };
         try {
             manager.callInTransaction(callable);
-                Snackbar.make(getView(), getString(R.string.sucess), Snackbar.LENGTH_SHORT).show();
+//            Toast.makeText(mActivity, R.string.sucess, Toast.LENGTH_SHORT).show();
         } catch (SQLException e) {
             e.printStackTrace();
-                Snackbar.make(getView(), getString(R.string.fail), Snackbar.LENGTH_SHORT).show();
+//            Toast.makeText(mActivity, R.string.fail, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -276,13 +260,15 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
             }
         }
         if (null == mOil) {
+            //新建数据
             Oil oil = new Oil(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType, isFullChecked,
                     isForgetLastChecked, pricePerKm, fuel);
             oilDao.add(oil);
             RecordDao dao = RecordDao.getInstance(mActivity);
-            dao.add(new Record(oil, date));
+            mRecord = new Record(oil, date);
+            dao.add(mRecord);
         } else {
-            //不用更新record
+            //更新数据但是不用更新record
             mOil.update(date, oilMoney, oilPrice, oilQuantity, OdometerText, oilType, isFullChecked,
                     isForgetLastChecked, pricePerKm, fuel);
             oilDao.update(mOil);
@@ -290,11 +276,6 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
                 //需要更新record
                 mRecord.setDate(date);
                 RecordDao.getInstance(mActivity.getApplicationContext()).update(mRecord);
-//                RecordDao dao = RecordDao.getInstance(mActivity);
-//                List<Record> records = dao.queryButIsDelete(Record.COLUMN_OIL_ID, mOil, "id", false);
-//                Record record = records.get(0);
-//                record.setDate(date);
-//                dao.update(record);
             }
 
         }
@@ -305,24 +286,34 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.menu_confirm) {
-            String money = etOilMoney.getText().toString();
             String odometer = iaeOdometer.getText();
-            if (TextUtils.isEmpty(money)||TextUtils.isEmpty(odometer)) {
-                Snackbar.make(getView(),R.string.err_empty_data,Snackbar.LENGTH_LONG).show();
+            if (TextUtils.isEmpty(odometer)) {
+                Toast.makeText(mActivity.getApplicationContext(), R.string.err_empty_odo, Toast.LENGTH_LONG).show();
+                iaeOdometer.rqFocus();
+                mActivity.showKeyboard(iaeOdometer);
+                return true;
+            }
+            odometer=null;
+            String money = etOilMoney.getText().toString().trim();
+            if (TextUtils.isEmpty(money)) {
+                Toast.makeText(mActivity.getApplicationContext(), R.string.err_empty_money, Toast.LENGTH_LONG).show();
+                etOilMoney.requestFocus();
+                mActivity.showKeyboard(etOilMoney);
                 return true;
             }
             money=null;
-            odometer=null;
+
             mActivity.mThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
                     saveData();
                     if (null == mOil) {
                         //新建数据
-                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA));
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA,
+                                mRecord));
                     } else {
                         //更新数据
-                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA,mRecord));
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA, mRecord));
                     }
 
 //                    mActivity.switchFrag(OilFragment.class, MainFragment.class, true);
@@ -334,4 +325,26 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
         return false;
     }
 
+
+    @Override
+    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+    }
+
+    @Override
+    public void afterTextChanged(Editable s) {
+        String s1 = etOilMoney.getText().toString();
+        String s2 = etOilPrice.getText().toString();
+        if (!TextUtils.isEmpty(s1) && !TextUtils.isEmpty(s2)) {
+            BigDecimal money = new BigDecimal(s1);
+            BigDecimal price = new BigDecimal(s2);
+            BigDecimal quantity = money.divide(price, 2, BigDecimal.ROUND_HALF_UP);
+            etOilQuantity.setText(String.valueOf(quantity));
+        }
+    }
 }

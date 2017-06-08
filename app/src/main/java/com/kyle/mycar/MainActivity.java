@@ -7,40 +7,33 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-
+import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 import com.kyle.mycar.Bean.MessageEvent;
+import com.kyle.mycar.Fragment.AboutFragment;
 import com.kyle.mycar.Fragment.ChartFragment;
 import com.kyle.mycar.Fragment.MainFragment;
-import com.kyle.mycar.Fragment.MaintenanceFragment;
-import com.kyle.mycar.Fragment.OilFragment;
 import com.kyle.mycar.Fragment.SettingFragment;
 import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.MyUtils.SpUtils;
 import com.kyle.mycar.db.Dao.MtTagDao;
 import com.kyle.mycar.db.Dao.OilTypeDao;
-import com.kyle.mycar.db.Table.Maintenance;
 import com.kyle.mycar.db.Table.MtTag;
-import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -180,7 +173,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_setting) {
             switchFrag(fromFrag.getClass(), SettingFragment.class, false);
         } else if (id == R.id.nav_about) {
-
+            switchFrag(fromFrag.getClass(), AboutFragment.class, false);
         }
 
         drawer.closeDrawer(GravityCompat.START);
@@ -226,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     ((SettingFragment) fragment).goPickPicture();
                 }
             } else {
-                Snackbar.make(getWindow().getDecorView(), "权限获取失败", Snackbar.LENGTH_LONG).show();
+                Toast.makeText(this, R.string.permission_fail, Toast.LENGTH_LONG).show();
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -296,6 +289,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             mFrgBackList.addFirst(toFrag);
         }
+    }
+    public void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+    }
+    public void showKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(view,InputMethodManager.SHOW_FORCED);
     }
 
 //
@@ -382,6 +383,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //            }
 //        }
 //    }
+
 
     private static class initDb implements Runnable {
         private Context mContext;

@@ -8,11 +8,8 @@ import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +22,6 @@ import com.kyle.mycar.db.Dao.OilDao;
 import com.kyle.mycar.db.Dao.RecordDao;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.Record;
-import com.orhanobut.logger.Logger;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -37,7 +33,7 @@ import butterknife.Unbinder;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class OilDetailFragment extends BaseFragment implements Toolbar.OnMenuItemClickListener, View.OnClickListener,
+public class DetailOilFragment extends BaseFragment implements Toolbar.OnMenuItemClickListener, View.OnClickListener,
         DialogInterface.OnClickListener{
 
 
@@ -68,7 +64,7 @@ public class OilDetailFragment extends BaseFragment implements Toolbar.OnMenuIte
 
     @Override
     public View initView() {
-        return View.inflate(mActivity, R.layout.fragment_oil_detail, null);
+        return View.inflate(mActivity, R.layout.fragment_detail_oil, null);
     }
 
     @Override
@@ -147,7 +143,6 @@ public class OilDetailFragment extends BaseFragment implements Toolbar.OnMenuIte
 
     @Override
     public void onClick(DialogInterface dialog, int which) {
-        Logger.d(which);
         if (which==-1){
             //删除逻辑
             Oil oil = mRecord.getOil();
@@ -173,7 +168,6 @@ public class OilDetailFragment extends BaseFragment implements Toolbar.OnMenuIte
     @Override
     public void onHiddenChanged(boolean hidden) {
         super.onHiddenChanged(hidden);
-        InputMethodManager imm = (InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(tvFuelC.getWindowToken(),0);
+        mActivity.hideKeyboard(tvFuelC);
     }
 }

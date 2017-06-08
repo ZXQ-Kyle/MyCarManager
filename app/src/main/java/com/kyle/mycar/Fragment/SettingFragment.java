@@ -9,27 +9,16 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.kyle.mycar.Bean.MessageEvent;
-import com.kyle.mycar.Bean.MsgChart;
 import com.kyle.mycar.MyUtils.MyConstant;
-import com.kyle.mycar.MyUtils.SpUtils;
 import com.kyle.mycar.R;
-
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.io.FileOutputStream;
-
 import butterknife.BindView;
 import butterknife.Unbinder;
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -95,7 +84,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.setting_1:
-
+                mActivity.switchFrag(this,new SettingCarFragment(),false,null);
                 break;
             case R.id.setting_2:
                 mActivity.switchFrag(this, new SettingOilTypeFrag(), false, null);
@@ -120,21 +109,6 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     public void goPickPicture() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intent, RQ_CODE_PICK_HEAD_IMAGE);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
-            grantResults) {
-        if (requestCode == RQ_CODE_REQUEST_PERMISSIONS) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager
-                    .PERMISSION_GRANTED) {
-                Snackbar.make(getView(), "权限获取成功", Snackbar.LENGTH_SHORT).show();
-                goPickPicture();
-            } else {
-                Snackbar.make(getView(), "权限获取失败", Snackbar.LENGTH_LONG).show();
-            }
-        }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

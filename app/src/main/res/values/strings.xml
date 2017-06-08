@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyCar</string>
+    <string name="app_name">汽车管家</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -29,7 +29,7 @@
     <string name="next_line">&#160;</string>
     <string name="delete_sucess">删除成功</string>
     <string name="chart">油耗表</string>
-    <string name="err_empty_data">请输入数据</string>
+    <string name="err_empty_odo">请输入汽车里程</string>
     <string name="oil_type">燃料</string>
     <string name="setting_oiltype_dialog_title">删除</string>
     <string name="setting_oiltype_dialog_msg">您确认要删除吗？</string>
@@ -42,4 +42,7 @@
     <string name="perKm">每公里单价（元/L）：</string>
     <string name="tips">提示</string>
     <string name="tips_msg">两次加满油之间计算油耗。</string>
+    <string name="permission_fail">权限获取失败</string>
+    <string name="err_empty_money">请输入金额</string>
+    <string name="err_empty_tag">请选择标签，可多选</string>
 </resources>

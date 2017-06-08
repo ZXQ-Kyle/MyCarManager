@@ -1,6 +1,5 @@
 package com.kyle.mycar.Fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -9,7 +8,6 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 import com.kyle.mycar.Bean.MsgSetting;
 import com.kyle.mycar.MyUtils.MyConstant;
@@ -71,8 +69,7 @@ public class AddTypeOrTagFragment extends BaseFragment implements Toolbar.OnMenu
             }
         }
         et.requestFocus();
-        InputMethodManager imm = (InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(et,InputMethodManager.SHOW_FORCED);
+        mActivity.showKeyboard(et);
     }
 
     @Override
@@ -80,7 +77,7 @@ public class AddTypeOrTagFragment extends BaseFragment implements Toolbar.OnMenu
         if (item.getItemId()==R.id.menu_confirm){
             String text = et.getText().toString().trim();
             if (TextUtils.isEmpty(text)){
-                Toast.makeText(mActivity, R.string.err_empty_data, Toast.LENGTH_SHORT).show();
+                Toast.makeText(mActivity, R.string.err_empty_odo, Toast.LENGTH_SHORT).show();
                 return true;
             }
             if (isOilType){
@@ -125,8 +122,7 @@ public class AddTypeOrTagFragment extends BaseFragment implements Toolbar.OnMenu
 
     @Override
     public void onDestroyView() {
-        InputMethodManager imm = (InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(et.getWindowToken(),0);
+        mActivity.hideKeyboard(et);
         super.onDestroyView();
     }
 }

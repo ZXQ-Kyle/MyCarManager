@@ -3,7 +3,6 @@ package com.kyle.mycar.Fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
-
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.R;
@@ -68,8 +66,9 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         mAdapter.disableLoadMoreIfNotFullPage(recyclerView);
         mAdapter.setOnLoadMoreListener(this, recyclerView);
         mAdapter.setOnItemChildClickListener(this);
-        mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(),0,MsgMainFragment.SET_ADAPTER));
-        pageCount=1;
+        mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(), 0, MsgMainFragment
+                .SET_ADAPTER));
+        pageCount = 1;
         recyclerView.addItemDecoration(new MyItemDecoration(mActivity));
 
     }
@@ -80,30 +79,29 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         switch (msg.getFlag()) {
             case MsgMainFragment.SET_ADAPTER:
                 if (mAdapter == null) {
-                    mAdapter = new MultiAdapter(msg.getTag());
-                }else {
-                    mAdapter.setNewData(msg.getTag());
+                    mAdapter = new MultiAdapter(msg.getRecordList());
+                } else {
+                    mAdapter.setNewData(msg.getRecordList());
                 }
                 recyclerView.setAdapter(mAdapter);
                 break;
             case MsgMainFragment.REFRESH:
-                mAdapter.setNewData(msg.getTag());
+                mAdapter.setNewData(msg.getRecordList());
                 mAdapter.setEnableLoadMore(true);
                 srl.setRefreshing(false);
                 openRecordPosition = -1;
                 break;
             case MsgMainFragment.UPDATE_AN_NEW_ONE_DATA:
-                RecordDao dao = RecordDao.getInstance(mActivity);
-                Record record = dao.queryNewestOne();
-                if (record != null) {
-                    mAdapter.addData(0, record);
+                Record msgRecord = msg.getRecord();
+                if (msgRecord != null) {
+                    mAdapter.addData(0, msgRecord);
                 }
                 recyclerView.smoothScrollToPosition(0);
-                openRecordPosition++;
+                if (openRecordPosition != -1) openRecordPosition++;
                 break;
             case MsgMainFragment.LOAD_MORE:
                 mAdapter.loadMoreComplete();
-                mAdapter.addData(msg.getTag());
+                mAdapter.addData(msg.getRecordList());
                 Logger.d("MsgMainFragment.MsgMainFragment.LOAD_MORE");
                 break;
             case MsgMainFragment.LOAD_MORE_END:
@@ -115,10 +113,9 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 Record r = msg.getRecord();
                 int indexOf = mAdapter.getData().indexOf(r);
                 mAdapter.notifyItemChanged(indexOf);
-//                mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(),0,MsgMainFragment.UPDATE_REFRESH));
                 break;
             case MsgMainFragment.UPDATE_REFRESH:
-                mAdapter.setNewData(msg.getTag());
+                mAdapter.setNewData(msg.getRecordList());
                 openRecordPosition = -1;
                 break;
             case MsgMainFragment.DETAIL_DELETE_OIL:
@@ -129,7 +126,17 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 } else {
                     mAdapter.notifyItemRemoved(openRecordPosition);
                 }
-                openRecordPosition=-1;
+                openRecordPosition = -1;
+                break;
+            case MsgMainFragment.DETAIL_DELETE_MT:
+                Record rec2 = msg.getRecord();
+                mAdapter.getData().remove(rec2);
+                if (mAdapter.getData().size() == 0) {
+                    mAdapter.setNewData(null);
+                } else {
+                    mAdapter.notifyItemRemoved(openRecordPosition);
+                }
+                openRecordPosition = -1;
                 break;
 
 
@@ -141,8 +148,8 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     public void onRefresh() {
         mAdapter.setEnableLoadMore(false);
 //        getData(0, MsgMainFragment.REFRESH);
-        mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(),0,MsgMainFragment.REFRESH));
-        pageCount=1;
+        mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(), 0, MsgMainFragment.REFRESH));
+        pageCount = 1;
     }
 
     // mAdapter.setOnItemClickListener(this);
@@ -171,7 +178,8 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     @Override
     public void onLoadMoreRequested() {
 //        getData(pageCount, MsgMainFragment.LOAD_MORE);
-        mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(),pageCount,MsgMainFragment.LOAD_MORE));
+        mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(), pageCount, MsgMainFragment
+                .LOAD_MORE));
         pageCount++;
     }
 
@@ -186,11 +194,9 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             //删除单条记录
             case R.id.it_iv_delete:
                 AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-                builder.setTitle(R.string.delete)
-                        .setIcon(R.drawable.ic_delete_pressed)
-                        .setMessage(R.string
-                        .setting_oiltype_dialog_msg)
-                        .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
+                builder.setTitle(R.string.delete).setIcon(R.drawable.ic_delete_pressed).setMessage(R.string
+                        .setting_oiltype_dialog_msg).setPositiveButton(R.string.confirm, new DialogInterface
+                        .OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         switch (itemType) {
@@ -209,7 +215,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                         dao.update(record);
                         mAdapter.getData().remove(position);
                         //更新openRecordPosition位置
-                        openRecordPosition=-1;
+                        openRecordPosition = -1;
                         if (mAdapter.getData().size() == 0) {
                             mAdapter.setNewData(null);
                         } else {
@@ -225,8 +231,9 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 switch (itemType) {
                     case Record.FLAG_MT:
                         MaintenanceFragment fragment = new MaintenanceFragment();
-                        fragment.mt=record.getMt();
-                        mActivity.switchFrag(this,fragment,false,null);
+                        fragment.mt = record.getMt();
+                        fragment.mRecord=record;
+                        mActivity.switchFrag(this, fragment, false, null);
                         break;
 
                     case Record.FLAG_OIL:
@@ -243,15 +250,15 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
                 switch (itemType) {
                     case Record.FLAG_MT:
                         // TODO: 2017/6/6 详情页面
-                        MaintenanceFragment fragment = new MaintenanceFragment();
-                        fragment.mt=record.getMt();
-                        mActivity.switchFrag(this,fragment,false,null);
+                        DetailExpenseFragment fragment = new DetailExpenseFragment();
+                        fragment.mRecord = record;
+                        mActivity.switchFrag(this, fragment, false, null);
                         break;
 
                     case Record.FLAG_OIL:
-                        OilDetailFragment oilDetailFragment = new OilDetailFragment();
-                        oilDetailFragment.mRecord=record;
-                        mActivity.switchFrag(this, oilDetailFragment, false, null);
+                        DetailOilFragment detailOilFragment = new DetailOilFragment();
+                        detailOilFragment.mRecord = record;
+                        mActivity.switchFrag(this, detailOilFragment, false, null);
                         break;
                 }
                 break;
@@ -271,11 +278,21 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         return true;
     }
 
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (!hidden){
+            mActivity.hideKeyboard(recyclerView);
+        }
+    }
+
+
 
     private static class getDataRun implements Runnable {
         private Context mContext;
         private long mOff;
         private int mWhat;
+
         /**
          * @param off  刷新第一页，为0，其余设置pageCount
          * @param what 获取数据后返回
@@ -285,6 +302,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
             mOff = off;
             mWhat = what;
         }
+
         @Override
         public void run() {
 //            pageCount = off + 1;

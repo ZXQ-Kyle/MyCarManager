@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.ImageFormat;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.Nullable;
@@ -95,6 +96,16 @@ public class ImgAndEtView extends LinearLayoutCompat {
     public void setInputTypeOfNumber(){
         et.setInputType(InputType.TYPE_CLASS_NUMBER);
     }
+    public void setInputTypeOfNumberDecimal(){
+        et.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL|InputType.TYPE_CLASS_NUMBER );
+    }
+
+    public boolean rqFocus(){
+        return et.requestFocus();
+    }
+
+
+
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {

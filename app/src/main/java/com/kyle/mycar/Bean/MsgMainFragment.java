@@ -20,6 +20,7 @@ public class MsgMainFragment {
     public static final int UPDATE_REFRESH =6;
 
     public static final int DETAIL_DELETE_OIL =7;
+    public static final int DETAIL_DELETE_MT = 8 ;
 
     private int flag;
     private List<Record> recordList;
@@ -51,11 +52,11 @@ public class MsgMainFragment {
         this.flag = flag;
     }
 
-    public List<Record> getTag() {
+    public List<Record> getRecordList() {
         return recordList;
     }
 
-    public void setTag(List<Record> recordList) {
+    public void setRecordList(List<Record> recordList) {
         this.recordList = recordList;
     }
 

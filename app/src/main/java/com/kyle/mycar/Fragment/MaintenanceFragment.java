@@ -1,12 +1,12 @@
 package com.kyle.mycar.Fragment;
 
 
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 import com.j256.ormlite.misc.TransactionManager;
 import com.jackuhan.flowlayouttags.FlowlayoutTags;
 import com.kyle.mycar.Bean.MessageEvent;
@@ -49,6 +49,7 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
 
     private String mDate;
     public Maintenance mt;
+    public Record mRecord;
 
 
     @Override
@@ -64,11 +65,12 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
         iaeMtDate.setText(mDate);
 
         iaeMtDate.setUnEditable();
-        iaeMtMoney.setInputTypeOfNumber();
         iaeMtOdometer.setInputTypeOfNumber();
+        iaeMtMoney.setInputTypeOfNumberDecimal();
         //初始化Tags
         initTags();
-
+        iaeMtOdometer.rqFocus();
+        mActivity.showKeyboard(iaeMtOdometer);
     }
 
     private void initTags() {
@@ -92,14 +94,19 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
             String[] split = tags.split(",");
             int length = split.length;
             int index = -1;
+            int childCount=-1;
             for (int i = 0; i < length; i++) {
                 index = tagList.indexOf(split[i]);
+                FlowlayoutTags.TagView tagView=null;
                 if (index >= 0) {
-                    FlowlayoutTags.TagView tagView = (FlowlayoutTags.TagView) tagsMt.getChildAt(index);
+                    tagView = (FlowlayoutTags.TagView) tagsMt.getChildAt(index);
                     tagView.setCheckedWithoutAnimal(true);
                     index = -1;
                 } else {
+                    childCount = tagsMt.getChildCount();
                     tagsMt.appendTag(split[i]);
+                    tagView = (FlowlayoutTags.TagView) tagsMt.getChildAt(childCount);
+                    tagView.setCheckedWithoutAnimal(true);
                 }
             }
         }
@@ -149,20 +156,19 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
         if (mt == null) {
             Maintenance mt2 = new Maintenance(date, money, odometer, sb.toString());
             mtDao.add(mt2);
-            recordDao.add(new Record(mt2, date));
+            mRecord=new Record(mt2,date);
+            recordDao.add(mRecord);
         } else {
+
             mt.setMoney(money);
             mt.setOdometer(odometer);
             mt.setTags(sb.toString());
-            if (mt.getDate() != date) {
-                mt.setDate(date);
-                mtDao.update(mt);
-                List<Record> records = recordDao.queryButIsDelete(Record.COLUMN_MT_ID, mt, "id", false);
-                Record record = records.get(0);
-                record.setDate(date);
-                recordDao.update(record);
-            } else {
-                mtDao.update(mt);
+            mt.setDate(date);
+            mtDao.update(mt);
+
+            if (mRecord.getDate() != date) {
+                mRecord.setDate(date);
+                recordDao.update(mRecord);
             }
         }
     }
@@ -179,10 +185,10 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
         };
         try {
             manager.callInTransaction(callable);
-            Snackbar.make(getView(), getString(R.string.sucess), Snackbar.LENGTH_SHORT).show();
+//            Toast.makeText(mActivity, R.string.sucess, Toast.LENGTH_SHORT).show();
         } catch (SQLException e) {
             e.printStackTrace();
-            Snackbar.make(getView(), getString(R.string.fail), Snackbar.LENGTH_SHORT).show();
+//            Toast.makeText(mActivity, R.string.fail, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -204,29 +210,45 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
     @Override
     public boolean onMenuItemClick(MenuItem item) {
         if (item.getItemId() == R.id.menu_confirm) {
-            String money = iaeMtMoney.getText();
             String odometer = iaeMtOdometer.getText();
-            if (TextUtils.isEmpty(money)||TextUtils.isEmpty(odometer)) {
-                Snackbar.make(getView(),R.string.err_empty_data,Snackbar.LENGTH_LONG).show();
+            if (TextUtils.isEmpty(odometer)) {
+                Toast.makeText(mActivity.getApplicationContext(), R.string.err_empty_odo, Toast.LENGTH_LONG).show();
+                iaeMtOdometer.rqFocus();
+                mActivity.showKeyboard(iaeMtOdometer);
+                return true;
+            }
+            odometer=null;
+            String money = iaeMtMoney.getText();
+            if (TextUtils.isEmpty(money)) {
+                Toast.makeText(mActivity.getApplicationContext(), R.string.err_empty_money, Toast.LENGTH_LONG).show();
+                iaeMtMoney.rqFocus();
+                mActivity.showKeyboard(iaeMtMoney);
                 return true;
             }
             money=null;
-            odometer=null;
+            String[] tagsText = tagsMt.getCheckedTagsText();
+            if (tagsText.length==0) {
+                Toast.makeText(mActivity.getApplicationContext(), R.string.err_empty_tag, Toast.LENGTH_LONG).show()
+                ;return true;
+            }
             mActivity.mThreadPool.execute(new Runnable() {
                 @Override
                 public void run() {
                     saveData();
 
-                    if (mt != null) {
-                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA));
+                    if (null != mt) {
+                        //更新数据
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA,mRecord));
                     } else {
-                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA));
+                        //新建数据
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA,mRecord));
                     }
-                    mActivity.switchFrag(MaintenanceFragment.class, MainFragment.class, true);
+                    mActivity.onBackPressed();
                 }
             });
             return true;
         }
         return false;
     }
+
 }

@@ -2,7 +2,6 @@ package com.kyle.mycar.MyUtils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -13,14 +12,17 @@ import java.util.Locale;
 
 public class MyDateUtils {
 
+    private static SimpleDateFormat mDateFormat;
+
     /**string转long
      * @param dateStr yyyy年MM月dd日  HH:mm
      * @return 返回long型时间，失败返回-1
      */
     public static long strToLong(String dateStr) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日  HH:mm", Locale.getDefault());
+        if (null== mDateFormat) mDateFormat = new SimpleDateFormat("yyyy年MM月dd日  HH:mm", Locale.getDefault());
+
         try {
-            return sdf.parse(dateStr).getTime();
+            return mDateFormat.parse(dateStr).getTime();
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -32,8 +34,18 @@ public class MyDateUtils {
      * @return yyyy年MM月dd日  HH:mm 失败返回null
      */
     public static String longToStr(long time) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy年MM月dd日  HH:mm", Locale.getDefault());
-        return sdf.format(new Date(time));
+        if (null== mDateFormat) mDateFormat = new SimpleDateFormat("yyyy年MM月dd日  HH:mm", Locale.getDefault());
+
+        return mDateFormat.format(new Date(time));
+    }
+    /**long转string
+     * @param time
+     * @param sdf yyyy年MM月dd日  HH:mm:ss SSS
+     * @return 失败返回null
+     */
+    public static String longToStr(long time,String sdf) {
+        mDateFormat = new SimpleDateFormat(sdf, Locale.getDefault());
+        return mDateFormat.format(new Date(time));
     }
 
 }

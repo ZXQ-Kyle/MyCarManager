@@ -45,4 +45,7 @@
     <string name="permission_fail">权限获取失败</string>
     <string name="err_empty_money">请输入金额</string>
     <string name="err_empty_tag">请选择标签，可多选</string>
+    <string name="query">查询</string>
+    <string name="from">从</string>
+    <string name="to">至</string>
 </resources>

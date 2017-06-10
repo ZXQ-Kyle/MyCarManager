@@ -114,7 +114,7 @@ public class SettingTagFrag extends BaseFragment implements Toolbar.OnMenuItemCl
         }
     }
 
-    static class QuickAdapter extends BaseQuickAdapter<MtTag, BaseViewHolder> {
+   private static class QuickAdapter extends BaseQuickAdapter<MtTag, BaseViewHolder> {
         private int[] colors;
 
         public QuickAdapter(Context context, @Nullable List<MtTag> data) {

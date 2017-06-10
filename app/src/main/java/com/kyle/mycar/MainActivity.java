@@ -24,6 +24,7 @@ import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Fragment.AboutFragment;
 import com.kyle.mycar.Fragment.ChartFragment;
 import com.kyle.mycar.Fragment.MainFragment;
+import com.kyle.mycar.Fragment.QueryFragment;
 import com.kyle.mycar.Fragment.SettingFragment;
 import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.MyUtils.SpUtils;
@@ -169,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else if (id == R.id.nav_chart) {
             switchFrag(fromFrag.getClass(), ChartFragment.class, false);
         } else if (id == R.id.nav_oil) {
-
+            switchFrag(fromFrag.getClass(), QueryFragment.class, false);
         } else if (id == R.id.nav_setting) {
             switchFrag(fromFrag.getClass(), SettingFragment.class, false);
         } else if (id == R.id.nav_about) {

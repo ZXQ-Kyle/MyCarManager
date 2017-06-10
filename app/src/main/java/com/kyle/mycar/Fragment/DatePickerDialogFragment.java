@@ -29,6 +29,8 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment {
 
     private int mFlagDate;
     private int mFlagTime;
+    //设置是否可以选着时间
+    public boolean mTimeGone;
 
     @BindView(R.id.date_picker_time)
     Button datePickerTime;
@@ -54,6 +56,7 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment {
 
         View view = inflater.inflate(R.layout.fragment_date_picker_dialog, container, false);
         unbinder = ButterKnife.bind(this, view);
+        if (mTimeGone)datePickerTime.setVisibility(View.INVISIBLE);
         return view;
     }
 
@@ -81,8 +84,8 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment {
     @OnClick({R.id.date_picker_time, R.id.date_picker_cancel, R.id.date_picker_confirm})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-
             case R.id.date_picker_time:
+
                 java.util.Calendar calendar = java.util.Calendar.getInstance();
                 int hour = calendar.get(java.util.Calendar.HOUR_OF_DAY);
                 int minute = calendar.get(java.util.Calendar.MINUTE);
@@ -146,10 +149,8 @@ public class DatePickerDialogFragment extends AppCompatDialogFragment {
         dismiss();
     }
 
-    private void postMessage(String str, int OilFragmentConstant) {
-//        MessageEvent msg = new MessageEvent();
-//        msg.setMsg(str.toString());
-//        msg.setFlag(OilFragmentConstant);
-        EventBus.getDefault().post(new MessageEvent(str.toString(),OilFragmentConstant));
+    private void postMessage(String str, int flag) {
+
+        EventBus.getDefault().post(new MessageEvent(str.toString(),flag));
     }
 }

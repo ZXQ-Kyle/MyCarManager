@@ -11,16 +11,16 @@ import java.util.List;
 
 public class MsgMainFragment {
 
-    public static final int SET_ADAPTER=0;
-    public static final int REFRESH =1;
-    public static final int UPDATE_AN_NEW_ONE_DATA =2;
-    public static final int LOAD_MORE = 3;
-    public static final int LOAD_MORE_END = 4;
-    public static final int UPDATE_AN_OLD_DATA =5;
-    public static final int UPDATE_REFRESH =6;
+    public static final int SET_ADAPTER=50;
+    public static final int REFRESH =51;
+    public static final int UPDATE_AN_NEW_ONE_DATA =92;
+    public static final int LOAD_MORE = 53;
+    public static final int LOAD_MORE_END = 54;
+    public static final int UPDATE_AN_OLD_DATA =55;
+    public static final int UPDATE_REFRESH =56;
 
-    public static final int DETAIL_DELETE_OIL =7;
-    public static final int DETAIL_DELETE_MT = 8 ;
+    public static final int DETAIL_DELETE_OIL =57;
+    public static final int DETAIL_DELETE_MT = 58 ;
 
     private int flag;
     private List<Record> recordList;

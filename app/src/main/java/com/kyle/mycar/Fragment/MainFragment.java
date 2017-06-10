@@ -41,7 +41,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     SwipeRefreshLayout srl;
 
     private MultiAdapter mAdapter = new MultiAdapter(null);
-    public static final int PAGE_SIZE = 8;
+    public static final int PAGE_SIZE = 10;
     private long pageCount = 0;
     private int openRecordPosition = -1;
 
@@ -59,7 +59,6 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
         recyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(mActivity, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(layoutManager);
-//        recyclerView.addItemDecoration(new MyItemDecoration(mActivity));
         mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN);
         mAdapter.isFirstOnly(false);
         mAdapter.setOnItemClickListener(this);

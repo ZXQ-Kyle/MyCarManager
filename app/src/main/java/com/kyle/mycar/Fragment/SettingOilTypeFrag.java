@@ -109,7 +109,7 @@ public class SettingOilTypeFrag extends BaseFragment implements Toolbar.OnMenuIt
         }
     }
 
-    static class QuickAdapter extends BaseQuickAdapter<OilType, BaseViewHolder> {
+   private static class QuickAdapter extends BaseQuickAdapter<OilType, BaseViewHolder> {
         private int[] colors;
 
         public QuickAdapter(Context context, @Nullable List<OilType> data) {

@@ -5,16 +5,20 @@
         <item
             android:id="@+id/nav_history"
             android:checked="true"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/ic_record"
             android:title="@string/history"/>
         <item
             android:id="@+id/nav_chart"
-            android:icon="@drawable/ic_show_chart"
+            android:icon="@drawable/ic_chart"
             android:title="@string/statistics"/>
         <item
             android:id="@+id/nav_oil"
-            android:icon="@drawable/oil"
+            android:icon="@drawable/ic_query_oil"
             android:title="@string/oil"/>
+        <item
+            android:id="@+id/nav_expense"
+            android:icon="@drawable/ic_query_ex"
+            android:title="@string/expense"/>
     </group>
 
     <item android:title="@string/about">
@@ -26,7 +30,7 @@
                     android:title="@string/setting"/>
                 <item
                     android:id="@+id/nav_about"
-                    android:icon="@drawable/ic_menu_send"
+                    android:icon="@drawable/ic_about"
                     android:title="@string/about"/>
             </group>
         </menu>

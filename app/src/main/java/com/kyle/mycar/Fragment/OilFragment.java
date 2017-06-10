@@ -206,6 +206,7 @@ public class OilFragment extends BaseFragment implements Toolbar.OnMenuItemClick
         String OdometerText = iaeOdometer.getText();
         String oilType = spinnerOil.getSelectedItem().toString();
         String oilMoney = etOilMoney.getText().toString();
+
         String oilPrice = etOilPrice.getText().toString();
         String oilQuantity = etOilQuantity.getText().toString();
         boolean isFullChecked = cbOilIsFull.isChecked();

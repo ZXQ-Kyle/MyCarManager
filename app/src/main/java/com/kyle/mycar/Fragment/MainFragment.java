@@ -176,7 +176,6 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     // mAdapter.setOnLoadMoreListener(this,recyclerView);
     @Override
     public void onLoadMoreRequested() {
-//        getData(pageCount, MsgMainFragment.LOAD_MORE);
         mActivity.mThreadPool.execute(new getDataRun(mActivity.getApplicationContext(), pageCount, MsgMainFragment
                 .LOAD_MORE));
         pageCount++;
@@ -304,7 +303,6 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
 
         @Override
         public void run() {
-//            pageCount = off + 1;
             RecordDao dao = RecordDao.getInstance(mContext);
             long count = dao.countOf();
             long maxLine = count - mOff * PAGE_SIZE;

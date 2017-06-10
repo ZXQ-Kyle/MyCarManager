@@ -35,7 +35,9 @@ public class MyConstant {
     public static final int SETTING_UPDATE_TAG = 12;
 
     //MsgQuery 事件flag
-    public static final int QUERY_SET_ADAPTER = 13;
+    public static final int QUERY_NEW_DATA = 13;
+    public static final int QUERY_LOAD_MORE = 14;
+    public static final int QUERY_REFRESH = 15;
 
 
 

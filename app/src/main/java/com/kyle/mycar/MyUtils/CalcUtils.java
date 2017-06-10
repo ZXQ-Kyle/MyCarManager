@@ -20,7 +20,7 @@ public class CalcUtils {
     public static BigDecimal appendBigDecimal(BigDecimal a, String b) {
         BigDecimal b1 = new BigDecimal(b);
         BigDecimal c = a.add(b1);
-        c.setScale(2);
+        c.setScale(2,BigDecimal.ROUND_HALF_UP);
         return c;
     }
     /**

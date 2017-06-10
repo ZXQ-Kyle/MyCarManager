@@ -11,8 +11,14 @@ import java.util.ArrayList;
 public class MsgChart {
 
     public ArrayList<Entry> entries;
+    public float average;
 
     public MsgChart(ArrayList<Entry> entries) {
         this.entries = entries;
+    }
+
+    public MsgChart(ArrayList<Entry> entries, float average) {
+        this.entries = entries;
+        this.average = average;
     }
 }

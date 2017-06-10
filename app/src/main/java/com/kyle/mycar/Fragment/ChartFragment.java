@@ -5,6 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import com.github.mikephil.charting.charts.LineChart;
@@ -101,14 +102,14 @@ public class ChartFragment extends BaseFragment {
         //关闭右侧Y轴线
         YAxis yAxisRight = mChart.getAxisRight();
         yAxisRight.setEnabled(false);
-        //限制线
-        LimitLine limitLine = new LimitLine(10.5f, "平均油耗 10.5");
-//        limitLine.setLineColor(getResources().getColor(R.color.red));
-        limitLine.enableDashedLine(20, 20, 0);
-        limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
-        limitLine.setTextSize(10);
-        limitLine.setLineWidth(4f);
-        yAxis.addLimitLine(limitLine);
+//        //限制线
+//        LimitLine limitLine = new LimitLine(0, "平均油耗");
+////        limitLine.setLineColor(getResources().getColor(R.color.red));
+//        limitLine.enableDashedLine(20, 20, 0);
+//        limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+//        limitLine.setTextSize(10);
+//        limitLine.setLineWidth(4f);
+//        yAxis.addLimitLine(limitLine);
 
 //        //添加数据
         mChart.setData(null);
@@ -120,6 +121,18 @@ public class ChartFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void MsgEvent(MsgChart msg){
+        YAxis yAxis = mChart.getAxisLeft();
+        //限制线
+        float average = msg.average;
+        Log.i("------", "MsgEvent: "+average);
+        LimitLine limitLine = new LimitLine(average, "平均油耗 "+average);
+//        limitLine.setLineColor(getResources().getColor(R.color.b3));
+        limitLine.enableDashedLine(20, 20, 0);
+        limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
+        limitLine.setTextSize(10);
+        limitLine.setLineWidth(4f);
+        yAxis.addLimitLine(limitLine);
+
         ArrayList<Entry> entries = msg.entries;
         if (null!= entries && entries.size()>0){
             LineDataSet set=new LineDataSet(msg.entries,"油耗");
@@ -136,11 +149,9 @@ public class ChartFragment extends BaseFragment {
             }
             mChart.invalidate();
         }
-
-
     }
 
-    static class getChartData implements Runnable {
+   private static class getChartData implements Runnable {
         private WeakReference<Context> contextWeakReference;
 
         public getChartData(Context context) {
@@ -152,17 +163,21 @@ public class ChartFragment extends BaseFragment {
             RecordDao dao = RecordDao.getInstance(contextWeakReference.get());
             List<Record> list = dao.queryButIsDelete("flag", Record.FLAG_OIL, "date", true);
             ArrayList<Entry> entries = new ArrayList<>();
+            float sum=0;
             if (list != null) {
                 for (Record record : list) {
                     long date = record.getDate();
                     String fuelC = record.getOil().getFuelC();
                     if (!TextUtils.isEmpty(fuelC)){
-                        Entry entry = new Entry(date, Float.parseFloat(fuelC));
+                        float fuelF = Float.parseFloat(fuelC);
+                        sum+=fuelF;
+                        Entry entry = new Entry(date, fuelF);
                         entries.add(entry);
                     }
                 }
             }
-            EventBus.getDefault().post(new MsgChart(entries));
+            float ave = sum / entries.size();
+            EventBus.getDefault().post(new MsgChart(entries,ave));
         }
     }
 

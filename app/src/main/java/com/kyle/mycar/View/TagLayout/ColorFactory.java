@@ -33,7 +33,7 @@ public class ColorFactory {
 //    public static final String BG_COLOR_ALPHA = "33";
     public static final String BG_COLOR_ALPHA = "66";
 //    public static final String BD_COLOR_ALPHA = "88";
-    public static final String BD_COLOR_ALPHA = "66";
+    public static final String BD_COLOR_ALPHA = "88";
 
     public static final String RED = "F44336";
     public static final String LIGHTBLUE = "03A9F4";

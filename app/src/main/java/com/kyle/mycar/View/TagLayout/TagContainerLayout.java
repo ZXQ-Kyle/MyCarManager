@@ -519,12 +519,41 @@ public class TagContainerLayout extends ViewGroup {
         }
         postInvalidate();
     }
+    private void onSetCheckableTag() {
+        if (mTags == null) {
+            throw new RuntimeException("NullPointer exception!");
+        }
+        removeAllTags();
+        if (mTags.size() == 0) {
+            return;
+        }
+        for (int i = 0; i < mTags.size(); i++) {
+            onAddCheckableTag(mTags.get(i), mChildViews.size());
+        }
+        postInvalidate();
+    }
 
     private void onAddTag(String text, int position) {
         if (position < 0 || position > mChildViews.size()) {
             throw new RuntimeException("Illegal position!");
         }
         TagView tagView = new TagView(getContext(), text);
+        initTagView(tagView, position);
+        mChildViews.add(position, tagView);
+        if (position < mChildViews.size()) {
+            for (int i = position; i < mChildViews.size(); i++) {
+                mChildViews.get(i).setTag(i);
+            }
+        } else {
+            tagView.setTag(position);
+        }
+        addView(tagView, position);
+    }
+    private void onAddCheckableTag(String text, int position) {
+        if (position < 0 || position > mChildViews.size()) {
+            throw new RuntimeException("Illegal position!");
+        }
+        TagView tagView = new TagView(getContext(), text,true);
         initTagView(tagView, position);
         mChildViews.add(position, tagView);
         if (position < mChildViews.size()) {
@@ -737,6 +766,10 @@ public class TagContainerLayout extends ViewGroup {
         mTags = tags;
         onSetTag();
     }
+    public void setCheckableTags(List<String> tags) {
+        mTags = tags;
+        onSetCheckableTag();
+    }
 
     /**
      * Set tags with own color
@@ -767,6 +800,10 @@ public class TagContainerLayout extends ViewGroup {
      */
     public void addTag(String text) {
         addTag(text, mChildViews.size());
+    }
+    public void addCheckableTag(String text) {
+        onAddCheckableTag(text,mChildViews.size());
+        postInvalidate();
     }
 
     /**
@@ -829,6 +866,15 @@ public class TagContainerLayout extends ViewGroup {
         List<String> tmpList = new ArrayList<String>();
         for (View view : mChildViews) {
             if (view instanceof TagView) {
+                tmpList.add(((TagView) view).getText());
+            }
+        }
+        return tmpList;
+    }
+    public List<String> getCheckedTags() {
+        List<String> tmpList = new ArrayList<String>();
+        for (View view : mChildViews) {
+            if (view instanceof TagView && ((TagView) view).isChecked()) {
                 tmpList.add(((TagView) view).getText());
             }
         }

@@ -1,1 +1,1 @@
-include ':app', 'FlowlayoutTags:library'
+include ':app'

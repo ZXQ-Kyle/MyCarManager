@@ -8,13 +8,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import com.j256.ormlite.misc.TransactionManager;
-import com.jackuhan.flowlayouttags.FlowlayoutTags;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.MsgMainFragment;
 import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.MyUtils.MyDateUtils;
 import com.kyle.mycar.R;
 import com.kyle.mycar.View.ImgAndEtView;
+import com.kyle.mycar.View.TagLayout.TagContainerLayout;
+import com.kyle.mycar.View.TagLayout.TagView;
 import com.kyle.mycar.db.Dao.MtDao;
 import com.kyle.mycar.db.Dao.MtTagDao;
 import com.kyle.mycar.db.Dao.RecordDao;
@@ -44,8 +45,8 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
     ImgAndEtView iaeMtOdometer;
     @BindView(R.id.iae_mt_money)
     ImgAndEtView iaeMtMoney;
-    @BindView(R.id.tags_mt)
-    FlowlayoutTags tagsMt;
+    @BindView(R.id.tag_layout)
+    TagContainerLayout tagLayout;
 
     private String mDate;
     public Maintenance mt;
@@ -82,7 +83,24 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
                 tagList.add(tag.getTag());
             }
         }
-        refreshCategorys(tagsMt, tagList);
+        tagLayout.setCheckableTags(tagList);
+        tagLayout.setOnTagClickListener(new TagView.OnTagClickListener() {
+            @Override
+            public void onTagClick(int position, String text) {
+                TagView tagView = tagLayout.getTagView(position);
+                tagView.setChecked(!tagView.isChecked());
+            }
+
+            @Override
+            public void onTagLongClick(int position, String text) {
+
+            }
+
+            @Override
+            public void onTagCrossClick(int position) {
+
+            }
+        });
 
         //初始化数据
         if (mt != null) {
@@ -94,30 +112,23 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
             String[] split = tags.split(",");
             int length = split.length;
             int index = -1;
-            int childCount=-1;
             for (int i = 0; i < length; i++) {
                 index = tagList.indexOf(split[i]);
-                FlowlayoutTags.TagView tagView=null;
+                TagView tagView = null;
                 if (index >= 0) {
-                    tagView = (FlowlayoutTags.TagView) tagsMt.getChildAt(index);
-                    tagView.setCheckedWithoutAnimal(true);
+                    tagView= (TagView)tagLayout.getChildAt(index);
+                    tagView.setChecked(true);
                     index = -1;
                 } else {
-                    childCount = tagsMt.getChildCount();
-                    tagsMt.appendTag(split[i]);
-                    tagView = (FlowlayoutTags.TagView) tagsMt.getChildAt(childCount);
-                    tagView.setCheckedWithoutAnimal(true);
+                    tagLayout.addCheckableTag(split[i]);
+                    tagView= (TagView) tagLayout.getChildAt(tagLayout.getChildCount()-1);
+                    tagView.setChecked(true);
                 }
             }
         }
 
     }
 
-    public void refreshCategorys(FlowlayoutTags flowlayoutTags, List<String> list) {
-        flowlayoutTags.removeAllViews();
-        flowlayoutTags.setTags(list);
-        flowlayoutTags.setTagsUncheckedColorAnimal(false);
-    }
 
     @OnClick({R.id.iae_mt_date})
     public void onViewClicked(View view) {
@@ -134,7 +145,7 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
 //                mActivity.switchFrag(this,new SettingTagFrag(),false,null);
 //                // TODO: 2017/6/5 消息回传
 //                break;
-                   }
+        }
 
     }
 
@@ -143,11 +154,12 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
         long date = MyDateUtils.strToLong(mDate);
         String money = iaeMtMoney.getText();
         String odometer = iaeMtOdometer.getText();
-        String[] tagsText = tagsMt.getCheckedTagsText();
+        List<String> checkedTags = tagLayout.getCheckedTags();
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < tagsText.length; i++) {
-            sb.append(tagsText[i]);
-            if (i < tagsText.length - 1) {
+        int size = checkedTags.size();
+        for (int i = 0; i < size; i++) {
+            sb.append(checkedTags.get(i));
+            if (i < size - 1) {
                 sb.append(",");
             }
         }
@@ -156,7 +168,7 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
         if (mt == null) {
             Maintenance mt2 = new Maintenance(date, money, odometer, sb.toString());
             mtDao.add(mt2);
-            mRecord=new Record(mt2,date);
+            mRecord = new Record(mt2, date);
             recordDao.add(mRecord);
         } else {
 
@@ -217,7 +229,7 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
                 mActivity.showKeyboard(iaeMtOdometer);
                 return true;
             }
-            odometer=null;
+            odometer = null;
             String money = iaeMtMoney.getText();
             if (TextUtils.isEmpty(money)) {
                 Toast.makeText(mActivity.getApplicationContext(), R.string.err_empty_money, Toast.LENGTH_LONG).show();
@@ -225,11 +237,14 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
                 mActivity.showKeyboard(iaeMtMoney);
                 return true;
             }
-            money=null;
-            String[] tagsText = tagsMt.getCheckedTagsText();
-            if (tagsText.length==0) {
+            money = null;
+
+            List<String> checkedTags = tagLayout.getCheckedTags();
+//            String[] tagsText = tagsMt.getCheckedTagsText();
+            if (checkedTags.size() == 0) {
                 Toast.makeText(mActivity.getApplicationContext(), R.string.err_empty_tag, Toast.LENGTH_LONG).show()
-                ;return true;
+                ;
+                return true;
             }
             mActivity.mThreadPool.execute(new Runnable() {
                 @Override
@@ -238,10 +253,10 @@ public class MaintenanceFragment extends BaseFragment implements Toolbar.OnMenuI
 
                     if (null != mt) {
                         //更新数据
-                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA,mRecord));
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_OLD_DATA, mRecord));
                     } else {
                         //新建数据
-                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA,mRecord));
+                        EventBus.getDefault().post(new MsgMainFragment(MsgMainFragment.UPDATE_AN_NEW_ONE_DATA, mRecord));
                     }
                     mActivity.onBackPressed();
                 }

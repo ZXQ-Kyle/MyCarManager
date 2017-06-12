@@ -5,6 +5,9 @@ import android.content.Context;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.OilType;
 
+import java.sql.SQLException;
+import java.util.List;
+
 /**
  *
  * Created by Zhang on 2017/5/15.
@@ -31,5 +34,7 @@ public class MtTagDao extends DaoUtils{
         }
         return instance;
     }
+
+
 
 }

@@ -6,6 +6,7 @@ import android.util.Log;
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.kyle.mycar.db.DbOpenHelper;
+import com.kyle.mycar.db.Table.MtTag;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -132,6 +133,23 @@ public abstract class DaoUtils<T> {
     public List<T> queryButIsDelete(String column, Object value, String orderBy, boolean asc) {
         try {
             return mDao.queryBuilder().orderBy(orderBy, asc).where().eq("isDelete", false).and().eq(column, value)
+                    .query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
+     * @param column  查询条件
+     * @param value   条件值
+     * @param orderBy 排序列
+     * @param asc     false表示降序，true表示升序
+     * @return 对象bean
+     */
+    public List<MtTag> query(String column, Object value, String orderBy, boolean asc) {
+        try {
+            return mDao.queryBuilder().orderBy(orderBy, asc).where().eq(column, value)
                     .query();
         } catch (SQLException e) {
             e.printStackTrace();

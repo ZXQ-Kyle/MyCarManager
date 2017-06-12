@@ -1,9 +1,88 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.kyle.mycar.Fragment.QueryExpenseFragment">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="com.kyle.mycar.Fragment.QueryOilFragment">
+
+    <include layout="@layout/app_bar_with_date"/>
 
 
+    <com.kyle.mycar.View.TagLayout.TagContainerLayout
+        android:id="@+id/tag_layout_query_expense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="24dp"
+        android:paddingRight="24dp"
+        android:paddingTop="16dp"
+        app:container_background_color="@android:color/transparent"
+        app:container_border_color="@android:color/transparent"
+        app:container_border_width="0dp"
+        app:container_enable_drag="false"
+        app:horizontal_interval="12dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:tag_border_width="0dp"
+        app:tag_clickable="true"
+        app:tag_corner_radius="4dp"
+        app:tag_horizontal_padding="12dp"
+        app:tag_ripple_duration="500"
+        app:tag_theme="random"
+        app:tag_vertical_padding="6dp"
+        app:vertical_interval="10dp"/>
 
-</FrameLayout>
+    <LinearLayout
+        android:id="@+id/ll_open"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:clickable="true"
+        android:paddingLeft="@dimen/dp24"
+        android:paddingRight="@dimen/dp24"
+        android:paddingTop="@dimen/dp8">
+
+        <ImageView
+            android:id="@+id/iv_open_query"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_open"/>
+
+        <TextView
+            android:id="@+id/tv_open_query"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:text="@string/show_delete_tag"/>
+    </LinearLayout>
+
+    <com.kyle.mycar.View.TagLayout.TagContainerLayout
+        android:id="@+id/tag_layout2_query_expense"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dp24"
+        android:paddingBottom="@dimen/dp8"
+        android:paddingRight="24dp"
+        android:paddingTop="@dimen/dp8"
+        app:container_background_color="@android:color/transparent"
+        app:container_border_color="@android:color/transparent"
+        app:container_border_width="0dp"
+        app:container_enable_drag="false"
+        app:horizontal_interval="12dp"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5"
+        app:tag_border_width="0dp"
+        app:tag_clickable="true"
+        app:tag_corner_radius="4dp"
+        app:tag_horizontal_padding="12dp"
+        app:tag_ripple_duration="500"
+        app:tag_theme="random"
+        app:tag_vertical_padding="6dp"
+        app:vertical_interval="10dp"/>
+</LinearLayout>

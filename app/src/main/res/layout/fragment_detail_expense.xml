@@ -112,6 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="0dp"
         android:paddingTop="16dp"
+        android:paddingBottom="16dp"
         android:paddingLeft="24dp"
         android:paddingRight="24dp"
         app:container_background_color="@android:color/transparent"

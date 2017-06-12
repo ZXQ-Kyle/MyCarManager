@@ -9,6 +9,7 @@ import com.kyle.mycar.Fragment.OilFragment;
 
 public class MyConstant {
 
+    public static final long PAGE_SIZE = 15;
 
     //第一次进入app，初始化db
     public static String First_IN = "first_in";
@@ -24,8 +25,10 @@ public class MyConstant {
     public static final int OPEN_DRAWER = 6;
     public static final int UPDATE_MT = 7;
 
-    public static final int QUERY_FROM_DATE = 13;
-    public static final int QUERY_TO_DATE = 14;
+    public static final int QUERY_OIL_FROM_DATE = 16;
+    public static final int QUERY_OIL_TO_DATE = 17;
+    public static final int QUERY_EXPENSE_FROM_DATE = 18;
+    public static final int QUERY_EXPENSE_TO_DATE = 19;
 
     //MsgSetting 事件flag
     public static final int SETTING_ADD_OIL_TYPE = 8;
@@ -38,6 +41,10 @@ public class MyConstant {
     public static final int QUERY_NEW_DATA = 13;
     public static final int QUERY_LOAD_MORE = 14;
     public static final int QUERY_REFRESH = 15;
+
+    public static final int QUERY_EX_NEW_DATA = 20;
+    public static final int QUERY_EX_LOAD_MORE = 21;
+    public static final int QUERY_EX_REFRESH = 22;
 
 
 

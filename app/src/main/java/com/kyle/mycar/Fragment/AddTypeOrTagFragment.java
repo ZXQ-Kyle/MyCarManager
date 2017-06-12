@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.kyle.mycar.Bean.MsgSetting;
 import com.kyle.mycar.MyUtils.MyConstant;
@@ -29,6 +30,8 @@ public class AddTypeOrTagFragment extends BaseFragment implements Toolbar.OnMenu
 
     @BindView(R.id.et_setting_add_oiltype)
     AppCompatEditText et;
+    @BindView(R.id.tv_setting_add)
+    TextView tv;
 
     public OilType mOilType;
     public MtTag mTag;
@@ -61,11 +64,13 @@ public class AddTypeOrTagFragment extends BaseFragment implements Toolbar.OnMenu
             initToolbar(R.string.oil_type, 2, R.menu.toolbar_confirm, this);
             if (null!=mOilType){
                 et.setText(mOilType.getOilType());
+                tv.setVisibility(View.VISIBLE);
             }
         }else {
             initToolbar(R.string.expense, 2, R.menu.toolbar_confirm, this);
             if (null!=mTag){
                 et.setText(mTag.getTag());
+                tv.setVisibility(View.VISIBLE);
             }
         }
         et.requestFocus();

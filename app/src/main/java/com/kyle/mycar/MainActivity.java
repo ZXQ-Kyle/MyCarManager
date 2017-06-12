@@ -20,10 +20,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Fragment.AboutFragment;
 import com.kyle.mycar.Fragment.ChartFragment;
 import com.kyle.mycar.Fragment.MainFragment;
+import com.kyle.mycar.Fragment.QueryExpenseFragment;
 import com.kyle.mycar.Fragment.QueryOilFragment;
 import com.kyle.mycar.Fragment.SettingFragment;
 import com.kyle.mycar.MyUtils.MyConstant;
@@ -32,9 +34,11 @@ import com.kyle.mycar.db.Dao.MtTagDao;
 import com.kyle.mycar.db.Dao.OilTypeDao;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.OilType;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -171,6 +175,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             switchFrag(fromFrag.getClass(), ChartFragment.class, false);
         } else if (id == R.id.nav_oil) {
             switchFrag(fromFrag.getClass(), QueryOilFragment.class, false);
+        } else if (id == R.id.nav_expense) {
+            switchFrag(fromFrag.getClass(), QueryExpenseFragment.class, false);
         } else if (id == R.id.nav_setting) {
             switchFrag(fromFrag.getClass(), SettingFragment.class, false);
         } else if (id == R.id.nav_about) {
@@ -266,7 +272,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             transaction = getSupportFragmentManager().beginTransaction();
         }
         boolean hidden = toFrag.isHidden();
-        transaction.setCustomAnimations(R.anim.fade_in,R.anim.fade_out,R.anim.fade_in,R.anim.fade_out);
+        transaction.setCustomAnimations(R.anim.fade_in, R.anim.fade_out, R.anim.fade_in, R.anim.fade_out);
         if (isRemove) {
             if (hidden) {
                 transaction.remove(fromFrag).show(toFrag).commit();
@@ -291,13 +297,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             mFrgBackList.addFirst(toFrag);
         }
     }
+
     public void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(),0);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
+
     public void showKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(view,InputMethodManager.SHOW_FORCED);
+        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
     }
 
 //

@@ -26,7 +26,6 @@
     <string name="add_oil">加油</string>
     <string name="km">km</string>
     <string name="RMB">¥&#160;</string>
-    <string name="next_line">&#160;</string>
     <string name="delete_sucess">删除成功</string>
     <string name="chart">油耗表</string>
     <string name="err_empty_odo">请输入汽车里程</string>
@@ -48,4 +47,10 @@
     <string name="query">查询</string>
     <string name="from">从</string>
     <string name="to">至</string>
+    <string name="query_expense">查询开支</string>
+    <string name="query_oil">查询加油</string>
+    <string name="update_warning">\t\t\t请尽量不要修改名称，可以先删除再增加，不会影响原有数据。\n\t\t\t非常抱歉，我会尽快修正这个问题。</string>
+    <string name="show_delete_tag">显示已删除标签</string>
+    <string name="hide_delete_tag">隐藏已删除标签</string>
+    <string name="wrong_from_date">起始时间不能大于结束时间</string>
 </resources>

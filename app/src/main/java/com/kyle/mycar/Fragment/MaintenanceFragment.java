@@ -23,6 +23,8 @@ import com.kyle.mycar.db.DbOpenHelper;
 import com.kyle.mycar.db.Table.Maintenance;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.Record;
+import com.orhanobut.logger.Logger;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

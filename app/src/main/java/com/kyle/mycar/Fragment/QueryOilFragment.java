@@ -47,8 +47,7 @@ public class QueryOilFragment extends BaseFragment implements BaseQuickAdapter.O
     @BindView(R.id.srl)
     SwipeRefreshLayout srl;
 
-    public static final long PAGE_SIZE = 10;
-    public long pageCount = 0;
+    private long pageCount = 0;
 
     private QuickAdapter mAdapter = new QuickAdapter(null);
 
@@ -60,7 +59,7 @@ public class QueryOilFragment extends BaseFragment implements BaseQuickAdapter.O
 
     @Override
     public void initData() {
-        initToolbar(R.string.query, 1, 0, null);
+        initToolbar(R.string.query_oil, 1, 0, null);
         mToolbar.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
 
         Calendar calendar = Calendar.getInstance();
@@ -93,27 +92,26 @@ public class QueryOilFragment extends BaseFragment implements BaseQuickAdapter.O
     @OnClick({R.id.et_from_date_query, R.id.et_to_date_query})
     public void onViewClicked(View view) {
         DatePickerDialogFragment fragment = null;
-
         switch (view.getId()) {
             case R.id.et_from_date_query:
-                fragment = DatePickerDialogFragment.newInstance(MyConstant.QUERY_FROM_DATE, -1);
+                fragment = DatePickerDialogFragment.newInstance(MyConstant.QUERY_OIL_FROM_DATE, -1);
                 break;
             case R.id.et_to_date_query:
-                fragment = DatePickerDialogFragment.newInstance(MyConstant.QUERY_TO_DATE, -1);
+                fragment = DatePickerDialogFragment.newInstance(MyConstant.QUERY_OIL_TO_DATE, -1);
                 break;
         }
         fragment.mTimeGone = true;
-        fragment.show(getFragmentManager(), getString(R.string.query));
+        fragment.show(getFragmentManager(), getString(R.string.query_oil));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(MessageEvent msg) {
         switch (msg.getFlag()) {
-            case MyConstant.QUERY_FROM_DATE:
+            case MyConstant.QUERY_OIL_FROM_DATE:
                 etFrom.setText(msg.getMsg());
                 onRefresh();
                 break;
-            case MyConstant.QUERY_TO_DATE:
+            case MyConstant.QUERY_OIL_TO_DATE:
                 etTo.setText(msg.getMsg());
                 onRefresh();
                 break;
@@ -252,7 +250,7 @@ public class QueryOilFragment extends BaseFragment implements BaseQuickAdapter.O
 //            }
             try {
                 List<Record> query = dao.queryBuilder()
-                        .offset(PAGE_SIZE * mOff).limit(PAGE_SIZE).orderBy("date", false)
+                        .offset(MyConstant.PAGE_SIZE * mOff).limit(MyConstant.PAGE_SIZE).orderBy("date", false)
                         .where()
                         .between("date", from, to).and()
                         .isNull(Record.COLUMN_MT_ID).and()

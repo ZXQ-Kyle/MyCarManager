@@ -9,11 +9,11 @@ import android.graphics.Bitmap;
 
 public class MessageEvent {
 
-    private String msg;
+    public String msg;
 
-    private int flag;
+    public int flag;
 
-    private Object obj;
+    public Object obj;
 
     public MessageEvent() {
     }
@@ -31,6 +31,7 @@ public class MessageEvent {
         this.flag = flag;
         this.obj = obj;
     }
+
 
     public Object getObj() {
         return obj;

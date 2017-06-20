@@ -53,4 +53,14 @@
     <string name="show_delete_tag">显示已删除标签</string>
     <string name="hide_delete_tag">隐藏已删除标签</string>
     <string name="wrong_from_date">起始时间不能大于结束时间</string>
+    <string name="accout">账户</string>
+    <string name="password">密码</string>
+    <string name="err_account">请输入正确的手机号码</string>
+    <string name="Complete">登录成功</string>
+    <string name="Error">登录失败</string>
+    <string name="Upload">登录中...</string>
+    <string name="login">登录</string>
+    <string name="reg">注册</string>
+    <string name="skip">试用</string>
+    <string name="forget_psw">忘记密码？</string>
 </resources>

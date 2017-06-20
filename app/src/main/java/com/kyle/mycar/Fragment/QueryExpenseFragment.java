@@ -1,6 +1,5 @@
 package com.kyle.mycar.Fragment;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.animation.Animation;
@@ -10,23 +9,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.kyle.mycar.Bean.MessageEvent;
-import com.kyle.mycar.Bean.MsgQuery;
 import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.MyUtils.MyDateUtils;
 import com.kyle.mycar.R;
 import com.kyle.mycar.View.TagLayout.TagContainerLayout;
 import com.kyle.mycar.View.TagLayout.TagView;
-import com.kyle.mycar.db.Dao.MtDao;
 import com.kyle.mycar.db.Dao.MtTagDao;
-import com.kyle.mycar.db.Table.Maintenance;
 import com.kyle.mycar.db.Table.MtTag;
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-import java.sql.SQLException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,7 +51,6 @@ public class QueryExpenseFragment extends BaseFragment implements TagView.OnTagC
     TagContainerLayout tagLayoutDeleted;
 
     private boolean isOpen;
-
     @Override
     public View initView() {
         return View.inflate(mActivity, R.layout.fragment_query_expense, null);

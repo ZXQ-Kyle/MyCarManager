@@ -14,6 +14,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.Explode;
+import android.transition.Fade;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -60,26 +62,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setEnterTransition(new Fade().setDuration(300));
+            getWindow().setExitTransition(new Fade().setDuration(300));
+        }
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
-//        mThreadPool.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//                int size=0;
-//                int sizeNew = 0;
-//                while (true) {
-//                    SystemClock.sleep(1000);
-//                    sizeNew=mFrgBackList.size();
-//                    if (size != sizeNew) {
-//                        size=sizeNew;
-//                        Log.i("---------", "mFrgBackList:"+size);
-//                        for (Fragment f : mFrgBackList) {
-//                            Log.i("----", f.toString());
-//                        }
-//                    }
-//                }
-//            }
-//        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();

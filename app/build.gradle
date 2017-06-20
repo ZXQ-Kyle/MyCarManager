@@ -42,6 +42,7 @@ dependencies {
     compile 'com.labo.kaji:fragmentanimations:0.1.1'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    compile 'com.andkulikov:transitionseverywhere:1.7.4'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 }

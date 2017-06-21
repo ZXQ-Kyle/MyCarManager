@@ -2,6 +2,7 @@ package com.kyle.mycar;
 
 import android.app.Application;
 
+import com.mob.MobApplication;
 import com.orhanobut.logger.Logger;
 
 /**
@@ -9,7 +10,7 @@ import com.orhanobut.logger.Logger;
  * Created by Zhang on 2017/4/19.
  */
 
-public class MyApplication extends Application {
+public class MyApplication extends MobApplication {
     @Override
     public void onCreate() {
         super.onCreate();

@@ -10,6 +10,7 @@ import com.kyle.mycar.Fragment.OilFragment;
 public class MyConstant {
 
     public static final long PAGE_SIZE = 15;
+    public static final String USER_ID = "userID";
 
     //第一次进入app，初始化db
     public static String First_IN = "first_in";

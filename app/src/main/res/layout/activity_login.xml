@@ -86,9 +86,8 @@
         tools:layout_editor_absoluteX="0dp"
         tools:layout_editor_absoluteY="425dp"/>
 
-    <!--<include layout="@layout/reg_code"-->
-             <!--app:layout_constraintTop_toTopOf="@+id/guideline"/>-->
     <EditText
+        android:inputType="number"
         android:id="@+id/reg_et"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -99,13 +98,13 @@
         android:layout_marginRight="24dp"
         android:layout_marginTop="8dp"
         android:hint="验证码"
-        android:textColor="@color/TextGray"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@+id/reg_btn"
         app:layout_constraintTop_toTopOf="@+id/guideline"/>
 
     <Button
+        android:background="?android:attr/selectableItemBackground"
         android:id="@+id/reg_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,6 +1,7 @@
 package com.kyle.mycar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -23,6 +24,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.avos.avoscloud.feedback.FeedbackAgent;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Fragment.AboutFragment;
 import com.kyle.mycar.Fragment.ChartFragment;
@@ -68,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -169,6 +172,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             switchFrag(fromFrag.getClass(), SettingFragment.class, false);
         } else if (id == R.id.nav_about) {
             switchFrag(fromFrag.getClass(), AboutFragment.class, false);
+        }else if (id==R.id.nav_back){
+            FeedbackAgent agent = new FeedbackAgent(this);
+            agent.startDefaultThreadActivity();
         }
 
         drawer.closeDrawer(GravityCompat.START);

@@ -15,6 +15,8 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.Transformation;
 
+import com.orhanobut.logger.Logger;
+
 /**
  * Created by lumingmin on 6/3/16.
  */
@@ -211,6 +213,13 @@ public class ProgressButton extends View {
         });
     }
 
+    public void initialize(String s){
+        clearAnimation();
+        setClickable(true);
+        mSpac=0;
+        setButtonText(s);
+        postInvalidate();
+    }
 
     private class ProgerssButtonAnim extends Animation {
         @Override
@@ -224,7 +233,6 @@ public class ProgressButton extends View {
 
             if (interpolatedTime == 1.0f)
                 startProAnim();
-
 
         }
     }

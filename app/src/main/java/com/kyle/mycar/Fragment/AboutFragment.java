@@ -44,8 +44,7 @@ public class AboutFragment extends BaseFragment {
         try {
             PackageInfo info = mActivity.getPackageManager().getPackageInfo(mActivity.getPackageName(), 0);
             String versionName = info.versionName;
-            int versionCode = info.versionCode;
-            tvVersionAbout.setText("v"+versionCode);
+            tvVersionAbout.setText("v"+versionName);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             tvVersionAbout.setText("v0.1");

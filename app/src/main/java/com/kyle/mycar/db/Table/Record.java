@@ -103,12 +103,6 @@ public class Record implements MultiItemEntity {
         this.flag = flag;
     }
 
-//    @Override
-//    public String toString() {
-//        return "Record{" + "id=" + id + ", oil=" + oil + ", mt=" + mt + ", isDelete=" + isDelete + ", date='" + date
-//                + '\'' + ", flag=" + flag + '}';
-//    }
-
 
     @Override
     public String toString() {

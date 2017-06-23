@@ -60,7 +60,8 @@ dependencies {
     compile 'cn.leancloud.android:avoscloud-sdk:v4.1.0'
     compile 'cn.leancloud.android:avoscloud-statistics:v4.1.0'
     compile 'cn.leancloud.android:avoscloud-feedback:v4.1.0@aar'
+    compile 'com.tencent.bugly:crashreport:2.6.5'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
-        compile 'com.tencent.bugly:crashreport:2.6.5'
+    compile project(':ParticleView')
 }

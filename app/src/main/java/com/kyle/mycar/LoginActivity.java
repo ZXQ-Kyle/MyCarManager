@@ -19,6 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.transition.Slide;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -102,7 +103,6 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
     @BindView(R.id.reg_et)
     EditText regEt;
 
-    private boolean ready;
     private int time;
     private Handler handler;
 
@@ -111,7 +111,8 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
-//            getWindow().setExitTransition(new Fade().setDuration(500));
+            getWindow().setEnterTransition(new Slide().setDuration(300));
+            getWindow().setExitTransition(new Slide().setDuration(300));
         }
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
@@ -218,10 +219,8 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
             //登录
             final String psw = etPsw.getText().toString().trim();
             if (!TextUtils.isEmpty(psw) && isMobileNO(acc)) {
-                // TODO: 2017/6/22 修改
                 String id = SpUtils.getString(this, MyConstant.USER_ID);
                 if (TextUtils.isEmpty(id)) {
-
                     AVQuery<UserInfo> query = new AVQuery<>("UserInfo");
                     query.whereEqualTo("phone", acc);
                     query.getFirstInBackground(new GetCallback<UserInfo>() {
@@ -233,17 +232,15 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                                 String pass = userInfo.getPsw();
                                 String salt = userInfo.getSalt();
                                 try {
-                                    if (TextUtils.equals(phone, acc) && SHA.equal(psw,salt,pass)) {
+                                    if (TextUtils.equals(phone, acc) && SHA.equal(psw, salt, pass)) {
                                         stopAnimAndFinish();
                                     }
                                 } catch (Exception e1) {
                                     e1.printStackTrace();
                                 }
                             } else {
-                                com.alibaba.fastjson.JSONObject object = JSON.parseObject(e.getMessage());
-                                String error = object.getString("error");
 
-                                Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 pbBtn.initialize(getString(R.string.login));
                             }
                         }
@@ -255,13 +252,14 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                         @Override
                         public void done(AVObject avObject, AVException e) {
                             if (null == e) {
+                                SpUtils.putSring(LoginActivity.this, MyConstant.USER_ID, avObject.getObjectId());
                                 String phone = avObject.getString("phone");
                                 String pass = avObject.getString("psw");
                                 String salt = avObject.getString("salt");
                                 try {
-                                    if (TextUtils.equals(phone, acc) && SHA.equal(psw,salt,pass)) {
+                                    if (TextUtils.equals(phone, acc) && SHA.equal(psw, salt, pass)) {
                                         stopAnimAndFinish();
-                                    }else {
+                                    } else {
                                         Toast.makeText(LoginActivity.this, R.string.err_psw, Toast.LENGTH_SHORT).show();
                                         pbBtn.initialize(getString(R.string.login));
                                     }
@@ -271,10 +269,7 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                                     pbBtn.initialize(getString(R.string.login));
                                 }
                             } else {
-                                com.alibaba.fastjson.JSONObject object = JSON.parseObject(e.getMessage());
-                                String error = object.getString("error");
-
-                                Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                                Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 pbBtn.initialize(getString(R.string.login));
                             }
                         }
@@ -371,10 +366,8 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
 
     @Override
     protected void onDestroy() {
-        if (ready) {
-            // 销毁回调监听接口
-            SMSSDK.unregisterAllEventHandler();
-        }
+        // 销毁回调监听接口
+        SMSSDK.unregisterAllEventHandler();
         super.onDestroy();
         EventBus.getDefault().unregister(this);
 
@@ -434,7 +427,6 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
         };
         // 注册回调监听接口
         SMSSDK.registerEventHandler(eventHandler);
-        ready = true;
     }
 
     @Override
@@ -452,11 +444,11 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                 //提交用户，注册
                 final UserInfo userInfo = new UserInfo();
                 String psw = etPsw.getText().toString().trim();
-                String salt =null;
+                String salt = null;
                 try {
                     String[] strings = SHA.encrypt(psw);
                     psw = strings[0];
-                    salt=strings[1];
+                    salt = strings[1];
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(LoginActivity.this, R.string.err_encrypt, Toast.LENGTH_SHORT).show();
@@ -482,9 +474,7 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                                         stopAnimAndFinish();
                                     } else {
                                         // 失败的原因可能有多种，常见的是用户名已经存在。
-                                        com.alibaba.fastjson.JSONObject object = JSON.parseObject(e.getMessage());
-                                        String error = object.getString("error");
-                                        Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                         pbBtn.initialize(getString(R.string.reg));
                                     }
                                 }
@@ -514,7 +504,6 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                 return true;
             }
         }
-
         return false;
     }
 

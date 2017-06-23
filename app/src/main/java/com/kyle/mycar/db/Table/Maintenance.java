@@ -20,11 +20,8 @@ public class Maintenance {
     private String odometer;
     @DatabaseField
     private boolean isDelete;
-
     @DatabaseField
     private String tags;
-    @DatabaseField
-    private String reserve;
 
     public Maintenance() {
 
@@ -84,14 +81,6 @@ public class Maintenance {
 
     public void setTags(String tags) {
         this.tags = tags;
-    }
-
-    public String getReserve() {
-        return reserve;
-    }
-
-    public void setReserve(String reserve) {
-        this.reserve = reserve;
     }
 
     @Override

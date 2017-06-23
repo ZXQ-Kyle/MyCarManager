@@ -17,6 +17,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Explode;
 import android.transition.Fade;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public DrawerLayout drawer;
     public LinkedList<Fragment> mFrgBackList;
     public ExecutorService mThreadPool = Executors.newFixedThreadPool(5);
+    private Menu menu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void initNav() {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        menu = navigationView.getMenu();
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
         CircleImageView headImage = (CircleImageView) headerView.findViewById(R.id.nav_header_head);
@@ -148,6 +151,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 getSupportFragmentManager().beginTransaction().show(mFrgBackList.get(1)).remove(mFrgBackList.get(0))
                         .commit();
                 mFrgBackList.remove(0);
+                Fragment fragment = mFrgBackList.get(0);
+                if (fragment instanceof MainFragment){
+                    menu.getItem(0).setChecked(true);
+                }else if (fragment instanceof ChartFragment){
+                    menu.getItem(1).setChecked(true);
+                }else if (fragment instanceof QueryOilFragment){
+                    menu.getItem(2).setChecked(true);
+                }else if (fragment instanceof QueryExpenseFragment){
+                    menu.getItem(3).setChecked(true);
+                }
             } else {
                 super.onBackPressed();
             }

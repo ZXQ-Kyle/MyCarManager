@@ -39,8 +39,6 @@ public class Oil {
     private boolean isDelete;
 
     @DatabaseField
-    private String reserve1;
-    @DatabaseField
     private String pricePerKm;
     @DatabaseField
     private String fuelC;
@@ -167,13 +165,6 @@ public class Oil {
         isForgetLast = forgetLast;
     }
 
-    public String getReserve1() {
-        return reserve1;
-    }
-
-    public void setReserve1(String reserve1) {
-        this.reserve1 = reserve1;
-    }
 
     public String getPricePerKm() {
         return pricePerKm;
@@ -197,12 +188,4 @@ public class Oil {
 //    }
 
 
-    @Override
-    public String toString() {
-        return "Oil{" + "id=" + id + ", date=" + date + ", money='" + money + '\'' + ", price='" + price + '\'' + ", " +
-                "quantity='" + quantity + '\'' + ", odometer='" + odometer + '\'' + ", oilType='" + oilType + '\'' +
-                ", isFull=" + isFull + ", isForgetLast=" + isForgetLast + ", isDelete=" + isDelete + ", reserve1='" +
-                reserve1 + '\'' + ", pricePerKm='" + pricePerKm + '\'' + ", fuelC='" + fuelC + '\'' + ", note='" +
-                note + '\'' + '}';
-    }
 }

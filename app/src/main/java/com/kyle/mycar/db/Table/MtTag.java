@@ -21,10 +21,6 @@ public class MtTag {
     @DatabaseField
     private boolean isDelete;
 
-    @DatabaseField
-    private String reserve;
-
-
     public MtTag() {
     }
 
@@ -56,13 +52,6 @@ public class MtTag {
         this.tag = tag;
     }
 
-    public String getReserve() {
-        return reserve;
-    }
-
-    public void setReserve(String reserve) {
-        this.reserve = reserve;
-    }
 
     @Override
     public String toString() {

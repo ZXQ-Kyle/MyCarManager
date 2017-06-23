@@ -19,9 +19,8 @@ allprojects {
         jcenter()
         maven { url "https://jitpack.io" }
         maven { url 'http://dl.bintray.com/amulyakhare/maven' }
-        maven {
-            url "http://mvn.leancloud.cn/nexus/content/repositories/public"
-        }
+        maven { url "http://mvn.leancloud.cn/nexus/content/repositories/public"        }
+
     }
 }
 

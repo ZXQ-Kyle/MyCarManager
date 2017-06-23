@@ -48,6 +48,7 @@ import com.bumptech.glide.Glide;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.UserInfo;
 import com.kyle.mycar.MyUtils.MyConstant;
+import com.kyle.mycar.MyUtils.SHA;
 import com.kyle.mycar.MyUtils.SpUtils;
 import com.kyle.mycar.View.ProgressButton;
 import com.orhanobut.logger.Logger;
@@ -220,6 +221,7 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                 // TODO: 2017/6/22 修改
                 String id = SpUtils.getString(this, MyConstant.USER_ID);
                 if (TextUtils.isEmpty(id)) {
+
                     AVQuery<UserInfo> query = new AVQuery<>("UserInfo");
                     query.whereEqualTo("phone", acc);
                     query.getFirstInBackground(new GetCallback<UserInfo>() {
@@ -229,8 +231,13 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                                 SpUtils.putSring(LoginActivity.this, MyConstant.USER_ID, userInfo.getObjectId());
                                 String phone = userInfo.getPhone();
                                 String pass = userInfo.getPsw();
-                                if (TextUtils.equals(phone, acc) && TextUtils.equals(pass, psw)) {
-                                    stopAnimAndFinish();
+                                String salt = userInfo.getSalt();
+                                try {
+                                    if (TextUtils.equals(phone, acc) && SHA.equal(psw,salt,pass)) {
+                                        stopAnimAndFinish();
+                                    }
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
                                 }
                             } else {
                                 com.alibaba.fastjson.JSONObject object = JSON.parseObject(e.getMessage());
@@ -248,12 +255,18 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                         @Override
                         public void done(AVObject avObject, AVException e) {
                             if (null == e) {
-                                Logger.d(avObject);
                                 String phone = avObject.getString("phone");
                                 String pass = avObject.getString("psw");
-                                if (TextUtils.equals(phone, acc) && TextUtils.equals(pass, psw)) {
-                                    stopAnimAndFinish();
-                                }else {
+                                String salt = avObject.getString("salt");
+                                try {
+                                    if (TextUtils.equals(phone, acc) && SHA.equal(psw,salt,pass)) {
+                                        stopAnimAndFinish();
+                                    }else {
+                                        Toast.makeText(LoginActivity.this, R.string.err_psw, Toast.LENGTH_SHORT).show();
+                                        pbBtn.initialize(getString(R.string.login));
+                                    }
+                                } catch (Exception e1) {
+                                    e1.printStackTrace();
                                     Toast.makeText(LoginActivity.this, R.string.err_psw, Toast.LENGTH_SHORT).show();
                                     pbBtn.initialize(getString(R.string.login));
                                 }
@@ -343,7 +356,7 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
         new Thread() {
             @Override
             public void run() {
-                SystemClock.sleep(500);
+                SystemClock.sleep(1000);
                 EventBus.getDefault().post(new MessageEvent(MyConstant.COLSE_LOGIN));
             }
         }.start();
@@ -439,6 +452,17 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                 //提交用户，注册
                 final UserInfo userInfo = new UserInfo();
                 String psw = etPsw.getText().toString().trim();
+                String salt =null;
+                try {
+                    String[] strings = SHA.encrypt(psw);
+                    psw = strings[0];
+                    salt=strings[1];
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(LoginActivity.this, R.string.err_encrypt, Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                userInfo.setSalt(salt);
                 userInfo.setPsw(psw);
                 userInfo.setPhone(phone);
                 AVQuery<UserInfo> query = new AVQuery("UserInfo").whereContains("phone", phone);

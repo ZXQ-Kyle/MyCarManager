@@ -8,6 +8,7 @@ import com.avos.avoscloud.AVUser;
 import com.kyle.mycar.Bean.UserInfo;
 import com.mob.MobApplication;
 import com.orhanobut.logger.Logger;
+import com.tencent.bugly.crashreport.CrashReport;
 
 /**
  * 捕获全局异常
@@ -20,8 +21,9 @@ public class MyApplication extends MobApplication {
         super.onCreate();
         AVObject.registerSubclass(UserInfo.class);
         AVOSCloud.initialize(this,"YBNnB34DIKdwFJ0hNaaIhtE3-gzGzoHsz","y8Q0glNHlziIAKgwIr0Ys8Rd");
-        AVOSCloud.setDebugLogEnabled(true);
 
+        CrashReport.initCrashReport(getApplicationContext(), "461eb24442", true);
+//        CrashReport.initCrashReport(getApplicationContext(), "461eb24442", false);
 
 //        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 //            @Override

@@ -20,8 +20,10 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.kyle.mycar.Bean.UserInfo;
+import com.kyle.mycar.MyUtils.SHA;
 import com.kyle.mycar.R;
 import com.labo.kaji.fragmentanimations.CubeAnimation;
+import com.orhanobut.logger.Logger;
 
 import java.util.List;
 
@@ -106,17 +108,25 @@ public class ForgetPsw2Fragment extends Fragment {
                 @Override
                 public void done(UserInfo userInfo, AVException e) {
                     if (null==e){
-                        userInfo.setPsw(psw2);
-                        userInfo.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(AVException e) {
-                                if (null==e){
-                                    Toast.makeText(getActivity(), R.string.change_psw_sucess,Toast.LENGTH_SHORT).show();
-                                }else {
-                                    Toast.makeText(getActivity(), R.string.save_fail, Toast.LENGTH_SHORT).show();
+                        try {
+                            String[] strings = SHA.encrypt(psw2);
+                            userInfo.setPsw(strings[0]);
+                            userInfo.setSalt(strings[1]);
+                            userInfo.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(AVException e) {
+                                    if (null==e){
+                                        Toast.makeText(getActivity(), R.string.change_psw_sucess,Toast.LENGTH_SHORT).show();
+                                    }else {
+                                        Logger.d(e);
+                                        Toast.makeText(getActivity(), R.string.save_fail, Toast.LENGTH_LONG).show();
+                                    }
+                                    getActivity().finish();
                                 }
-                            }
-                        });
+                            });
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                     }else {
                         Toast.makeText(getActivity(), R.string.err_unexist_acc,Toast.LENGTH_SHORT).show();
 

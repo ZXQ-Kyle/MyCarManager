@@ -46,6 +46,7 @@
     <EditText
         android:id="@+id/et_code_forget"
         android:layout_width="0dp"
+        android:inputType="number"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/dp16"
         android:layout_marginLeft="@dimen/dp32"

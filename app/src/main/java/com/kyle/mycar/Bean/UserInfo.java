@@ -27,6 +27,13 @@ public class UserInfo extends AVObject {
     public void setPsw(String value) {
         put("psw", value);
     }
+
+    public String getSalt() {
+        return getString("salt");
+    }
+    public void setSalt(String value) {
+        put("salt", value);
+    }
     public String getPhone() {
         return getString("phone");
     }

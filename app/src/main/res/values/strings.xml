@@ -78,4 +78,5 @@
     <string name="save_fail">保存失败</string>
     <string name="err_psw">密码错误</string>
     <string name="err_encrypt">密码加密错误</string>
+    <string name="car_manager">汽车管理</string>
 </resources>

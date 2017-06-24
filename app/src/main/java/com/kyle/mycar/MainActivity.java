@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -39,6 +40,7 @@ import com.kyle.mycar.db.Dao.MtTagDao;
 import com.kyle.mycar.db.Dao.OilTypeDao;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.OilType;
+import com.kyle.mycar.temp.carDb;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -73,6 +75,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
 
+        mThreadPool.execute(new Runnable() {
+            @Override
+            public void run() {
+                carDb.init(MainActivity.this);
+            }
+        });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
@@ -90,17 +98,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (!SpUtils.getboolean(this.getApplicationContext(), MyConstant.First_IN)) {
             mThreadPool.execute(new initDb(this.getApplicationContext()));
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
-        super.onSaveInstanceState(outState, outPersistentState);
-        // TODO: 2017/5/27 旋转，加油等fragment不保存
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
     }
 
     private void initNav() {

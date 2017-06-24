@@ -12,6 +12,8 @@ import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.Oil;
 import com.kyle.mycar.db.Table.OilType;
 import com.kyle.mycar.db.Table.Record;
+import com.kyle.mycar.temp.CarBrand;
+import com.kyle.mycar.temp.CarType;
 
 import java.sql.SQLException;
 
@@ -22,12 +24,13 @@ import java.sql.SQLException;
 public class DbOpenHelper extends OrmLiteSqliteOpenHelper {
 
     public static final String DB_NAME = "MyCar.db";
+    public static final int DB_VERSION = 1;
+
 
     private static DbOpenHelper instance;
 
-    //version 2 Table
     public DbOpenHelper(Context context) {
-        super(context, DB_NAME, null, 2);
+        super(context, DB_NAME, null, DB_VERSION);
     }
 
     @Override
@@ -39,6 +42,9 @@ public class DbOpenHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTable(connectionSource, Oil.class);
             TableUtils.createTable(connectionSource, Record.class);
 
+            TableUtils.createTable(connectionSource, CarBrand.class);
+            TableUtils.createTable(connectionSource, CarType.class);
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -47,15 +53,15 @@ public class DbOpenHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase database, ConnectionSource connectionSource, int oldVersion, int newVersion) {
         //更新数据库
-            if (oldVersion<2){
-                try {
-                    Dao<Oil, Integer> dao = getDao(Oil.class);
-                    dao.executeRaw("ALTER TABLE `Oil` ADD COLUMN note TEXT DEFAULT '';");
-
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+//            if (oldVersion<2){
+//                try {
+//                    Dao<Oil, Integer> dao = getDao(Oil.class);
+//                    dao.executeRaw("ALTER TABLE `Oil` ADD COLUMN note TEXT DEFAULT '';");
+//
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                }
+//            }
 
     }
 

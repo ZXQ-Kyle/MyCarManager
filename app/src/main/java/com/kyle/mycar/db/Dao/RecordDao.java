@@ -23,7 +23,6 @@ public class RecordDao extends DaoUtils{
         super(context,clazz);
     }
 
-
     //修改表class！！！
     public static synchronized RecordDao getInstance(Context context) {
         if (instance == null) {

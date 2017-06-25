@@ -1,4 +1,4 @@
-package com.kyle.mycar.temp;
+package com.kyle.mycar.db.Table;
 
 import com.j256.ormlite.field.DatabaseField;
 import com.j256.ormlite.table.DatabaseTable;

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:gravity="center"
+    android:id="@+id/ll_root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    >
+    <CheckedTextView
+        android:text="宝宝"
+        android:id="@+id/spinne_tv1"
+        style="?android:attr/spinnerDropDownItemStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textAlignment="center"/>
+    <CheckedTextView
+        android:text="-"
+        style="?android:attr/spinnerDropDownItemStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textAlignment="center"/>
+    <CheckedTextView
+        android:text="x6"
+        android:id="@+id/spinne_tv2"
+        style="?android:attr/spinnerDropDownItemStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:ellipsize="marquee"
+        android:singleLine="true"
+        android:textAlignment="center"/>
+
+
+</LinearLayout>

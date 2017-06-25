@@ -41,7 +41,7 @@ public class MainFragment extends BaseFragment implements SwipeRefreshLayout.OnR
     SwipeRefreshLayout srl;
 
     private MultiAdapter mAdapter = new MultiAdapter(null);
-    public static final int PAGE_SIZE = 10;
+    public static final int PAGE_SIZE = 15;
     private long pageCount = 0;
     private int openRecordPosition = -1;
 

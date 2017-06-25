@@ -357,12 +357,12 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
         }.start();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
-            grantResults) {
-        registerSDK();
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[]
+//            grantResults) {
+//        registerSDK();
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//    }
 
     @Override
     protected void onDestroy() {
@@ -375,41 +375,41 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
 
 
     private void initSms() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            int readPhone = checkSelfPermission(Manifest.permission.READ_PHONE_STATE);
-            int receiveSms = checkSelfPermission(Manifest.permission.RECEIVE_SMS);
-            int readSms = checkSelfPermission(Manifest.permission.READ_SMS);
-//            int readContacts = checkSelfPermission(Manifest.permission.READ_CONTACTS);
-            int readSdcard = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
-
-            int requestCode = 0;
-            ArrayList<String> permissions = new ArrayList<String>();
-            if (readPhone != PackageManager.PERMISSION_GRANTED) {
-                requestCode |= 1 << 0;
-                permissions.add(Manifest.permission.READ_PHONE_STATE);
-            }
-            if (receiveSms != PackageManager.PERMISSION_GRANTED) {
-                requestCode |= 1 << 1;
-                permissions.add(Manifest.permission.RECEIVE_SMS);
-            }
-            if (readSms != PackageManager.PERMISSION_GRANTED) {
-                requestCode |= 1 << 2;
-                permissions.add(Manifest.permission.READ_SMS);
-            }
-//            if (readContacts != PackageManager.PERMISSION_GRANTED) {
-//                requestCode |= 1 << 3;
-//                permissions.add(Manifest.permission.READ_CONTACTS);
+//        if (Build.VERSION.SDK_INT >= 23) {
+//            int readPhone = checkSelfPermission(Manifest.permission.READ_PHONE_STATE);
+//            int receiveSms = checkSelfPermission(Manifest.permission.RECEIVE_SMS);
+//            int readSms = checkSelfPermission(Manifest.permission.READ_SMS);
+////            int readContacts = checkSelfPermission(Manifest.permission.READ_CONTACTS);
+////            int readSdcard = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+//
+//            int requestCode = 0;
+//            ArrayList<String> permissions = new ArrayList<String>();
+//            if (readPhone != PackageManager.PERMISSION_GRANTED) {
+//                requestCode |= 1 << 0;
+//                permissions.add(Manifest.permission.READ_PHONE_STATE);
 //            }
-            if (readSdcard != PackageManager.PERMISSION_GRANTED) {
-                requestCode |= 1 << 3;
-                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
-            }
-            if (requestCode > 0) {
-                String[] permission = new String[permissions.size()];
-                this.requestPermissions(permissions.toArray(permission), requestCode);
-                return;
-            }
-        }
+//            if (receiveSms != PackageManager.PERMISSION_GRANTED) {
+//                requestCode |= 1 << 1;
+//                permissions.add(Manifest.permission.RECEIVE_SMS);
+//            }
+//            if (readSms != PackageManager.PERMISSION_GRANTED) {
+//                requestCode |= 1 << 2;
+//                permissions.add(Manifest.permission.READ_SMS);
+//            }
+////            if (readContacts != PackageManager.PERMISSION_GRANTED) {
+////                requestCode |= 1 << 3;
+////                permissions.add(Manifest.permission.READ_CONTACTS);
+////            }
+////            if (readSdcard != PackageManager.PERMISSION_GRANTED) {
+////                requestCode |= 1 << 3;
+////                permissions.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+////            }
+//            if (requestCode > 0) {
+//                String[] permission = new String[permissions.size()];
+//                this.requestPermissions(permissions.toArray(permission), requestCode);
+//                return;
+//            }
+//        }
         registerSDK();
     }
 

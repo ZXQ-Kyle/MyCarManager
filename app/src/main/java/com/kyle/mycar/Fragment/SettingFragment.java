@@ -84,7 +84,7 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.setting_1:
-                mActivity.switchFrag(this,new SettingCarFragment(),false,null);
+                mActivity.switchFrag(this,new SettingCarManagerFragment(),false,null);
                 break;
             case R.id.setting_2:
                 mActivity.switchFrag(this, new SettingOilTypeFrag(), false, null);

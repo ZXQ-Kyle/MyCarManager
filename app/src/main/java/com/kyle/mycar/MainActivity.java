@@ -1,22 +1,19 @@
 package com.kyle.mycar;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.transition.Explode;
 import android.transition.Fade;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +22,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
-
 import com.avos.avoscloud.feedback.FeedbackAgent;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Fragment.AboutFragment;
@@ -40,26 +36,20 @@ import com.kyle.mycar.db.Dao.MtTagDao;
 import com.kyle.mycar.db.Dao.OilTypeDao;
 import com.kyle.mycar.db.Table.MtTag;
 import com.kyle.mycar.db.Table.OilType;
-import com.kyle.mycar.temp.carDb;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    //    public static final int RQ_CODE_PICK_HEAD_IMAGE = 99;
-//    public static final int RQ_CODE_REQUEST_PERMISSIONS = 98;
-//    private static final int RQ_CODE_CROP_PICTURE = 97;
     public DrawerLayout drawer;
     public LinkedList<Fragment> mFrgBackList;
     public ExecutorService mThreadPool = Executors.newFixedThreadPool(5);
@@ -75,13 +65,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         setContentView(R.layout.activity_main);
         EventBus.getDefault().register(this);
 
-        mThreadPool.execute(new Runnable() {
-            @Override
-            public void run() {
-                carDb.init(MainActivity.this);
-            }
-        });
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams
@@ -95,9 +78,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initNav();
         initView();
-        if (!SpUtils.getboolean(this.getApplicationContext(), MyConstant.First_IN)) {
-            mThreadPool.execute(new initDb(this.getApplicationContext()));
-        }
     }
 
     private void initNav() {
@@ -191,12 +171,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return true;
     }
 
-//    @Subscribe(threadMode = ThreadMode.POSTING)
-//    public void msg(MsgMainFragment msg) {
-//        if (msg.getFlag() == MsgMainFragment.UPDATE_AN_NEW_ONE_DATA) {
-//            mFrgBackList.remove(0);
-//        }
-//    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void msg(MessageEvent msg) {
@@ -312,6 +286,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
     }
 
+    public void showSnackBar(int strRes){
+        this.showSnackBar(strRes,Snackbar.LENGTH_SHORT);
+    }
+    public void showSnackBar(int strRes,int duration){
+        Snackbar.make(getWindow().getDecorView(),strRes,duration).show();
+    }
+
 //
 //    @Override
 //    public void onClick(View v) {
@@ -397,30 +378,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        }
 //    }
 
-
-    private static class initDb implements Runnable {
-        private Context mContext;
-
-        public initDb(Context context) {
-            mContext = context;
-        }
-
-        @Override
-        public void run() {
-            OilTypeDao typeDao = OilTypeDao.getInstance(mContext);
-            String[] strings = mContext.getResources().getStringArray(R.array.spinner_oil);
-            for (int i = 0; i < strings.length; i++) {
-                int add = typeDao.add(new OilType(strings[i]));
-            }
-
-            MtTagDao tagDao = MtTagDao.getInstance(mContext);
-            String[] stringArray = mContext.getResources().getStringArray(R.array.tags);
-            for (int i = 0; i < stringArray.length; i++) {
-                tagDao.add(new MtTag(stringArray[i]));
-            }
-
-            SpUtils.putboolean(mContext, MyConstant.First_IN, true);
-        }
-    }
 
 }

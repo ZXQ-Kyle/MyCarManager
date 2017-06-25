@@ -21,5 +21,6 @@
     <color name="b3">#144452</color>
     <color name="TextGray">#66000000</color>
     <color name="LineGray">#22000000</color>
+    <color name="BgGray">#eeeeee</color>
     <color name="BlueGray">#90A4AE</color>
 </resources>

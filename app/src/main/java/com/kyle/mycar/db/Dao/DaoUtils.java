@@ -147,7 +147,7 @@ public abstract class DaoUtils<T> {
      * @param asc     false表示降序，true表示升序
      * @return 对象bean
      */
-    public List<MtTag> query(String column, Object value, String orderBy, boolean asc) {
+    public List<T> query(String column, Object value, String orderBy, boolean asc) {
         try {
             return mDao.queryBuilder().orderBy(orderBy, asc).where().eq(column, value)
                     .query();
@@ -155,6 +155,20 @@ public abstract class DaoUtils<T> {
             e.printStackTrace();
         }
         return null;
+    }
+    /**
+     * @param column  查询条件
+     * @param value   条件值
+     * @return 对象bean
+     */
+    public List<T> query(String column, Object value) {
+        try {
+            return mDao.queryBuilder().where().eq(column, value)
+                    .query();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 
     public QueryBuilder queryBuilder() {

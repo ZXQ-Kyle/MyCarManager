@@ -33,6 +33,7 @@ public class MyConstant {
     public static final int QUERY_EXPENSE_TO_DATE = 19;
 
     public static final int  COLSE_LOGIN=23;
+    public static final int APP_UPDATE = 26;
     //MsgSetting 事件flag
     public static final int SETTING_ADD_OIL_TYPE = 8;
     public static final int DELIVER_OIL_TYPE = 9;
@@ -53,4 +54,5 @@ public class MyConstant {
     public static final int QUERY_EX_NEW_DATA = 20;
     public static final int QUERY_EX_LOAD_MORE = 21;
     public static final int QUERY_EX_REFRESH = 22;
+
 }

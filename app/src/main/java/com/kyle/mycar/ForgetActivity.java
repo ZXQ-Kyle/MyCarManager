@@ -1,7 +1,5 @@
 package com.kyle.mycar;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -12,15 +10,9 @@ import android.transition.Explode;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.SaveCallback;
-import com.avos.avoscloud.SignUpCallback;
-import com.kyle.mycar.Bean.UserInfo;
 import com.kyle.mycar.Fragment.ForgetPsw2Fragment;
 import com.kyle.mycar.Fragment.ForgetPswFragment;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import cn.smssdk.EventHandler;

@@ -22,8 +22,8 @@ public class MyApplication extends MobApplication {
         AVObject.registerSubclass(UserInfo.class);
         AVOSCloud.initialize(this,"YBNnB34DIKdwFJ0hNaaIhtE3-gzGzoHsz","y8Q0glNHlziIAKgwIr0Ys8Rd");
 
-        CrashReport.initCrashReport(getApplicationContext(), "461eb24442", true);
-//        CrashReport.initCrashReport(getApplicationContext(), "461eb24442", false);
+        CrashReport.initCrashReport(getApplicationContext(), "461eb24442", false);
+
 
 //        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
 //            @Override
@@ -34,6 +34,11 @@ public class MyApplication extends MobApplication {
 //                System.exit(0);
 //            }
 //        });
+
+//        AVObject avObject=new AVObject("versionCode");
+//        avObject.put("versionCode",1);
+//        avObject.put("desc","新软件上传");
+//        avObject.saveInBackground();
 
     }
 }

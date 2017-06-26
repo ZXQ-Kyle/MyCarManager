@@ -80,4 +80,5 @@
     <string name="err_encrypt">密码加密错误</string>
     <string name="car_manager">汽车管理</string>
     <string name="single_car_warning">抱歉，多车辆管理正在赶工中...</string>
+    <string name="app_update">发现新版本</string>
 </resources>

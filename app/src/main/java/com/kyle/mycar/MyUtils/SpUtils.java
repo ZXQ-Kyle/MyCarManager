@@ -88,5 +88,23 @@ public class SpUtils {
         return sp.getInt(keyName,0);
     }
 
+    /**
+     * @param context
+     * @param keyName
+     * @return 无数据时默认返回0
+     */
+    public static long getLong(Context context, String keyName) {
+        if (sp == null){
+            sp = context.getApplicationContext().getSharedPreferences("config", Context.MODE_PRIVATE);
+        }
+        return sp.getLong(keyName,0);
+    }
+    public static void putLong(Context context, String keyName, long value) {
+        if (sp == null){
+            sp = context.getApplicationContext().getSharedPreferences("config", Context.MODE_PRIVATE);
+        }
+        sp.edit().putLong(keyName,value).apply();
+    }
+
 
 }

@@ -1,8 +1,11 @@
 package com.kyle.mycar;
 
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -20,6 +23,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public LinkedList<Fragment> mFrgBackList;
     public ExecutorService mThreadPool = Executors.newFixedThreadPool(5);
     private Menu menu;
+    private DownloadFinishReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -228,8 +233,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //                                intent.setData(content_url);
 //                                startActivity(intent);
                                 //开启服务更新
+                                mReceiver = new DownloadFinishReceiver();
+                                registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
 
-
+                                DownloadService.startDownload(MainActivity.this);
 
                             }
                         }).setNegativeButton(R.string.cancel, null).show();
@@ -245,6 +252,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        if (mReceiver!=null){
+            unregisterReceiver(mReceiver);
+        }
     }
 
     //fragment 中的申请也是反馈到父activity的方法中
@@ -348,6 +358,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void showSnackBar(int strRes, int duration) {
         Snackbar.make(getWindow().getDecorView(), strRes, duration).show();
     }
+
+
 
 //
 //    @Override

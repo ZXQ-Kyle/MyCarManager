@@ -55,4 +55,6 @@ public class MyConstant {
     public static final int QUERY_EX_LOAD_MORE = 21;
     public static final int QUERY_EX_REFRESH = 22;
 
+    public static final String DOWNLOAD_ID = "download_id";
+    public static final String DOWNLOAD_PATH = "download_path";
 }

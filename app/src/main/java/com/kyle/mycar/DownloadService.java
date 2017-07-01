@@ -27,7 +27,7 @@ public class DownloadService extends IntentService {
 
     private static final String APK_NAME = "MyCarManager.apk";
 //    private static final String APK_URL = "http://fir.im/carM";
-    private static final String APK_URL = "https://raw.githubusercontent.com/ZhangXiaoQing-Kyle/MyCar/fun_chart/app/app-debug.apk";
+    private static final String APK_URL = "https://raw.githubusercontent.com/ZXQ-Kyle/MyCarManager/master/app/app-release.apk";
 
     public DownloadService() {
         super("DownloadService");

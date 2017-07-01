@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.MainActivity;
+import com.kyle.mycar.MyApplication;
 import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.R;
 import org.greenrobot.eventbus.EventBus;
@@ -115,4 +116,9 @@ public abstract class BaseFragment extends Fragment {
         super.onDetach();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        MyApplication.getRefWatcher(mActivity).watch(this);
+    }
 }

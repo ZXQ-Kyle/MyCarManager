@@ -11,13 +11,17 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.MyUtils.MyConstant;
+import com.kyle.mycar.MyUtils.SpUtils;
 import com.kyle.mycar.R;
 import org.greenrobot.eventbus.EventBus;
+
+import java.io.File;
 import java.io.FileOutputStream;
 import butterknife.BindView;
 import butterknife.Unbinder;
@@ -36,6 +40,9 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
     CircleImageView head;
     @BindView(R.id.setting_head_tv)
     TextView settingHeadTv;
+    @BindView(R.id.tv_login_out)
+    TextView tvLoginOut;
+
     Unbinder unbinder;
 
     @Override
@@ -72,10 +79,16 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void initData() {
-//        initToolbar(R.string.setting, 2,0,null);
         mToolbar.setVisibility(View.GONE);
         mActivity.initHeadImage(head);
         head.setOnClickListener(this);
+        String type = SpUtils.getString(mActivity, MyConstant.CAR_TYPE);
+        settingHeadTv.setText(type);
+        String id = SpUtils.getString(mActivity, MyConstant.USER_ID);
+        if (!TextUtils.isEmpty(id)){
+            tvLoginOut.setVisibility(View.VISIBLE);
+            tvLoginOut.setOnClickListener(this);
+        }
 
     }
 
@@ -103,6 +116,29 @@ public class SettingFragment extends BaseFragment implements View.OnClickListene
                     goPickPicture();
                 }
                 break;
+            case R.id.tv_login_out:
+//                deleteHeadImg();
+                SpUtils.remove(mActivity,MyConstant.USER_ID);
+//                settingHeadTv.setText("");
+//                mActivity.initHeadImage(head);
+                tvLoginOut.setVisibility(View.INVISIBLE);
+                break;
+        }
+    }
+
+    private void deleteHeadImg() {
+        File file = new File(mActivity.getFilesDir(), "head.png");
+        if (file.exists()){
+            file.delete();
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden==false){
+            String type = SpUtils.getString(mActivity, MyConstant.CAR_TYPE);
+            settingHeadTv.setText(type);
         }
     }
 

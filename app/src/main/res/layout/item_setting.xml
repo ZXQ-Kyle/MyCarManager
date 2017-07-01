@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="56dp"
     android:gravity="center_vertical"
-    android:background="@drawable/touch_bg"
+    android:background="?android:attr/selectableItemBackground"
     android:paddingBottom="8dp"
     android:paddingRight="24dp"
     android:paddingTop="8dp"

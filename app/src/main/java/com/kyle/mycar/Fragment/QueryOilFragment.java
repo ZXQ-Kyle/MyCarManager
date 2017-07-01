@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.kyle.mycar.Bean.MessageEvent;
@@ -28,6 +30,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.EventListener;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -108,17 +111,35 @@ public class QueryOilFragment extends BaseFragment implements BaseQuickAdapter.O
     public void onEvent(MessageEvent msg) {
         switch (msg.getFlag()) {
             case MyConstant.QUERY_OIL_FROM_DATE:
-                etFrom.setText(msg.getMsg());
+                String strF = msg.getMsg();
+                long from = MyDateUtils.strToLong(strF,"yyyy年MM月dd日");
+                long to = MyDateUtils.strToLong(etTo.getText().toString(),"yyyy年MM月dd日");
+                if (from>to){
+                    Toast.makeText(mActivity, R.string.wrong_from_date, Toast.LENGTH_SHORT).show();
+                    etFrom.setText(etTo.getText().toString());
+                }else {
+                    etFrom.setText(strF);
+                }
                 onRefresh();
                 break;
             case MyConstant.QUERY_OIL_TO_DATE:
-                etTo.setText(msg.getMsg());
+                String strT = msg.getMsg();
+                long from1 = MyDateUtils.strToLong(etFrom.getText().toString(),"yyyy年MM月dd日");
+                long to1 = MyDateUtils.strToLong(strT,"yyyy年MM月dd日");
+                if (from1>to1){
+                    Toast.makeText(mActivity, R.string.wrong_from_date, Toast.LENGTH_SHORT).show();
+                    etTo.setText(etFrom.getText().toString());
+                }else {
+                    etTo.setText(strT);
+                }
                 onRefresh();
                 break;
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.POSTING)
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEvent(MsgQuery msg) {
         switch (msg.flag) {
 

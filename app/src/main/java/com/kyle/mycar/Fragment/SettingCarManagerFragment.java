@@ -58,6 +58,7 @@ public class SettingCarManagerFragment extends BaseFragment {
             ivCarBrand.setVisibility(View.INVISIBLE);
             tvCarType.setText(carType);
             tvCarType.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -75,7 +76,7 @@ public class SettingCarManagerFragment extends BaseFragment {
                 if (tvCarType.getVisibility()==View.GONE){
                     mActivity.switchFrag(this,new SettingCarAddFragment(),false,null);
                 }else {
-                    Snackbar.make(getView(),R.string.single_car_warning,Snackbar.LENGTH_INDEFINITE).show();
+                    Snackbar.make(getView(),R.string.single_car_warning,Snackbar.LENGTH_LONG).show();
                 }
                 break;
         }

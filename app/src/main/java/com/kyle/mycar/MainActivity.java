@@ -1,18 +1,16 @@
 package com.kyle.mycar;
 
 import android.app.DownloadManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
@@ -23,14 +21,15 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.Fade;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.TextView;
 import android.widget.Toast;
+
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.feedback.FeedbackAgent;
@@ -41,10 +40,15 @@ import com.kyle.mycar.Fragment.MainFragment;
 import com.kyle.mycar.Fragment.QueryExpenseFragment;
 import com.kyle.mycar.Fragment.QueryOilFragment;
 import com.kyle.mycar.Fragment.SettingFragment;
+import com.kyle.mycar.MyUtils.IMMLeakRepair;
 import com.kyle.mycar.MyUtils.MyConstant;
+import com.kyle.mycar.MyUtils.NetWorkUtils;
+import com.kyle.mycar.MyUtils.SpUtils;
+
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -54,13 +58,16 @@ import java.util.concurrent.Executors;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener,
+        DialogInterface.OnClickListener {
 
     public DrawerLayout drawer;
     public LinkedList<Fragment> mFrgBackList;
     public ExecutorService mThreadPool = Executors.newFixedThreadPool(5);
     private Menu menu;
     private DownloadFinishReceiver mReceiver;
+    private InputMethodManager inputMethodManager;
+    private long[] mHit=new long[2];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,9 +92,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         initNav();
         initView();
-//        if (NetWorkUtils.isWifiByType(this)) {
-            checkUpdate();
-//        }
+        if (NetWorkUtils.isWifiByType(this)) checkUpdate();
     }
 
     private void checkUpdate() {
@@ -111,6 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 if (target > present) {
                     //开启更新
+                    SystemClock.sleep(1000);
                     EventBus.getDefault().post(new MessageEvent(MyConstant.APP_UPDATE));
                 }
             }
@@ -123,7 +129,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         navigationView.setNavigationItemSelectedListener(this);
         View headerView = navigationView.getHeaderView(0);
         CircleImageView headImage = (CircleImageView) headerView.findViewById(R.id.nav_header_head);
+        TextView tv = (TextView) headerView.findViewById(R.id.nav_header_tv);
         initHeadImage(headImage);
+        String type = SpUtils.getString(this, MyConstant.CAR_TYPE);
+        tv.setText(type);
     }
 
     public void initHeadImage(CircleImageView headImage) {
@@ -151,6 +160,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (mFrgBackList == null) {
             mFrgBackList = new LinkedList<>();
         }
+//        boolean hidden = fragment.isHidden();
+//        Logger.d("MainActivity----hidden = "+hidden);
         mFrgBackList.add(0, fragment);
         getSupportFragmentManager().beginTransaction().add(R.id.fl_content, fragment, MainFragment.class
                 .getSimpleName()).commit();
@@ -176,7 +187,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     menu.getItem(3).setChecked(true);
                 }
             } else {
-                super.onBackPressed();
+                Toast.makeText(MainActivity.this, "双击退出", Toast.LENGTH_LONG).show();
+                System.arraycopy(mHit, 1, mHit, 0, 1);
+                mHit[1] = SystemClock.uptimeMillis();
+                if (mHit[1] - mHit[0] < 800) {
+                    System.exit(0);
+//                    super.onBackPressed();
+                }
             }
         }
     }
@@ -222,26 +239,36 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case MyConstant.APP_UPDATE:
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle(R.string.app_update)
-                        .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-//                                //打开网页更新
-//                                Intent intent = new Intent();
-//                                intent.setAction("android.intent.action.VIEW");
-//                                Uri content_url = Uri.parse("http://fir.im/carM");
-//                                intent.setData(content_url);
-//                                startActivity(intent);
-                                //开启服务更新
-                                mReceiver = new DownloadFinishReceiver();
-                                registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+                builder.setTitle(R.string.app_update).setPositiveButton(R.string.confirm, this).setNegativeButton(R
+                        .string.cancel, null).show();
+//                        new DialogInterface
+//                        .OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialog, int which) {
+////                                //打开网页更新
+////                                Intent intent = new Intent();
+////                                intent.setAction("android.intent.action.VIEW");
+////                                Uri content_url = Uri.parse("http://fir.im/carM");
+////                                intent.setData(content_url);
+////                                startActivity(intent);
+//                        //开启服务更新
+//                        mReceiver = new DownloadFinishReceiver();
+//                        registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+//
+//                        DownloadService.startDownload(MainActivity.this);
+//
+//                    }
+//                }
 
-                                DownloadService.startDownload(MainActivity.this);
 
-                            }
-                        }).setNegativeButton(R.string.cancel, null).show();
+                break;
+            case MyConstant.UPDATE_CAR_TYPE:
 
-
+                NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+                View headerView = navigationView.getHeaderView(0);
+                TextView tv = (TextView) headerView.findViewById(R.id.nav_header_tv);
+                String type = SpUtils.getString(this, MyConstant.CAR_TYPE);
+                tv.setText(type);
 
                 break;
         }
@@ -252,9 +279,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
-        if (mReceiver!=null){
+        if (mReceiver != null) {
             unregisterReceiver(mReceiver);
         }
+        IMMLeakRepair.fixFocusedViewLeak(this.getApplication());
+        mThreadPool.shutdownNow();
     }
 
     //fragment 中的申请也是反馈到父activity的方法中
@@ -288,19 +317,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment toFrag = getSupportFragmentManager().findFragmentByTag(toClass.getSimpleName());
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
 
-        if (null == fromFrag) try {
-            fromFrag = fromClass.newInstance();
+        try {
+            if (null == fromFrag) fromFrag = fromClass.newInstance();
+            if (null == toFrag) toFrag = toClass.newInstance();
+            switchFrag(fromFrag, toFrag, isRemove, transaction);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (null == toFrag) {
-            try {
-                toFrag = toClass.newInstance();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        switchFrag(fromFrag, toFrag, isRemove, transaction);
+
     }
 
     /**
@@ -342,13 +367,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     public void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (inputMethodManager == null)
+            inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     public void showKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(view, InputMethodManager.SHOW_FORCED);
+        if (inputMethodManager == null)
+            inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.showSoftInput(view, InputMethodManager.SHOW_FORCED);
     }
 
     public void showSnackBar(int strRes) {
@@ -359,6 +386,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Snackbar.make(getWindow().getDecorView(), strRes, duration).show();
     }
 
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        mReceiver = new DownloadFinishReceiver();
+        registerReceiver(mReceiver, new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE));
+        DownloadService.startDownload(this);
+    }
 
 
 //

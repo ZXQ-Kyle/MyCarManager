@@ -1,13 +1,13 @@
 package com.kyle.mycar;
 
-import android.app.Application;
-
+import android.content.Context;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVUser;
 import com.kyle.mycar.Bean.UserInfo;
 import com.mob.MobApplication;
 import com.orhanobut.logger.Logger;
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
 import com.tencent.bugly.crashreport.CrashReport;
 
 /**
@@ -16,29 +16,38 @@ import com.tencent.bugly.crashreport.CrashReport;
  */
 
 public class MyApplication extends MobApplication {
+
+    private RefWatcher refWatcher;
+
     @Override
     public void onCreate() {
         super.onCreate();
         AVObject.registerSubclass(UserInfo.class);
-        AVOSCloud.initialize(this,"YBNnB34DIKdwFJ0hNaaIhtE3-gzGzoHsz","y8Q0glNHlziIAKgwIr0Ys8Rd");
+        AVOSCloud.initialize(this, "YBNnB34DIKdwFJ0hNaaIhtE3-gzGzoHsz", "y8Q0glNHlziIAKgwIr0Ys8Rd");
 
         CrashReport.initCrashReport(getApplicationContext(), "461eb24442", false);
 
+        if (LeakCanary.isInAnalyzerProcess(this)) {
+            return;
+        }
+        refWatcher = LeakCanary.install(this);
 
-//        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-//            @Override
-//            public void uncaughtException(Thread thread, Throwable throwable) {
-//                //捕获到异常后的操作
-//                Logger.e(throwable.toString());
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, Throwable throwable) {
+                //捕获到异常后的操作
+                Logger.e(throwable.toString());
+                System.exit(0);
+            }
+        });
 //
-//                System.exit(0);
-//            }
-//        });
-
 //        AVObject avObject=new AVObject("versionCode");
-//        avObject.put("versionCode",1);
+//        avObject.put("versionCode",2);
 //        avObject.put("desc","新软件上传");
 //        avObject.saveInBackground();
+    }
 
+    public static RefWatcher getRefWatcher(Context context) {
+        return ((MyApplication) context.getApplicationContext()).refWatcher;
     }
 }

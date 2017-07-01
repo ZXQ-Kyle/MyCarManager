@@ -4,7 +4,6 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="history">历史</string>
     <string name="statistics">统计</string>
     <string name="oil">加油</string>
@@ -81,4 +80,7 @@
     <string name="car_manager">汽车管理</string>
     <string name="single_car_warning">抱歉，多车辆管理正在赶工中...</string>
     <string name="app_update">发现新版本</string>
+    <string name="login_out">注销</string>
+    <string name="err_non_acc">账户不存在</string>
+    <string name="other">其他</string>
 </resources>

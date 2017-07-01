@@ -16,7 +16,8 @@
         app:layout_constraintRight_toRightOf="parent"
         tools:layout_editor_absoluteY="0dp">
 
-        <include layout="@layout/app_bar"/>
+        <include layout="@layout/app_bar"
+                 android:id="@+id/include7"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/head"
@@ -33,10 +34,23 @@
             android:layout_below="@id/head"
             android:gravity="center_horizontal"
             android:paddingTop="@dimen/nav_header_vertical_spacing"
-            android:text="Android Studio"
             android:textAppearance="@style/TextAppearance.AppCompat.Body1"
             android:textColor="@android:color/white"
             android:textSize="18sp"/>
+
+        <TextView
+            android:clickable="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:textColor="@android:color/white"
+            android:padding="@dimen/dp16"
+            android:visibility="gone"
+            android:id="@+id/tv_login_out"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/login_out"
+            android:layout_below="@+id/include7"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
 
     </RelativeLayout>
 

@@ -22,6 +22,11 @@ public class CarType {
     @DatabaseField
     public String type;
 
+    public CarType() {
+    }
 
-
+    public CarType(String carAndType) {
+        this.car=carAndType;
+        this.type = carAndType;
+    }
 }

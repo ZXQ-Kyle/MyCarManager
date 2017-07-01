@@ -27,6 +27,8 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.Unbinder;
 
@@ -36,8 +38,7 @@ import butterknife.Unbinder;
 public class ChartFragment extends BaseFragment {
 
 
-    @BindView(R.id.tv_chart_title)
-    TextView tvChartTitle;
+
     @BindView(R.id.mChart)
     LineChart mChart;
     Unbinder unbinder;
@@ -124,8 +125,7 @@ public class ChartFragment extends BaseFragment {
         YAxis yAxis = mChart.getAxisLeft();
         //限制线
         float average = msg.average;
-        Log.i("------", "MsgEvent: "+average);
-        LimitLine limitLine = new LimitLine(average, "平均油耗 "+average);
+        LimitLine limitLine = new LimitLine(average, "平均油耗 "+String.format(Locale.getDefault(),"%.2f", average));
 //        limitLine.setLineColor(getResources().getColor(R.color.b3));
         limitLine.enableDashedLine(20, 20, 0);
         limitLine.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_TOP);
@@ -177,6 +177,7 @@ public class ChartFragment extends BaseFragment {
                 }
             }
             float ave = sum / entries.size();
+
             EventBus.getDefault().post(new MsgChart(entries,ave));
         }
     }

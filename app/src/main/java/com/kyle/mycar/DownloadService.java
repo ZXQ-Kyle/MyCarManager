@@ -26,7 +26,8 @@ import java.net.URI;
 public class DownloadService extends IntentService {
 
     private static final String APK_NAME = "MyCarManager.apk";
-    private static final String APK_URL = "http://fir.im/carM";
+//    private static final String APK_URL = "http://fir.im/carM";
+    private static final String APK_URL = "https://raw.githubusercontent.com/ZhangXiaoQing-Kyle/MyCar/fun_chart/app/app-debug.apk";
 
     public DownloadService() {
         super("DownloadService");
@@ -57,7 +58,7 @@ public class DownloadService extends IntentService {
         //添加请求 开始下载
         DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         long downloadId = downloadManager.enqueue(request);
-        Logger.d("DownloadBinder", file.getAbsolutePath());
+        Logger.d("DownloadBinder"+file.getAbsolutePath());
 
         SpUtils.putLong(this, MyConstant.DOWNLOAD_ID,downloadId);
         SpUtils.putSring(this, MyConstant.DOWNLOAD_PATH,file.getAbsolutePath());

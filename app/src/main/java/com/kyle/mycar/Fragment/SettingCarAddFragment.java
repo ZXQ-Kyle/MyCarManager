@@ -2,6 +2,7 @@ package com.kyle.mycar.Fragment;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -16,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
+import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.MsgSetting;
 import com.kyle.mycar.MyUtils.MyConstant;
 import com.kyle.mycar.MyUtils.SpUtils;
@@ -72,6 +74,7 @@ public class SettingCarAddFragment extends BaseFragment implements Toolbar.OnMen
             CarType carType = (CarType) spinnerType.getSelectedItem();
             SpUtils.putSring(mActivity,MyConstant.CAR_BRAND,carBrand);
             SpUtils.putSring(mActivity,MyConstant.CAR_TYPE,carType.type);
+            EventBus.getDefault().post(new MessageEvent(MyConstant.UPDATE_CAR_TYPE));
             mActivity.onBackPressed();
             return true;
         }
@@ -92,7 +95,7 @@ public class SettingCarAddFragment extends BaseFragment implements Toolbar.OnMen
                 break;
             case MyConstant.SETTING_CAR_TYPE:
                 carTypeList = (List<CarType>) msg.object;
-                if (null != carTypeList) {
+                if (carTypeList.size()!=0) {
                     if (mAdapter==null){
                         mAdapter = new MyAdapter(mActivity, carTypeList);
                         spinnerType.setAdapter(mAdapter);
@@ -100,8 +103,11 @@ public class SettingCarAddFragment extends BaseFragment implements Toolbar.OnMen
                         mAdapter.setNewData(carTypeList);
                         mAdapter.notifyDataSetChanged();
                     }
+                }else {
+                    carTypeList.add(new CarType(getString(R.string.other)));
+                    mAdapter.setNewData(carTypeList);
+                    mAdapter.notifyDataSetChanged();
                 }
-
                 break;
         }
     }
@@ -194,9 +200,9 @@ public class SettingCarAddFragment extends BaseFragment implements Toolbar.OnMen
                 convertView = LayoutInflater.from(mContext).inflate(android.R.layout.simple_spinner_item, parent,
                         false);
             }
-            TextView view = (TextView) convertView;
-            view.setText(mList.get(position).type);
-            return view;
+            ((TextView) convertView).setTextColor(Color.BLACK);
+            ((TextView) convertView).setText(mList.get(position).type);
+            return convertView;
         }
 
         @Override

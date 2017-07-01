@@ -1,8 +1,10 @@
 package com.kyle.mycar.Fragment;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -20,6 +22,8 @@ import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.kyle.mycar.Bean.UserInfo;
+import com.kyle.mycar.LoginActivity;
+import com.kyle.mycar.MainActivity;
 import com.kyle.mycar.MyUtils.SHA;
 import com.kyle.mycar.R;
 import com.labo.kaji.fragmentanimations.CubeAnimation;
@@ -121,7 +125,10 @@ public class ForgetPsw2Fragment extends Fragment {
                                         Logger.d(e);
                                         Toast.makeText(getActivity(), R.string.save_fail, Toast.LENGTH_LONG).show();
                                     }
-                                    getActivity().finish();
+//                                    getActivity().finish();
+                                    startActivity(new Intent(getActivity(), MainActivity.class),
+                                            ActivityOptionsCompat
+                                                    .makeSceneTransitionAnimation(getActivity()).toBundle());
                                 }
                             });
                         } catch (Exception e1) {

@@ -8,6 +8,7 @@
     >
     <CheckedTextView
         android:text="宝宝"
+        android:textColor="@android:color/black"
         android:id="@+id/spinne_tv1"
         style="?android:attr/spinnerDropDownItemStyle"
         android:layout_width="wrap_content"
@@ -17,6 +18,7 @@
         android:textAlignment="center"/>
     <CheckedTextView
         android:text="-"
+        android:textColor="@android:color/black"
         style="?android:attr/spinnerDropDownItemStyle"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
@@ -25,6 +27,7 @@
         android:textAlignment="center"/>
     <CheckedTextView
         android:text="x6"
+        android:textColor="@android:color/black"
         android:id="@+id/spinne_tv2"
         style="?android:attr/spinnerDropDownItemStyle"
         android:layout_width="wrap_content"

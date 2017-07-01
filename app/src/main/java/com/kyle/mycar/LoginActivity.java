@@ -1,16 +1,13 @@
 package com.kyle.mycar;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -32,19 +29,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.alibaba.fastjson.JSON;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVSaveOption;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.CountCallback;
-import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
-import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.SaveCallback;
-import com.avos.avoscloud.SignUpCallback;
 import com.bumptech.glide.Glide;
 import com.kyle.mycar.Bean.MessageEvent;
 import com.kyle.mycar.Bean.UserInfo;
@@ -58,15 +48,12 @@ import com.transitionseverywhere.Fade;
 import com.transitionseverywhere.TransitionManager;
 import com.transitionseverywhere.TransitionSet;
 import com.transitionseverywhere.extra.Scale;
-
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.util.HashMap;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -209,7 +196,7 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
             return mobiles.matches(telRegex);
         }
     }
-
+    
     @OnClick(R.id.pb_btn)
     public void onViewClicked() {
         pbBtn.setButtonText("");
@@ -226,20 +213,25 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                     query.getFirstInBackground(new GetCallback<UserInfo>() {
                         @Override
                         public void done(UserInfo userInfo, AVException e) {
-                            if (null == e) {
-                                SpUtils.putSring(LoginActivity.this, MyConstant.USER_ID, userInfo.getObjectId());
+                            if (null == e && null != userInfo) {
                                 String phone = userInfo.getPhone();
                                 String pass = userInfo.getPsw();
                                 String salt = userInfo.getSalt();
                                 try {
                                     if (TextUtils.equals(phone, acc) && SHA.equal(psw, salt, pass)) {
+                                        SpUtils.putSring(LoginActivity.this, MyConstant.USER_ID, userInfo.getObjectId
+                                                ());
                                         stopAnimAndFinish();
+                                    } else {
+                                        //密码错误
+                                        toastAndReset(R.string.err_psw,R.string.login);
                                     }
                                 } catch (Exception e1) {
                                     e1.printStackTrace();
                                 }
+                            } else if (null == userInfo) {
+                                toastAndReset(R.string.err_unexist_acc,R.string.login);
                             } else {
-
                                 Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                                 pbBtn.initialize(getString(R.string.login));
                             }
@@ -260,13 +252,11 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                                     if (TextUtils.equals(phone, acc) && SHA.equal(psw, salt, pass)) {
                                         stopAnimAndFinish();
                                     } else {
-                                        Toast.makeText(LoginActivity.this, R.string.err_psw, Toast.LENGTH_SHORT).show();
-                                        pbBtn.initialize(getString(R.string.login));
+                                        toastAndReset(R.string.err_psw,R.string.login);
                                     }
                                 } catch (Exception e1) {
                                     e1.printStackTrace();
-                                    Toast.makeText(LoginActivity.this, R.string.err_psw, Toast.LENGTH_SHORT).show();
-                                    pbBtn.initialize(getString(R.string.login));
+                                    toastAndReset(R.string.err_psw,R.string.login);
                                 }
                             } else {
                                 Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -277,15 +267,21 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
                     Logger.d(userInfo);
                 }
 
+            } else if (!isMobileNO(acc)) {
+                toastAndReset(R.string.err_unexist_acc,R.string.login);
             } else {
-                Toast.makeText(LoginActivity.this, R.string.err_empty_login, Toast.LENGTH_SHORT).show();
-                pbBtn.initialize(getString(R.string.login));
+                toastAndReset(R.string.err_empty_login,R.string.login);
             }
 
         } else {
             //注册
             SMSSDK.submitVerificationCode("86", acc, regEt.getText().toString().trim());
         }
+    }
+
+    private void toastAndReset(int errStr,int pbBtnStr) {
+        Toast.makeText(LoginActivity.this,errStr , Toast.LENGTH_SHORT).show();
+        pbBtn.initialize(getString(pbBtnStr));
     }
 
     @OnClick({R.id.tv_login_reg, R.id.tv_login_skip, R.id.tv_forget_psw})
@@ -317,6 +313,7 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
             case R.id.tv_forget_psw:
                 startActivity(new Intent(LoginActivity.this, ForgetActivity.class), ActivityOptionsCompat
                         .makeSceneTransitionAnimation(LoginActivity.this).toBundle());
+                colseDelay();
                 break;
 
         }
@@ -496,13 +493,18 @@ public class LoginActivity extends AppCompatActivity implements Handler.Callback
             pbBtn.initialize(getString(R.string.reg));
             Throwable throwable = (Throwable) data;
             throwable.printStackTrace();
-            com.alibaba.fastjson.JSONObject object = JSON.parseObject(throwable.getMessage());
-            String des = object.getString("detail");//错误描述
-            int status = object.getInteger("status");//错误代码
-            if (status > 0 && !TextUtils.isEmpty(des)) {
-                Toast.makeText(this, des, Toast.LENGTH_LONG).show();
-                return true;
+            try {
+                JSONObject object = new JSONObject(throwable.getMessage());
+                String des = object.getString("detail");//错误描述
+                int status = object.getInt("status");//错误代码
+                if (status > 0 && !TextUtils.isEmpty(des)) {
+                    Toast.makeText(this, des, Toast.LENGTH_LONG).show();
+                    return true;
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+
         }
         return false;
     }

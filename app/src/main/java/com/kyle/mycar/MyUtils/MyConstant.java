@@ -34,27 +34,31 @@ public class MyConstant {
 
     public static final int  COLSE_LOGIN=23;
     public static final int APP_UPDATE = 26;
+    public static final int UPDATE_CAR_TYPE = 27;
+
+
+
     //MsgSetting 事件flag
     public static final int SETTING_ADD_OIL_TYPE = 8;
     public static final int DELIVER_OIL_TYPE = 9;
     public static final int SETTING_UPDATE_OIL_TYPE = 10;
-    public static final int SETTING_ADD_TAG = 11;
 
+    public static final int SETTING_ADD_TAG = 11;
     public static final int SETTING_UPDATE_TAG = 12;
+
     public static final int SETTING_CAR_BRAND = 24;
 
     public static final int SETTING_CAR_TYPE = 25;
-
     //MsgQuery 事件flag
     public static final int QUERY_NEW_DATA = 13;
     public static final int QUERY_LOAD_MORE = 14;
+
+
     public static final int QUERY_REFRESH = 15;
-
-
     public static final int QUERY_EX_NEW_DATA = 20;
     public static final int QUERY_EX_LOAD_MORE = 21;
-    public static final int QUERY_EX_REFRESH = 22;
 
+    public static final int QUERY_EX_REFRESH = 22;
     public static final String DOWNLOAD_ID = "download_id";
     public static final String DOWNLOAD_PATH = "download_path";
 }

@@ -6,8 +6,6 @@ import com.avos.avoscloud.AVObject;
 import com.kyle.mycar.Bean.UserInfo;
 import com.mob.MobApplication;
 import com.orhanobut.logger.Logger;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 import com.tencent.bugly.crashreport.CrashReport;
 
 /**
@@ -17,7 +15,6 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 public class MyApplication extends MobApplication {
 
-    private RefWatcher refWatcher;
 
     @Override
     public void onCreate() {
@@ -27,10 +24,10 @@ public class MyApplication extends MobApplication {
 
         CrashReport.initCrashReport(getApplicationContext(), "461eb24442", false);
 
-        if (LeakCanary.isInAnalyzerProcess(this)) {
-            return;
-        }
-        refWatcher = LeakCanary.install(this);
+//        if (LeakCanary.isInAnalyzerProcess(this)) {
+//            return;
+//        }
+//        refWatcher = LeakCanary.install(this);
 
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
@@ -47,7 +44,4 @@ public class MyApplication extends MobApplication {
 //        avObject.saveInBackground();
     }
 
-    public static RefWatcher getRefWatcher(Context context) {
-        return ((MyApplication) context.getApplicationContext()).refWatcher;
-    }
 }
